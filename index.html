@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mexico GP Predictor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f6f3; --panel: #ffffff; --panel2: #f2f1ed; --border: #e8e6e0;
+      --text: #16161d; --muted: #6f6d78; --faint: #a5a3ad;
+      --red: #d4002a; --green: #00875a; --gold: #ffcb2f;
+      --shadow: 0 1px 2px rgba(22,22,29,.04), 0 8px 24px -12px rgba(22,22,29,.12);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: "Titillium Web", system-ui, sans-serif; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+    a { color: var(--green); }
+    .mono, .num { font-family: "JetBrains Mono", monospace; }
+
+    /* Hero */
+    .hero { background: var(--panel); border-bottom: 1px solid var(--border); position: relative; }
+    .tricolor { height: 4px; background: linear-gradient(90deg, var(--green) 0 33.3%, #fff 33.3% 66.6%, var(--red) 66.6%); border-top: 1px solid var(--border); }
+    .topbar { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; }
+    .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); }
+    .badge { width: 44px; height: 28px; }
+    .wm { font-weight: 900; font-style: italic; letter-spacing: -0.01em; font-size: 1.15rem; line-height: 1; }
+    .wm em { font-style: italic; color: var(--red); margin-left: 3px; }
+    .round { font-family: "JetBrains Mono", monospace; font-size: 0.78rem; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 5px 12px; }
+    .hero-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; align-items: end; padding: 36px 0 44px; }
+    @media (max-width: 880px) { .hero-grid { grid-template-columns: 1fr; gap: 24px; padding: 20px 0 32px; } }
+    .eyebrow { font-size: 0.78rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+    h1 { font-size: clamp(2.8rem, 8vw, 5.4rem); font-weight: 900; line-height: 0.92; margin: 12px 0 16px; letter-spacing: -0.035em; }
+    h1 span { color: var(--red); font-style: italic; }
+    .meta { color: var(--muted); max-width: 520px; }
+    .countdown { display: flex; gap: 8px; margin-top: 22px; flex-wrap: wrap; }
+    .cd { background: var(--panel2); border-radius: 12px; padding: 10px 12px; min-width: 70px; text-align: center; }
+    .cd b { display: block; font-size: 1.6rem; font-weight: 600; line-height: 1; font-family: "JetBrains Mono", monospace; }
+    .cd small { color: var(--muted); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.12em; }
+    .hero-card { background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 22px; }
+    .hero-card .lbl { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+    .fav { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 6px 0 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .fav b { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; }
+    .fav span { font-family: "JetBrains Mono", monospace; font-size: 1.5rem; font-weight: 600; color: var(--red); }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; font-size: 0.88rem; color: var(--muted); }
+    .stats b { color: var(--text); font-family: "JetBrains Mono", monospace; font-weight: 600; }
+
+    nav.jump { position: sticky; top: 0; z-index: 20; background: rgba(247,246,243,0.86); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+    nav.jump .wrap { display: flex; gap: 6px; overflow-x: auto; padding-top: 8px; padding-bottom: 8px; white-space: nowrap; scrollbar-width: none; }
+    nav.jump a { color: var(--muted); text-decoration: none; font-weight: 600; font-size: 0.86rem; padding: 5px 11px; border-radius: 999px; transition: background .2s, color .2s; }
+    nav.jump a:hover { color: var(--text); background: var(--panel2); }
+
+    section { padding: 48px 0 6px; scroll-margin-top: 54px; }
+    h2 { font-size: clamp(1.5rem, 3.5vw, 2rem); font-weight: 700; letter-spacing: -0.025em; margin-bottom: 6px; }
+    .sub { color: var(--muted); margin-bottom: 20px; font-size: 0.97rem; max-width: 720px; }
+    .card { background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 22px; box-shadow: var(--shadow); }
+    .layout { display: grid; grid-template-columns: 310px 1fr; gap: 20px; }
+    @media (max-width: 880px) { .layout { grid-template-columns: 1fr; } .layout aside { order: 2; } }
+
+    /* Controls */
+    .ctrl { margin-bottom: 16px; }
+    .ctrl label { display: flex; justify-content: space-between; font-weight: 600; font-size: 0.93rem; }
+    .ctrl label span { color: var(--text); background: var(--panel2); border-radius: 6px; padding: 0 7px; font-family: "JetBrains Mono", monospace; font-size: 0.78rem; }
+    .ctrl p { color: var(--muted); font-size: 0.78rem; margin-bottom: 6px; }
+    input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 4px; background: var(--panel2); outline: none; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #fff; border: 2px solid var(--red); box-shadow: 0 1px 4px rgba(0,0,0,.15); cursor: pointer; }
+    input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 2px solid var(--red); cursor: pointer; }
+    select { width: 100%; font: inherit; font-size: 0.9rem; color: var(--text); background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 7px 9px; }
+    .gridpick { display: grid; grid-template-columns: 30px 1fr; gap: 6px 8px; align-items: center; font-family: "JetBrains Mono", monospace; font-size: 0.8rem; color: var(--muted); }
+    .ctrl-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin: 20px 0 12px; font-weight: 700; }
+    .btn { width: 100%; font: inherit; font-weight: 700; border: none; border-radius: 12px; padding: 12px; cursor: pointer; color: #fff; background: var(--text); transition: transform 0.1s, background 0.2s; }
+    .btn:hover { background: var(--red); }
+    .btn:active { transform: scale(0.98); }
+    .btn.ghost { background: var(--panel2); color: var(--text); margin-top: 10px; }
+    .btn.ghost:hover { background: var(--border); }
+
+    /* Podium + bars */
+    .podium { display: grid; grid-template-columns: 1fr 1.15fr 1fr; gap: 10px; align-items: end; margin-bottom: 14px; }
+    .step { border-radius: 18px; padding: 16px 8px; text-align: center; background: var(--panel); border: 1px solid var(--border); box-shadow: var(--shadow); position: relative; overflow: hidden; }
+    .step::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--tc); }
+    .step.p1 { padding: 26px 8px; }
+    .step .pos { font-weight: 900; font-size: 1.8rem; font-style: italic; line-height: 1; color: var(--faint); }
+    .step.p1 .pos { color: var(--red); font-size: 2.4rem; }
+    .step .name { font-weight: 700; font-size: 1.1rem; margin-top: 4px; letter-spacing: -0.01em; }
+    .step .team { color: var(--muted); font-size: 0.8rem; }
+    .step .pct { font-family: "JetBrains Mono", monospace; font-weight: 600; font-size: 1.3rem; margin-top: 4px; }
+    .bars { display: flex; flex-direction: column; gap: 8px; }
+    .bar { display: grid; grid-template-columns: 22px 140px 1fr 100px; gap: 10px; align-items: center; font-size: 0.92rem; }
+    .bar .n { color: var(--faint); font-family: "JetBrains Mono", monospace; font-size: 0.78rem; text-align: right; }
+    .bar .who { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .track { height: 20px; background: var(--panel2); border-radius: 6px; overflow: hidden; }
+    .fill { height: 100%; border-radius: 6px; background: var(--tc); transition: width 0.6s cubic-bezier(.2,.8,.2,1); }
+    .bar .v { font-family: "JetBrains Mono", monospace; font-size: 0.85rem; text-align: right; font-weight: 600; }
+    .bar .v small { display: block; color: var(--muted); font-size: 0.68rem; white-space: nowrap; font-weight: 400; }
+    @media (max-width: 520px) { .bar { grid-template-columns: 18px minmax(0,1.3fr) minmax(0,1fr) 82px; gap: 8px; } }
+    .note { color: var(--muted); font-size: 0.8rem; margin-top: 14px; }
+
+    /* Tables */
+    .tablewrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    th, td { padding: 9px 8px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    tbody tr:last-child td { border-bottom: none; }
+    th { color: var(--muted); font-weight: 600; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; }
+    .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--tc); margin-right: 7px; }
+    .mini { display: inline-block; width: 58px; height: 6px; background: var(--panel2); border-radius: 4px; overflow: hidden; vertical-align: middle; margin-right: 6px; }
+    .mini i { display: block; height: 100%; background: var(--tc); border-radius: 4px; }
+
+    /* Heatmap */
+    .heat { border-collapse: separate; border-spacing: 3px; font-size: 0.76rem; }
+    .heat th { padding: 2px 3px; text-align: center; font-size: 0.64rem; border: none; }
+    .heat td { padding: 0; border: none; }
+    .heat td.nm { padding-right: 8px; font-weight: 600; font-size: 0.82rem; }
+    .cell { width: 32px; height: 26px; border-radius: 6px; display: grid; place-items: center; font-family: "JetBrains Mono", monospace; font-weight: 600; font-size: 0.72rem; }
+    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 14px; font-size: 0.78rem; color: var(--muted); }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .legend i { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
+
+    /* Title ring */
+    .title-meter { display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: center; }
+    .ring { width: 112px; height: 112px; }
+    .ring circle { fill: none; stroke-width: 9; }
+    .ring .bg { stroke: var(--panel2); }
+    .ring .fg { stroke: var(--green); stroke-linecap: round; transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset 0.8s; }
+    .ring text { fill: var(--text); font-family: "JetBrains Mono", monospace; font-weight: 600; font-size: 19px; text-anchor: middle; dominant-baseline: middle; }
+    .title-meter p { color: var(--muted); font-size: 0.93rem; margin-bottom: 6px; }
+    .title-meter strong { color: var(--text); }
+
+    /* Backtest */
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 18px; }
+    .kpi { background: var(--bg); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
+    .kpi b { display: block; font-size: 1.8rem; font-family: "JetBrains Mono", monospace; line-height: 1.1; font-weight: 600; }
+    .kpi small { color: var(--muted); font-size: 0.8rem; }
+    .hit { color: var(--green); font-weight: 700; } .miss { color: var(--faint); }
+
+    /* Race sim */
+    .lights { display: flex; gap: 10px; justify-content: center; margin: 6px 0 16px; }
+    .light { width: 32px; height: 32px; border-radius: 50%; background: var(--panel2); border: 2px solid var(--border); transition: background 0.1s, box-shadow 0.1s; }
+    .light.on { background: var(--red); border-color: var(--red); box-shadow: 0 0 18px rgba(212,0,42,.5); }
+    .result { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+    .row { display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; border-left: 4px solid var(--tc); opacity: 0; transform: translateY(6px); transition: 0.35s; }
+    .row.show { opacity: 1; transform: none; }
+    .row b { font-family: "JetBrains Mono", monospace; width: 30px; color: var(--muted); }
+    .row.dnf b { color: var(--red); font-size: 0.7rem; }
+    .row span { flex: 1; font-weight: 600; }
+    .row small { color: var(--muted); }
+    .headline { text-align: center; font-size: 1.25rem; font-weight: 700; min-height: 1.8em; margin-bottom: 14px; letter-spacing: -0.01em; }
+
+    /* How it works */
+    .factors { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+    .factor { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 18px; }
+    .factor h3 { font-size: 1rem; margin-bottom: 4px; }
+    .factor p { color: var(--muted); font-size: 0.87rem; }
+    .prose p { color: var(--muted); margin-bottom: 12px; max-width: 780px; }
+    .prose strong { color: var(--text); }
+    ul.src { padding-left: 18px; color: var(--muted); font-size: 0.88rem; }
+    ul.src li { margin-bottom: 5px; }
+    footer { color: var(--muted); font-size: 0.8rem; text-align: center; padding: 34px 16px 44px; border-top: 1px solid var(--border); margin-top: 48px; background: var(--panel); }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <div class="topbar">
+        <a class="brand" href="#">
+          <svg class="badge" viewBox="0 0 44 28" aria-hidden="true">
+            <g transform="skewX(-18)">
+              <rect x="12" y="3" width="8" height="22" rx="2" fill="#00875a"/>
+              <rect x="23" y="3" width="8" height="22" rx="2" fill="#fff" stroke="#d9d6cf"/>
+              <rect x="34" y="3" width="8" height="22" rx="2" fill="#d4002a"/>
+            </g>
+          </svg>
+          <span class="wm">MÉXICO GP<em>26</em></span>
+        </a>
+        <span class="round">Round 19 / 23</span>
+      </div>
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">Race predictor · Mexico City Grand Prix</p>
+          <h1>Who wins<br><span>Mexico?</span></h1>
+          <p class="meta">Autódromo Hermanos Rodríguez · 71 laps · over 2 km above sea level · Sunday 1 November 2026, 2:00 PM local</p>
+          <div class="countdown" id="countdown"></div>
+        </div>
+        <div class="hero-card">
+          <div class="lbl">Model favourite</div>
+          <div class="fav"><b id="heroFav">–</b><span id="heroPct"></span></div>
+          <div class="stats">
+            <div><b>18</b> races analysed</div>
+            <div><b>6</b> sprints</div>
+            <div><b>22</b> drivers</div>
+            <div><b>3</b> years of Mexico data</div>
+            <div><b>40,000</b> simulations</div>
+            <div><b>9/12</b> past winners called</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tricolor"></div>
+  </header>
+
+  <nav class="jump"><div class="wrap">
+    <a href="#predict">Prediction</a><a href="#drivers">Driver breakdown</a><a href="#title">Title watch</a>
+    <a href="#backtest">Accuracy test</a><a href="#season">Season results</a><a href="#mexico">Mexico history</a>
+    <a href="#race">Race it</a><a href="#how">How it works</a><a href="#sources">Sources</a>
+  </div></nav>
+
+  <main class="wrap">
+    <section id="predict">
+      <h2>The Prediction</h2>
+      <p class="sub">Every driver's chance to win, based on all 18 races of 2026 so far. Move the sliders to change how much each factor counts. After qualifying on Saturday, enter the top 3 for a sharper prediction.</p>
+      <div class="layout">
+        <aside class="card">
+          <div class="ctrl-title" style="margin-top:0">What matters most</div>
+          <div class="ctrl"><label>Season results <span id="v-season"></span></label><p>Points per race across all 18 rounds</p><input type="range" id="w-season" min="0" max="100"></div>
+          <div class="ctrl"><label>Car pace <span id="v-car"></span></label><p>How the team's two cars finished in the last 8 races</p><input type="range" id="w-car" min="0" max="100"></div>
+          <div class="ctrl"><label>Recent form <span id="v-form"></span></label><p>The driver's last 6 races, newest counting most</p><input type="range" id="w-form" min="0" max="100"></div>
+          <div class="ctrl"><label>Qualifying speed <span id="v-quali"></span></label><p>How often they reached Q3 (top 10) this year</p><input type="range" id="w-quali" min="0" max="100"></div>
+          <div class="ctrl"><label>Mexico history <span id="v-mex"></span></label><p>Results here in 2023–2025, recent years weighted more</p><input type="range" id="w-mex" min="0" max="100"></div>
+          <div class="ctrl"><label>Chaos <span id="v-chaos"></span></label><p>Higher = more surprise winners</p><input type="range" id="chaos" min="0" max="100"></div>
+          <div class="ctrl-title">Qualifying result (Saturday)</div>
+          <div class="gridpick">
+            <span>P1</span><select id="g1"></select>
+            <span>P2</span><select id="g2"></select>
+            <span>P3</span><select id="g3"></select>
+          </div>
+          <button class="btn ghost" id="reset">Reset to tuned settings</button>
+        </aside>
+        <div>
+          <div class="podium" id="podium"></div>
+          <div class="card"><div class="bars" id="bars"></div>
+            <p class="note" id="simnote"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="drivers">
+      <h2>Driver Breakdown</h2>
+      <p class="sub">Each factor is scored 0–100, where 100 is the best driver on the grid for that factor. "Retire risk" comes from each driver's real 2026 retirement rate.</p>
+      <div class="card tablewrap"><table>
+        <thead><tr><th>Driver</th><th>Win</th><th>Podium</th><th>Season</th><th>Car</th><th>Form</th><th>Quali</th><th>Mexico</th><th>Retire risk</th><th>Pts</th><th>Q3</th><th>Quali H2H</th></tr></thead>
+        <tbody id="breakdown"></tbody>
+      </table></div>
+    </section>
+
+    <section id="title">
+      <h2>Title Watch</h2>
+      <p class="sub">Antonelli leads Russell by 123 points and Hamilton by 124, with 125 left. He's champion on Sunday if he finishes 9th or better, or if neither Russell nor Hamilton wins.</p>
+      <div class="card title-meter">
+        <svg class="ring" viewBox="0 0 110 110">
+          <circle class="bg" cx="55" cy="55" r="46"></circle>
+          <circle class="fg" id="ringFg" cx="55" cy="55" r="46" stroke-dasharray="289" stroke-dashoffset="289"></circle>
+          <text x="55" y="57" id="ringTxt">–</text>
+        </svg>
+        <div>
+          <p>Chance <strong>Kimi Antonelli</strong> is crowned 2026 World Champion in Mexico.</p>
+          <p id="titleDetail"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="backtest">
+      <h2>Accuracy Test</h2>
+      <p class="sub">Would this model have predicted the races we already know? For each race from round 7 on, the model only sees earlier results, plus the real pole-sitter where known. It updates live as you move the sliders. Qualifying speed and Mexico history are left out here, because they can't be tested fairly on past races.</p>
+      <div class="card">
+        <div class="kpis" id="kpis"></div>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Round</th><th>Actual winner</th><th>Model gave them</th><th>Model's favourite</th><th></th></tr></thead>
+          <tbody id="btrows"></tbody>
+        </table></div>
+      </div>
+    </section>
+
+    <section id="season">
+      <h2>2026 Season Results</h2>
+      <p class="sub">Every finish of every driver in all 18 Grands Prix. Verified: the points these results add up to (plus the 6 sprints) match the official standings for every driver.</p>
+      <div class="card tablewrap"><table class="heat" id="heat"></table>
+        <div class="legend">
+          <span><i style="background:#ffcb2f"></i>Win</span><span><i style="background:#dfe3ec"></i>2nd–3rd</span>
+          <span><i style="background:#d5efe2"></i>Points (4–10)</span><span><i style="background:#f0efeb"></i>11th+</span>
+          <span><i style="background:#fbe3e6"></i>Retired / not classified</span><span><i style="background:transparent;border:1px dashed #d9d6cf"></i>Didn't race</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="mexico">
+      <h2>Mexico City History</h2>
+      <p class="sub">The last three races at the Autódromo Hermanos Rodríguez, for drivers on the 2026 grid. The cars are completely different in 2026, so this factor has a small default weight.</p>
+      <div class="card tablewrap"><table>
+        <thead><tr><th>Driver</th><th>2025</th><th>2024</th><th>2023</th><th>Career Mexico wins</th></tr></thead>
+        <tbody id="mexrows"></tbody>
+      </table></div>
+    </section>
+
+    <section id="race">
+      <h2>Race It Yourself</h2>
+      <p class="sub">Simulate one Mexico City Grand Prix with the current settings. Every run is different.</p>
+      <div class="card">
+        <div class="lights" id="lights"><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div></div>
+        <div class="headline" id="headline">Press the button to start the race</div>
+        <button class="btn" id="raceBtn" style="max-width:320px;display:block;margin:0 auto 18px">Lights out</button>
+        <div class="result" id="result"></div>
+      </div>
+    </section>
+
+    <section id="how">
+      <h2>How It Works</h2>
+      <div class="prose">
+        <p><strong>Step 1: score every driver.</strong> Five factors are calculated from real data, each scaled so the best driver scores 100:</p>
+      </div>
+      <div class="factors">
+        <div class="factor"><h3>Season results</h3><p>Points per race started, including sprints. Rewards consistency across the whole year.</p></div>
+        <div class="factor"><h3>Car pace</h3><p>Every finish by both team cars in the last 8 races. A great car lifts both drivers.</p></div>
+        <div class="factor"><h3>Recent form</h3><p>The driver's last 6 races, weighted 6-5-4-3-2-1 so the newest counts most. Retirements are left out here and handled by retire risk instead.</p></div>
+        <div class="factor"><h3>Qualifying speed</h3><p>Share of 2026 qualifying sessions where the driver reached Q3. Raw single-lap speed matters because overtaking is hard.</p></div>
+        <div class="factor"><h3>Mexico history</h3><p>Finishes here in 2025 (50%), 2024 (30%) and 2023 (20%). A retirement counts as 20th. Drivers who never raced here get a neutral score.</p></div>
+        <div class="factor"><h3>Retire risk</h3><p>Each driver's real retirement rate in 2026, blended with the grid average so one unlucky weekend doesn't dominate.</p></div>
+      </div>
+      <div class="prose" style="margin-top:18px">
+        <p><strong>Step 2: combine them.</strong> The sliders set each factor's weight. The default weights came from testing the model on rounds 7–18 and picking what predicted the real winners best. Season results and car pace mattered most; recent form added surprisingly little.</p>
+        <p><strong>Step 3: add qualifying.</strong> In 2026 the pole-sitter won 12 of the 16 races where the pole is confirmed. Once you enter Saturday's top 3, the pole-sitter gets a large boost (tuned so pole-sitters win about 57% of the time — a bit cautious given the small sample), with smaller boosts for P2 and P3.</p>
+        <p><strong>Step 4: simulate.</strong> The race is run 40,000 times. Each time, every driver may retire based on their retire risk, and random "race luck" is added to their strength. Whoever comes out on top wins that run. A driver's win chance is the share of runs they won.</p>
+        <p><strong>Limits.</strong> The model doesn't know about car upgrades, tyre strategy, weather, penalties, or practice pace. One race is very random: even the best F1 models are wrong a lot. Treat these as well-informed odds, not a guarantee.</p>
+      </div>
+    </section>
+
+    <section id="sources">
+      <h2>Sources</h2>
+      <div class="card">
+        <ul class="src">
+          <li>Race results rounds 1–12 and season details: <a href="https://en.wikipedia.org/wiki/2026_Formula_One_World_Championship" target="_blank">Wikipedia – 2026 Formula One World Championship</a></li>
+          <li>Monaco result amended after the FIA Court of Appeal: <a href="https://www.gpfans.com/en/f1-news/1089847/f1-standings-2026-latest-points-leaders-september-4-2026/" target="_blank">GPFans</a></li>
+          <li>Italian GP: <a href="https://www.gpfans.com/en/f1-news/1089963/f1-italian-grand-prix-2026-results-final-classification-late-penalties-applied/" target="_blank">GPFans final classification</a> · Spanish GP: <a href="https://www.gpfans.com/en/f1-news/1090243/f1-spanish-grand-prix-2026-results-final-classification-all-penalties-applied-at-madring/" target="_blank">GPFans</a> · Azerbaijan GP: <a href="https://www.gpfans.com/en/f1-news/1090761/f1-azerbaijan-grand-prix-2026-results-final-classification-with-all-penalties-applied-from-baku/" target="_blank">GPFans</a></li>
+          <li>Bahrain GP (held at Sepang) and United States GP: <a href="https://www.formula1.com/en/results/2026/races/1308/malaysia/race-result" target="_blank">Formula1.com</a>, <a href="https://www.formula1.com/en/results/2026/races/1297/united-states/race-result" target="_blank">Formula1.com</a></li>
+          <li>Singapore GP and sprint: <a href="https://www.crash.net/f1/results/1107465/1/formula-1-singapore-grand-prix-full-race-results" target="_blank">Crash.net race</a>, <a href="https://www.crash.net/f1/results/1107073/1/f1-singapore-grand-prix-full-sprint-race-results" target="_blank">Crash.net sprint</a></li>
+          <li>Standings checks: <a href="https://www.crash.net/f1/news/1103967/1/2026-formula-1-world-championship-standings-after-italian-grand-prix" target="_blank">after Italy</a>, <a href="https://www.crash.net/f1/results/1107471/1/new-f1-championship-standings-after-singapore-grand-prix" target="_blank">after Singapore</a>, <a href="https://sports.yahoo.com/articles/f1-standings-results-2026-united-220013689.html" target="_blank">after the US GP</a></li>
+          <li>Qualifying: <a href="https://www.lightsoutblog.com/2026-f1-qualifying-statistics/" target="_blank">Lights Out – Q3 appearances</a>, <a href="https://www.planetf1.com/news/f1-2026-head-to-head-qualifying-statistics-teammates" target="_blank">PlanetF1 – team-mate head-to-heads</a></li>
+          <li>Mexico history: <a href="https://www.planetf1.com/news/2025-mexico-city-grand-prix-results" target="_blank">2025</a>, <a href="https://www.crash.net/f1/results/1059179/1/2024-f1-mexico-city-grand-prix-race-results" target="_blank">2024</a>, <a href="https://crash.net/f1/results/1039725/1/f1-mexico-city-grand-prix-2023-race-results-round-19" target="_blank">2023</a></li>
+          <li>Title scenario: <a href="https://www.skysports.com/f1/news/13603603/united-states-gp-kimi-antonelli-wins-austin-race-to-move-to-brink-of-f1-world-title-after-dominant-drive" target="_blank">Sky Sports</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>Data as of 27 Oct 2026, after the United States GP (round 18 of 23).<br>A fan-made model for fun. Not affiliated with Formula 1, and not betting advice.</footer>
+
+  <script>
+    const D = {"races":["AUS","CHN","JPN","MIA","CAN","MON","BCN","AUT","GBR","BEL","HUN","NED","ITA","ESP","AZE","BHR","SIN","USA"],"results":{"ANT":[2,1,1,1,1,1,16,3,15,1,3,2,1,1,5,2,3,1],"RUS":[1,2,4,4,"R",12,2,1,2,"R",7,3,2,5,1,20,9,8],"HAM":[4,3,6,6,2,2,1,5,3,4,5,4,6,"R",6,3,6,4],"NOR":[5,"R",5,2,"R","R",3,7,4,7,1,1,4,3,"R",9,4,5],"LEC":[3,4,3,8,4,"R",15,8,1,2,4,5,"R",4,4,4,2,2],"VER":[6,"R",8,5,3,"R",4,2,20,3,2,"R",3,2,2,1,1,3],"PIA":["R","R",2,3,11,4,5,4,11,5,"R",6,5,8,13,6,5,7],"HAD":["R",8,12,"R",5,3,6,6,5,6,6,null,null,null,3,5,10,6],"LAW":[13,7,9,"R",7,5,8,9,6,12,8,7,14,6,12,7,7,9],"GAS":[10,6,7,"R",8,7,7,13,10,11,12,10,7,12,"R",16,11,10],"LIN":[8,12,14,14,"R",6,9,10,7,9,10,12,8,9,7,10,15,12],"COL":[14,10,16,7,6,14,10,15,9,10,15,14,9,7,"R",13,"R","R"],"BEA":[7,5,"R",11,10,"R",17,14,12,14,19,"R",15,16,9,14,12,"R"],"BOR":[9,"R",13,12,13,11,11,11,8,8,11,13,11,13,15,18,"R",13],"HUL":["R",11,11,"R",12,13,"R",12,"R",13,9,8,12,10,11,11,8,11],"SAI":[15,9,15,9,9,16,12,"R",17,16,18,16,13,"R",10,17,14,18],"ALB":[12,"R",20,10,"R",8,"R",17,"R",15,17,17,17,15,"R","R","R",17],"OCO":[11,14,10,13,14,9,13,16,13,17,16,"R",16,11,8,15,13,14],"ALO":["R","R",18,15,"R",10,"R",18,18,19,14,9,"R",17,"R",8,16,16],"STR":["R","R","R",17,15,"R","R","R",19,"R",13,"R","R","R","R",12,"R",15],"BOT":["R",13,19,18,16,"R","R","R",16,18,"R","R",19,18,16,"R",18,"R"],"PER":[16,15,17,16,"R",15,14,"R",14,"R","R",15,18,"R",14,19,17,19],"TSU":[null,null,null,null,null,null,null,null,null,null,null,11,10,14,null,null,null,null]},"sprints":{"CHN":{"RUS":1,"LEC":2,"HAM":3,"NOR":4,"ANT":5,"PIA":6,"LAW":7,"BEA":8},"MIA":{"NOR":1,"PIA":2,"LEC":3,"RUS":4,"VER":5,"ANT":6,"HAM":7,"GAS":8},"CAN":{"RUS":1,"NOR":2,"ANT":3,"PIA":4,"LEC":5,"HAM":6,"VER":7,"LIN":8},"GBR":{"ANT":1,"HAM":2,"NOR":3,"RUS":4,"LEC":5,"VER":6,"PIA":7,"LAW":8},"NED":{"RUS":1,"LEC":2,"NOR":3,"ANT":4,"PIA":5,"VER":6,"HAM":7,"GAS":8},"SIN":{"VER":1,"HAM":2,"LEC":3,"ANT":4,"LAW":5,"BEA":6,"HUL":7,"NOR":8}},"official":{"ANT":365,"RUS":242,"HAM":241,"VER":236,"LEC":233,"NOR":211,"PIA":144,"HAD":105,"LAW":77,"GAS":42,"LIN":38,"COL":27,"BEA":23,"HUL":13,"BOR":10,"OCO":7,"ALO":7,"SAI":7,"ALB":5,"TSU":1,"STR":0,"BOT":0,"PER":0},"mexico":{"2025":{"NOR":1,"LEC":2,"VER":3,"BEA":4,"PIA":5,"ANT":6,"RUS":7,"HAM":8,"OCO":9,"BOR":10,"TSU":11,"ALB":12,"HAD":13,"STR":14,"GAS":15,"COL":16,"SAI":"R","ALO":"R","HUL":"R","LAW":"R"},"2024":{"SAI":1,"NOR":2,"LEC":3,"HAM":4,"RUS":5,"VER":6,"PIA":8,"HUL":9,"GAS":10,"STR":11,"COL":12,"OCO":13,"BOT":14,"LAW":16,"PER":17,"ALO":"R","ALB":"R","TSU":"R"},"2023":{"VER":1,"HAM":2,"LEC":3,"SAI":4,"NOR":5,"RUS":6,"PIA":8,"ALB":9,"OCO":10,"GAS":11,"TSU":12,"HUL":13,"BOT":14,"STR":17,"ALO":"R","PER":"R"}},"mexicoWins":{"VER":5,"HAM":2,"NOR":1,"SAI":1},"q3":{"NOR":18,"PIA":18,"RUS":18,"ANT":17,"VER":16,"HAD":14,"HAM":18,"LEC":18,"SAI":1,"ALB":0,"LAW":9,"LIN":12,"ALO":0,"STR":0,"OCO":0,"BEA":1,"HUL":2,"BOR":5,"GAS":8,"COL":5,"BOT":0,"PER":0,"TSU":0},"h2h":{"NOR":"11–7","PIA":"7–11","ANT":"11–7","RUS":"7–11","VER":"11–4","HAD":"4–11","LEC":"10–8","HAM":"8–10","SAI":"14–4","ALB":"4–14","LAW":"10–5","LIN":"5–10","ALO":"16–2","STR":"2–16","BEA":"13–5","OCO":"5–13","BOR":"9–9","HUL":"9–9","GAS":"15–3","COL":"3–15","PER":"10–8","BOT":"8–10"},"poles":["RUS","ANT","ANT","ANT","RUS","ANT","RUS","RUS","ANT","ANT","NOR","NOR","GAS",null,null,"VER","VER","ANT"],"teamOverride":{"LAW":{"11":"Red Bull","12":"Red Bull","13":"Red Bull"},"TSU":{"11":"Racing Bulls","12":"Racing Bulls","13":"Racing Bulls"}},"teams":{"ANT":"Mercedes","RUS":"Mercedes","HAM":"Ferrari","LEC":"Ferrari","VER":"Red Bull","HAD":"Red Bull","NOR":"McLaren","PIA":"McLaren","LAW":"Racing Bulls","LIN":"Racing Bulls","GAS":"Alpine","COL":"Alpine","BEA":"Haas","OCO":"Haas","HUL":"Audi","BOR":"Audi","ALO":"Aston Martin","STR":"Aston Martin","SAI":"Williams","ALB":"Williams","BOT":"Cadillac","PER":"Cadillac","TSU":"Racing Bulls"},"names":{"ANT":"Kimi Antonelli","RUS":"George Russell","HAM":"Lewis Hamilton","LEC":"Charles Leclerc","VER":"Max Verstappen","HAD":"Isack Hadjar","NOR":"Lando Norris","PIA":"Oscar Piastri","LAW":"Liam Lawson","LIN":"Arvid Lindblad","GAS":"Pierre Gasly","COL":"Franco Colapinto","BEA":"Oliver Bearman","OCO":"Esteban Ocon","HUL":"Nico Hülkenberg","BOR":"Gabriel Bortoleto","ALO":"Fernando Alonso","STR":"Lance Stroll","SAI":"Carlos Sainz","ALB":"Alex Albon","BOT":"Valtteri Bottas","PER":"Sergio Pérez","TSU":"Yuki Tsunoda"}};
+    // ===== Prediction model (shared by the website and the backtest) =====
+const GP_PTS = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
+// Smooth value of a finishing position: P1 = 1, P2 ≈ 0.75, P5 ≈ 0.32, P10 ≈ 0.08
+const posValue = p => Math.exp(-(p - 1) / 3.5);
+
+function teamAt(D, code, r) {
+  const o = D.teamOverride[code];
+  return (o && o[r]) || D.teams[code];
+}
+
+// Build every factor for each driver using only rounds [0, upto)
+function buildFeatures(D, upto, grid) {
+  const codes = grid || Object.keys(D.results).filter(c => c !== "TSU");
+  const out = {};
+  let fieldDnf = 0, fieldStarts = 0;
+
+  // Team car pace: average value of every finish by that team's cars over the last 8 rounds
+  const teamVals = {};
+  for (let r = Math.max(0, upto - 8); r < upto; r++) {
+    for (const c of Object.keys(D.results)) {
+      const p = D.results[c][r];
+      if (typeof p === "number") (teamVals[teamAt(D, c, r)] ||= []).push(posValue(p));
+    }
+  }
+  const teamPace = {};
+  for (const t in teamVals) teamPace[t] = teamVals[t].reduce((a, b) => a + b, 0) / teamVals[t].length;
+
+  for (const c of codes) {
+    const row = D.results[c].slice(0, upto);
+    let starts = 0, dnfs = 0, points = 0;
+    row.forEach((p, r) => {
+      if (p === null) return;
+      starts++;
+      if (p === "R") dnfs++;
+      else if (p <= 10) points += GP_PTS[p - 1];
+      const sp = D.sprints[D.races[r]];
+      if (sp && sp[c]) points += 9 - sp[c];
+    });
+    fieldDnf += dnfs; fieldStarts += starts;
+
+    // Recent form: last 6 races entered, newer races count more (weights 6,5,4,3,2,1), DNFs skipped
+    let fw = 0, fs = 0, k = 0;
+    for (let r = upto - 1; r >= 0 && k < 6; r--) {
+      const p = row[r];
+      if (p === null) continue;
+      const w = 6 - k; k++;
+      if (typeof p === "number") { fs += w * posValue(p); fw += w; }
+    }
+
+    // Mexico history: 2025 counts 50%, 2024 30%, 2023 20%; a DNF counts as P20
+    let mw = 0, ms = 0;
+    [["2025", 0.5], ["2024", 0.3], ["2023", 0.2]].forEach(([y, w]) => {
+      const p = D.mexico[y][c];
+      if (p === undefined) return;
+      ms += w * posValue(p === "R" ? 20 : p); mw += w;
+    });
+
+    out[c] = {
+      code: c, starts, dnfs, points,
+      season: starts ? points / starts / 25 : 0,
+      form: fw ? fs / fw : 0,
+      quali: D.q3[c] / Math.max(1, starts),
+      car: teamPace[D.teams[c]] || 0,
+      mex: mw ? ms / mw : null
+    };
+  }
+  // Retirement chance: this driver's DNF rate, blended with the whole grid's rate (6 "virtual races")
+  const fieldRate = fieldDnf / Math.max(1, fieldStarts);
+  for (const c of codes) {
+    const f = out[c];
+    f.dnf = (f.dnfs + 6 * fieldRate) / (f.starts + 6);
+  }
+  // Scale each factor so the best driver = 1
+  for (const key of ["season", "form", "quali", "car", "mex"]) {
+    const vals = codes.map(c => out[c][key]).filter(v => v !== null);
+    const max = Math.max(...vals) || 1;
+    for (const c of codes) if (out[c][key] !== null) out[c][key] /= max;
+  }
+  // No Mexico history (e.g. rookies)? Use their season level so they're neither helped nor hurt
+  for (const c of codes) if (out[c].mex === null) out[c].mex = out[c].season;
+  return out;
+}
+
+// Combine factors into one strength number per driver
+function strengths(F, w, gridBonus) {
+  const tot = w.season + w.form + w.quali + w.car + w.mex || 1;
+  const s = {};
+  for (const c in F) {
+    const f = F[c];
+    s[c] = (w.season * f.season + w.form * f.form + w.quali * f.quali + w.car * f.car + w.mex * f.mex) / tot
+         + ((gridBonus && gridBonus[c]) || 0);
+  }
+  return s;
+}
+
+// Quick exact-ish win chance (used for the backtest): chance of finishing x softmax of strength
+function winProbs(F, S, temp) {
+  let z = 0; const p = {};
+  for (const c in S) { p[c] = (1 - F[c].dnf) * Math.exp(S[c] / temp); z += p[c]; }
+  for (const c in p) p[c] /= z;
+  return p;
+}
+
+const gumbel = () => -Math.log(-Math.log(Math.random() + 1e-12) + 1e-12);
+// One simulated race: random retirements + Gumbel noise on strength
+function raceOnce(F, S, temp) {
+  return Object.keys(S).map(c => ({ c, dnf: Math.random() < F[c].dnf, perf: S[c] / temp + gumbel() }))
+    .sort((a, b) => (a.dnf - b.dnf) || (b.perf - a.perf));
+}
+
+if (typeof module !== "undefined") module.exports = { buildFeatures, strengths, winProbs, raceOnce, posValue };
+
+
+    // ================= SETTINGS =================
+    const TEAM_COLORS = { "Mercedes": "#00b89a", "Ferrari": "#e8002d", "Red Bull": "#3671c6", "McLaren": "#ff8000", "Racing Bulls": "#6692ff",
+      "Alpine": "#f06aa8", "Haas": "#8c9096", "Audi": "#b0182f", "Aston Martin": "#229971", "Williams": "#3aa6e8", "Cadillac": "#b8932a" };
+    const DEFAULTS = { season: 35, car: 35, form: 15, quali: 10, mex: 5, chaos: 35 };
+    const GRID_BONUS = [0.6, 0.3, 0.15];
+    const SIMS = 40000;
+    const RACE_START = Date.UTC(2026, 10, 1, 20, 0);
+    const GRID = Object.keys(D.results).filter(c => c !== "TSU");
+    const color = c => TEAM_COLORS[D.teams[c]];
+    const $ = id => document.getElementById(id);
+    const pct = x => x >= 0.995 ? ">99%" : x < 0.001 ? "<0.1%" : (x * 100).toFixed(x < 0.1 ? 1 : 0) + "%";
+    const temp = () => 0.12 + (+$("chaos").value / 100) * 0.38;   // default 35 -> 0.25 (the tuned value)
+    const weights = () => ({ season: +$("w-season").value, car: +$("w-car").value, form: +$("w-form").value, quali: +$("w-quali").value, mex: +$("w-mex").value });
+    function gridBonus() {
+      const b = {};
+      ["g1", "g2", "g3"].forEach((id, k) => { const c = $(id).value; if (c && !(c in b)) b[c] = GRID_BONUS[k]; });
+      return b;
+    }
+
+    const FEATURES = buildFeatures(D, 18, GRID);
+    let model;
+
+    // ================= PREDICTION =================
+    function simulate() {
+      const S = strengths(FEATURES, weights(), gridBonus()), T = temp();
+      const win = {}, pod = {}; GRID.forEach(c => { win[c] = 0; pod[c] = 0; });
+      let clinch = 0, rusWin = 0, hamWin = 0, antOut = 0;
+      for (let i = 0; i < SIMS; i++) {
+        const o = raceOnce(FEATURES, S, T);
+        win[o[0].c]++; for (let k = 0; k < 3; k++) pod[o[k].c]++;
+        const ai = o.findIndex(x => x.c === "ANT");
+        const antTop9 = !o[ai].dnf && ai < 9;
+        if (o[0].c === "RUS") rusWin++; if (o[0].c === "HAM") hamWin++;
+        if (!antTop9) antOut++;
+        if (antTop9 || (o[0].c !== "RUS" && o[0].c !== "HAM")) clinch++;
+      }
+      GRID.forEach(c => { win[c] /= SIMS; pod[c] /= SIMS; });
+      return { S, T, win, pod, clinch: clinch / SIMS, rusWin: rusWin / SIMS, hamWin: hamWin / SIMS, antOut: antOut / SIMS };
+    }
+
+    function render() {
+      for (const k of ["season", "car", "form", "quali", "mex"]) $("v-" + k).textContent = $("w-" + k).value;
+      $("v-chaos").textContent = $("chaos").value;
+      model = simulate();
+      const ranked = [...GRID].sort((a, b) => model.win[b] - model.win[a]);
+
+      $("podium").innerHTML = [1, 0, 2].map(k => {
+        const c = ranked[k];
+        return `<div class="step ${k === 0 ? "p1" : ""}" style="--tc:${color(c)}"><div class="pos">${k + 1}</div>
+          <div class="name">${D.names[c].split(" ").slice(-1)[0]}</div><div class="team">${D.teams[c]}</div>
+          <div class="pct">${pct(model.win[c])}</div></div>`;
+      }).join("");
+      const top = model.win[ranked[0]];
+      $("heroFav").textContent = D.names[ranked[0]]; $("heroPct").textContent = pct(model.win[ranked[0]]);
+      $("bars").innerHTML = ranked.slice(0, 12).map((c, k) => `
+        <div class="bar" style="--tc:${color(c)}"><div class="n">${k + 1}</div><div class="who">${D.names[c]}</div>
+        <div class="track"><div class="fill" style="width:${model.win[c] / top * 100}%"></div></div>
+        <div class="v">${pct(model.win[c])}<small>podium ${pct(model.pod[c])}</small></div></div>`).join("");
+      const gb = gridBonus();
+      $("simnote").textContent = `${SIMS.toLocaleString()} simulated races. ` +
+        (Object.keys(gb).length ? "Includes your qualifying result." : "Qualifying not entered yet — add the top 3 on Saturday for a sharper prediction.");
+
+      const mini = v => `<span class="mini"><i style="width:${Math.round(v * 100)}%"></i></span>${Math.round(v * 100)}`;
+      $("breakdown").innerHTML = ranked.map(c => {
+        const f = FEATURES[c];
+        return `<tr style="--tc:${color(c)}"><td><span class="dot"></span>${D.names[c]}</td>
+          <td class="num"><b>${pct(model.win[c])}</b></td><td class="num">${pct(model.pod[c])}</td>
+          <td class="num">${mini(f.season)}</td><td class="num">${mini(f.car)}</td><td class="num">${mini(f.form)}</td>
+          <td class="num">${mini(f.quali)}</td><td class="num">${mini(f.mex)}</td><td class="num">${Math.round(f.dnf * 100)}%</td>
+          <td class="num">${D.official[c]}</td><td class="num">${D.q3[c]}/${f.starts}</td><td class="num">${D.h2h[c] || "–"}</td></tr>`;
+      }).join("");
+
+      $("ringFg").style.strokeDashoffset = 289 * (1 - model.clinch);
+      $("ringTxt").textContent = pct(model.clinch);
+      $("titleDetail").innerHTML = `Antonelli finishes outside the top 9 (or retires) in <strong>${pct(model.antOut)}</strong> of simulations. ` +
+        `Russell wins in ${pct(model.rusWin)} and Hamilton in ${pct(model.hamWin)}. The title only goes on to Brazil if both things happen together.`;
+      renderBacktest();
+    }
+
+    // ================= BACKTEST =================
+    function renderBacktest() {
+      const w = { ...weights(), quali: 0, mex: 0 };
+      if (w.season + w.car + w.form === 0) w.season = 1;
+      let hits = 0, top3 = 0, sumP = 0, rows = "";
+      for (let r = 6; r < 18; r++) {
+        const field = Object.keys(D.results).filter(c => D.results[c][r] !== null);
+        const F = buildFeatures(D, r, field);
+        const bonus = D.poles[r] ? { [D.poles[r]]: GRID_BONUS[0] } : {};
+        const P = winProbs(F, strengths(F, w, bonus), temp());
+        const winner = field.find(c => D.results[c][r] === 1);
+        const rank = field.sort((a, b) => P[b] - P[a]);
+        const hit = rank[0] === winner;
+        hits += hit; top3 += rank.slice(0, 3).includes(winner); sumP += P[winner];
+        rows += `<tr><td>${r + 1} · ${D.races[r]}</td><td><span class="dot" style="--tc:${color(winner)}"></span>${D.names[winner]}</td>
+          <td class="num">${pct(P[winner])}</td><td>${D.names[rank[0]]} <span class="num" style="color:var(--muted)">(${pct(P[rank[0]])})</span></td>
+          <td class="${hit ? "hit" : "miss"}">${hit ? "✓ correct" : rank.slice(0, 3).includes(winner) ? "in top 3" : "miss"}</td></tr>`;
+      }
+      $("kpis").innerHTML = `
+        <div class="kpi"><b>${hits}/12</b><small>races where the favourite won</small></div>
+        <div class="kpi"><b>${top3}/12</b><small>winner was in the model's top 3</small></div>
+        <div class="kpi"><b>${pct(sumP / 12)}</b><small>average chance given to the real winner</small></div>
+        <div class="kpi"><b>4.5%</b><small>what random guessing would give (1 in 22)</small></div>`;
+      $("btrows").innerHTML = rows;
+    }
+
+    // ================= SEASON HEATMAP + MEXICO =================
+    function cellStyle(p) {
+      if (p === null) return ["", "background:transparent;border:1px dashed #d9d6cf"];
+      if (p === "R") return ["R", "background:#fbe3e6;color:#b0182f"];
+      if (p === 1) return ["1", "background:#ffcb2f;color:#3a2a00"];
+      if (p <= 3) return [p, "background:#dfe3ec;color:#2b3245"];
+      if (p <= 10) return [p, "background:#d5efe2;color:#0b6640"];
+      return [p, "background:#f0efeb;color:#a5a3ad"];
+    }
+    function renderHeat() {
+      const order = [...GRID].sort((a, b) => D.official[b] - D.official[a]);
+      let h = `<tr><th></th>${D.races.map((r, i) => `<th>${r}<br><span style="opacity:.6">${i + 1}</span></th>`).join("")}<th>Pts</th></tr>`;
+      for (const c of order) {
+        h += `<tr><td class="nm"><span class="dot" style="--tc:${color(c)}"></span>${D.names[c].split(" ").slice(-1)[0]}</td>` +
+          D.results[c].map(p => { const [t, s] = cellStyle(p); return `<td><div class="cell" style="${s}">${t}</div></td>`; }).join("") +
+          `<td class="num" style="padding-left:8px">${D.official[c]}</td></tr>`;
+      }
+      $("heat").innerHTML = h;
+      const mexOrder = [...GRID].sort((a, b) => (D.mexicoWins[b] || 0) - (D.mexicoWins[a] || 0) || FEATURES[b].mex - FEATURES[a].mex);
+      const fmt = p => p === undefined ? '<span style="color:var(--muted)">–</span>' : p === "R" ? '<span style="color:#ff6b6b">DNF</span>' : "P" + p;
+      $("mexrows").innerHTML = mexOrder.map(c => `<tr><td><span class="dot" style="--tc:${color(c)}"></span>${D.names[c]}</td>
+        <td class="num">${fmt(D.mexico["2025"][c])}</td><td class="num">${fmt(D.mexico["2024"][c])}</td><td class="num">${fmt(D.mexico["2023"][c])}</td>
+        <td class="num">${D.mexicoWins[c] || 0}</td></tr>`).join("");
+    }
+
+    // ================= CONTROLS =================
+    const opts = '<option value="">—</option>' + [...GRID].sort((a, b) => D.official[b] - D.official[a]).map(c => `<option value="${c}">${D.names[c]}</option>`).join("");
+    ["g1", "g2", "g3"].forEach(id => $(id).innerHTML = opts);
+    function reset() {
+      for (const k of ["season", "car", "form", "quali", "mex"]) $("w-" + k).value = DEFAULTS[k];
+      $("chaos").value = DEFAULTS.chaos; ["g1", "g2", "g3"].forEach(id => $(id).value = ""); render();
+    }
+    let t;
+    document.querySelectorAll("input[type=range], select").forEach(el =>
+      el.addEventListener("input", () => { clearTimeout(t); t = setTimeout(render, 80); }));
+    $("reset").onclick = reset;
+
+    // ================= SINGLE RACE =================
+    const lights = [...document.querySelectorAll(".light")];
+    let racing = false;
+    $("raceBtn").onclick = () => {
+      if (racing) return; racing = true;
+      $("result").innerHTML = ""; $("headline").textContent = "Formation lap complete…";
+      lights.forEach(l => l.classList.remove("on"));
+      lights.forEach((l, k) => setTimeout(() => l.classList.add("on"), 600 + k * 700));
+      setTimeout(() => {
+        lights.forEach(l => l.classList.remove("on"));
+        $("headline").textContent = "LIGHTS OUT AND AWAY WE GO!";
+        const o = raceOnce(FEATURES, model.S, model.T);
+        $("result").innerHTML = o.map((x, k) => `<div class="row ${x.dnf ? "dnf" : ""}" style="--tc:${color(x.c)}">
+          <b>${x.dnf ? "DNF" : "P" + (k + 1)}</b><span>${D.names[x.c]}</span><small>${D.teams[x.c]}</small></div>`).join("");
+        const rows = [...$("result").children];
+        rows.forEach((row, k) => setTimeout(() => row.classList.add("show"), 300 + k * 110));
+        setTimeout(() => {
+          const ai = o.findIndex(x => x.c === "ANT");
+          const champ = (!o[ai].dnf && ai < 9) || (o[0].c !== "RUS" && o[0].c !== "HAM");
+          $("headline").innerHTML = `🏆 ${D.names[o[0].c]} wins in Mexico!<br><small style="color:${champ ? "var(--green)" : "var(--muted)"}">` +
+            (champ ? "Antonelli is the 2026 World Champion" : "The title fight goes on to Brazil") + "</small>";
+          racing = false;
+        }, 300 + rows.length * 110);
+      }, 600 + 5 * 700 + 400 + Math.random() * 1200);
+    };
+
+    // ================= COUNTDOWN =================
+    function tick() {
+      let ms = RACE_START - Date.now();
+      if (ms <= 0) { $("countdown").innerHTML = '<div class="cd"><b>🏁</b><small>Race day</small></div>'; return; }
+      $("countdown").innerHTML = [["days", 864e5], ["hrs", 36e5], ["min", 6e4], ["sec", 1e3]].map(([l, u]) => {
+        const v = Math.floor(ms / u); ms -= v * u; return `<div class="cd"><b>${String(v).padStart(2, "0")}</b><small>${l}</small></div>`;
+      }).join("");
+    }
+    tick(); setInterval(tick, 1000);
+
+    renderHeat();
+    reset();
+  </script>
+</body>
+</html>
