@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>São Paulo GP Predictor</title>
+  <title>Las Vegas GP Predictor</title>
+  <meta name="description" content="A live model predicting the final five Formula 1 races of 2026, checked against the real results after every race.">
+  <meta property="og:title" content="F1 Race Predictor – Final 5 races of 2026">
+  <meta property="og:description" content="Win chances for every driver, built from the full 2026 season and tested on real results.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -190,6 +193,11 @@
     tr.unseen td { background: #fff8e6; }
     .wm, .round { white-space: nowrap; }
     @media (max-width: 520px) { .wm { font-size: 0.98rem; } .badge { width: 36px; } .round { font-size: 0.7rem; padding: 4px 9px; } }
+    .stripe-lv { height: 4px; background: linear-gradient(90deg, #d4002a 0 33.3%, #e0a800 33.3% 66.6%, #6b2bd9 66.6%); }
+    .score-row td:first-child { font-weight: 700; }
+    .pending { color: var(--faint); font-style: italic; }
+    .best td { background: #e6f4ee; }
+    .warn { background: #fff8e6; border: 1px solid #f3e1b0; border-radius: 12px; padding: 10px 14px; font-size: 0.86rem; color: #6b5200; margin-top: 12px; }
 
   </style>
 </head>
@@ -200,68 +208,68 @@
         <a class="brand" href="#">
           <svg class="badge" viewBox="0 0 44 28" aria-hidden="true">
             <g transform="skewX(-18)">
-              <rect x="12" y="3" width="8" height="22" rx="2" fill="#009c3b"/>
-              <rect x="23" y="3" width="8" height="22" rx="2" fill="#ffdf00"/>
-              <rect x="34" y="3" width="8" height="22" rx="2" fill="#002776"/>
+              <rect x="12" y="3" width="8" height="22" rx="2" fill="#d4002a"/>
+              <rect x="23" y="3" width="8" height="22" rx="2" fill="#e0a800"/>
+              <rect x="34" y="3" width="8" height="22" rx="2" fill="#6b2bd9"/>
             </g>
           </svg>
           <span class="wm">GP PREDICTOR<em>26</em></span>
         </a>
-        <span class="round">v2 · Round 20 / 23</span>
+        <span class="round">v3 · Round 21 / 23</span>
       </div>
       <div class="hero-grid">
         <div>
-          <p class="eyebrow">Race predictor · São Paulo Grand Prix</p>
-          <h1>Who wins<br><span>São Paulo?</span></h1>
-          <p class="meta">Interlagos (Autódromo José Carlos Pace) · 71 laps · 4.309 km · Sunday 8 November 2026, 2:00 PM local</p>
+          <p class="eyebrow">Race predictor · Las Vegas Grand Prix</p>
+          <h1>Who wins<br><span>Las Vegas?</span></h1>
+          <p class="meta">Las Vegas Strip Circuit · 50 laps · 6.201 km · night race · Saturday 21 November 2026, 8:00 PM local</p>
           <div class="countdown" id="countdown"></div>
         </div>
         <div class="hero-card">
           <div class="lbl">Model favourite</div>
           <div class="fav"><b id="heroFav">–</b><span id="heroPct"></span></div>
           <div class="stats">
-            <div><b>19</b> races analysed</div>
-            <div><b>6</b> sprints</div>
-            <div><b>4</b> wet races studied</div>
-            <div><b>3</b> years of Interlagos data</div>
+            <div><b>20</b> races analysed</div>
+            <div><b>12</b> starting grids tested</div>
+            <div><b>5</b> wet races studied</div>
+            <div><b>3</b> years of Las Vegas data</div>
             <div><b>40,000</b> simulations</div>
-            <div><b>9/13</b> past winners called</div>
+            <div><b>2 of 5</b> final races scored</div>
           </div>
         </div>
       </div>
     </div>
-    <div class="stripe-br"></div>
+    <div class="stripe-lv"></div>
   </header>
 
   <nav class="jump"><div class="wrap">
-    <a href="#predict">Prediction</a><a href="#drivers">Driver breakdown</a><a href="#review">Mexico review</a>
-    <a href="#title">Championship</a><a href="#backtest">Accuracy test</a><a href="#season">Season results</a>
-    <a href="#track">Interlagos history</a><a href="#race">Race it</a><a href="#how">How it works</a>
-    <a href="#versions">Versions</a><a href="mexico/">v1: Mexico ↗</a><a href="#sources">Sources</a>
+    <a href="#predict">Prediction</a><a href="#scorecard">Scorecard</a><a href="#review">São Paulo review</a>
+    <a href="#tested">What I tested</a><a href="#drivers">Driver breakdown</a><a href="#title">Championship</a>
+    <a href="#backtest">Accuracy test</a><a href="#season">Season results</a><a href="#track">Las Vegas history</a>
+    <a href="#race">Race it</a><a href="#how">How it works</a><a href="#versions">Versions</a><a href="#sources">Sources</a>
   </div></nav>
 
   <main class="wrap">
     <section id="predict">
       <h2>The Prediction</h2>
-      <p class="sub">Every driver's chance to win in São Paulo, based on all 19 races of 2026 and Sunday's real starting grid. Norris starts on pole after a rain-hit qualifying; Verstappen and Hamilton start from the back after engine penalties.</p>
+      <p class="sub" id="predictSub">Every driver's chance to win in Las Vegas, based on all 20 races of 2026. Qualifying is on Friday night; once the grid is known, the prediction is updated with it.</p>
       <div class="layout">
         <aside class="card">
-          <div class="ctrl-title" style="margin-top:0">Weather <span class="pill new">New</span></div>
-          <div class="ctrl"><label>Chance of a wet race <span id="v-rain"></span></label><p>Official F1 forecast: 40% chance of heavy rain or storms on Sunday. Morning rain is expected to clear before the start.</p><input type="range" id="rain" min="0" max="100"></div>
-          <div class="ctrl-title">What matters most</div>
-          <div class="ctrl"><label>Season results <span id="v-season"></span></label><p>Points per race across all 19 rounds</p><input type="range" id="w-season" min="0" max="100"></div>
-          <div class="ctrl"><label>Car pace <span id="v-car"></span></label><p>How the team's two cars finished in the last 8 races</p><input type="range" id="w-car" min="0" max="100"></div>
-          <div class="ctrl"><label>Recent form <span id="v-form"></span></label><p>The driver's last 6 races, newest counting most</p><input type="range" id="w-form" min="0" max="100"></div>
-          <div class="ctrl"><label>Qualifying speed <span id="v-quali"></span></label><p>How often they reached Q3 (top 10) this year</p><input type="range" id="w-quali" min="0" max="100"></div>
-          <div class="ctrl"><label>Interlagos history <span id="v-mex"></span></label><p>Results here in 2023–2025, recent years weighted more</p><input type="range" id="w-mex" min="0" max="100"></div>
-          <div class="ctrl"><label>Chaos <span id="v-chaos"></span></label><p>Higher = more surprise winners</p><input type="range" id="chaos" min="0" max="100"></div>
-          <div class="ctrl-title">Starting grid <span class="pill new">Set</span></div>
+          <div class="ctrl-title" style="margin-top:0">Starting grid</div>
           <div class="gridpick">
             <span>P1</span><select id="g1"></select>
             <span>P2</span><select id="g2"></select>
             <span>P3</span><select id="g3"></select>
           </div>
-          <p class="note" style="margin-top:8px">Filled in with the official grid after penalties. Change P1–P3 to try "what if" scenarios; everyone else keeps their real starting spot. Hamilton, Verstappen and Pérez start from the back.</p>
+          <p class="note" id="gridNote" style="margin-top:8px"></p>
+          <div class="ctrl-title">Weather</div>
+          <div class="ctrl"><label>Chance of a wet race <span id="v-rain"></span></label><p>Rain is rare in Las Vegas in November; the bigger issue is a cold track at night.</p><input type="range" id="rain" min="0" max="100"></div>
+          <div class="ctrl-title">What matters most</div>
+          <div class="ctrl"><label>Season results <span id="v-season"></span></label><p>Points per race across all 20 rounds</p><input type="range" id="w-season" min="0" max="100"></div>
+          <div class="ctrl"><label>Car pace <span id="v-car"></span></label><p>How the team's two cars finished in the last 8 races</p><input type="range" id="w-car" min="0" max="100"></div>
+          <div class="ctrl"><label>Recent form <span id="v-form"></span></label><p>The driver's last 6 races, newest counting most</p><input type="range" id="w-form" min="0" max="100"></div>
+          <div class="ctrl"><label>Qualifying speed <span id="v-quali"></span></label><p>How often they reached Q3 (top 10) this year</p><input type="range" id="w-quali" min="0" max="100"></div>
+          <div class="ctrl"><label>Las Vegas history <span id="v-mex"></span></label><p>Results here in 2023–2025, recent years weighted more</p><input type="range" id="w-mex" min="0" max="100"></div>
+          <div class="ctrl"><label>Chaos <span id="v-chaos"></span></label><p>50 = calibrated on real races. Higher = more surprise winners</p><input type="range" id="chaos" min="0" max="100"></div>
           <button class="btn ghost" id="reset">Reset to official settings</button>
         </aside>
         <div>
@@ -277,41 +285,65 @@
       </div>
     </section>
 
-    <section id="drivers">
-      <h2>Driver Breakdown</h2>
-      <p class="sub">Each factor is scored 0–100, where 100 is the best driver on the grid. "Wet skill" is how often the driver beat their team-mate in the 4 wet races studied. "Retire risk" is their real 2026 retirement rate, raised by half in the wet.</p>
+    <section id="scorecard">
+      <h2>Season Scorecard <span class="pill new">Final 5 races</span></h2>
+      <p class="sub">Every prediction is published before the race and scored afterwards. A good forecaster isn't one whose favourite always wins: it's one whose 30% picks win about 30% of the time.</p>
       <div class="card tablewrap"><table>
-        <thead><tr><th>Driver</th><th>Win</th><th>Podium</th><th>Season</th><th>Car</th><th>Form</th><th>Quali</th><th>Interlagos</th><th>Wet skill</th><th>Retire risk</th><th>Pts</th><th>Q3</th><th>Quali H2H</th></tr></thead>
-        <tbody id="breakdown"></tbody>
-      </table>
-      <p class="note">Haas confirmed rookie Rafael Câmara replaces Esteban Ocon for the rest of 2026. With no F1 races yet, his car uses Ocon's 2026 Haas data as a stand-in.</p></div>
+        <thead><tr><th>Race</th><th>Version</th><th>Final favourite</th><th>Winner</th><th>Model gave winner</th><th>Winner's rank</th><th>Podium picks</th></tr></thead>
+        <tbody id="scorerows"></tbody>
+      </table></div>
     </section>
 
     <section id="review">
-      <h2>How v1 Did in Mexico <span class="pill">Round 19</span></h2>
-      <p class="sub">Version 1 predicted the Mexico City GP before anyone knew the result. This was the model's first truly unseen race. <a href="mexico/">Open the original v1 site →</a></p>
+      <h2>How v2 Did in São Paulo <span class="pill">Round 20</span></h2>
+      <p class="sub">The final v2 prediction, published after qualifying and before the race. Rain arrived and Antonelli, who led early, spun on lap 20. <a href="sao-paulo/">Open the v2 site →</a></p>
       <div class="card">
         <div class="kpis">
-          <div class="kpi"><b>2nd</b><small>where it ranked the winner, Verstappen (13%)</small></div>
-          <div class="kpi"><b>2/3</b><small>of its podium picks were on the podium</small></div>
-          <div class="kpi"><b>8/10</b><small>of its top-10 picks scored points</small></div>
-          <div class="kpi"><b>0.88</b><small>match between predicted and real order (1.0 = perfect)</small></div>
+          <div class="kpi"><b>2nd</b><small>where it ranked the winner, Norris (28%)</small></div>
+          <div class="kpi"><b>1/3</b><small>of its podium picks were on the podium</small></div>
+          <div class="kpi"><b>9/10</b><small>of its top-10 picks scored points</small></div>
+          <div class="kpi"><b>0.82</b><small>order match, vs 0.38 for just copying the grid</small></div>
         </div>
         <div class="compare">
-          <div><h3>Predicted top 10 (before qualifying)</h3><ol class="olist" id="predList"></ol></div>
+          <div><h3>Predicted top 10</h3><ol class="olist" id="predList"></ol></div>
           <div><h3>Actual top 10</h3><ol class="olist" id="realList"></ol></div>
         </div>
-        <div class="lesson"><strong>What went wrong:</strong> entering Saturday's qualifying made the winner prediction worse. Hamilton took pole, so the model jumped him to 43%, and Verstappen fell to 6%. On lap 1 Hamilton was pushed wide by team-mate Leclerc, Verstappen got through, and a red flag plus two safety cars reshaped the race. <strong>What went right:</strong> the overall order, Antonelli clinching the title (98.6% predicted), and retirements: 3 of the 4 drivers rated most likely to retire did.</div>
+        <div class="lesson"><strong>My first explanation was wrong.</strong> Right after the race I blamed v2's back-of-grid penalty for missing Verstappen's charge from 21st to 2nd. When I tested that on 9 races with real starting grids, the data said the opposite: on average, starting at the back costs drivers <em>more</em> than v2 assumed. Verstappen's drive was a genuine outlier, helped by the rain. <strong>What the testing did support:</strong> trusting the grid more and season reputation less (see below). Both retirements, Stroll and Bottas, were the model's two highest-risk drivers.</div>
       </div>
+    </section>
+
+    <section id="tested">
+      <h2>What I Tested for v3</h2>
+      <p class="sub">Four ways to turn grid position into an advantage, tested on the 9 races with an official starting grid and enough earlier data. Each version was fitted on 8 races and scored on the 9th it hadn't seen, repeated for all 9. That gives an honest score, not a flattering one.</p>
+      <div class="card tablewrap"><table>
+        <thead><tr><th>Grid effect shape</th><th>Podium-order score<br><span style="text-transform:none;letter-spacing:0">(higher = better)</span></th><th>Avg. chance given to the real winner</th><th>Favourite won</th></tr></thead>
+        <tbody>
+          <tr><td>v2: big boosts for P1–P3, small steady penalty behind</td><td class="num">−5.68</td><td class="num">29%</td><td class="num">5/9</td></tr>
+          <tr><td>Straight line: every place costs the same</td><td class="num">−5.38</td><td class="num">22%</td><td class="num">3/9</td></tr>
+          <tr><td>Pole bonus + straight line</td><td class="num">−5.59</td><td class="num">31%</td><td class="num">5/9</td></tr>
+          <tr class="best"><td><b>Log curve (v3):</b> big gaps at the front, small gaps further back</td><td class="num"><b>−5.36</b></td><td class="num"><b>34%</b></td><td class="num"><b>5/9</b></td></tr>
+        </tbody>
+      </table>
+      <p class="note">Also tested: is the model overconfident? Its favourites averaged about a 50% chance and won 5 of 9 times, which is about right. Two favourites losing in a row (Mexico, São Paulo) is normal when each one is close to a coin flip. Grids came from Formula1.com, the FIA and race reports for 12 of 20 rounds; the other 8 weren't available.</p></div>
+    </section>
+
+    <section id="drivers">
+      <h2>Driver Breakdown</h2>
+      <p class="sub">Each factor is scored 0–100, where 100 is the best driver on the grid. "Wet skill" is how often the driver beat their team-mate in 5 wet races. "Retire risk" is their real 2026 retirement rate.</p>
+      <div class="card tablewrap"><table>
+        <thead><tr><th>Driver</th><th>Win</th><th>Podium</th><th>Season</th><th>Car</th><th>Form</th><th>Quali</th><th>Las Vegas</th><th>Wet skill</th><th>Retire risk</th><th>Pts</th><th>Q3</th><th>Quali H2H</th></tr></thead>
+        <tbody id="breakdown"></tbody>
+      </table>
+      <p class="note">Rafael Câmara drives the second Haas (Ocon's former seat). With one F1 race, his car's numbers mostly reflect Ocon's 2026 results.</p></div>
     </section>
 
     <section id="title">
       <h2>Championship</h2>
-      <p class="sub">The title is decided. The fight now is for second place, which is worth bragging rights and team bonuses.</p>
+      <p class="sub">Antonelli is champion and Mercedes clinched the constructors' title in São Paulo. The fight for 2nd is open.</p>
       <div class="card">
-        <div class="champ"><div class="trophy">🏆</div><div><b>Kimi Antonelli is the 2026 World Champion</b><p>Crowned in Mexico with a 3rd place, at 20 the youngest champion in F1 history. 380 points with 4 races left.</p></div></div>
+        <div class="champ"><div class="trophy">🏆</div><div><b>Kimi Antonelli · 2026 World Champion</b><p>390 points with 3 races left. The FIA is investigating an unsafe release in São Paulo; his 5th place stands until a decision.</p></div></div>
         <div class="tablewrap"><table>
-          <thead><tr><th>Fight for 2nd</th><th>Points now</th><th>Gap</th><th>Chance to lead it after Brazil</th></tr></thead>
+          <thead><tr><th>Fight for 2nd</th><th>Points now</th><th>Gap</th><th>Chance to lead it after Las Vegas</th></tr></thead>
           <tbody id="p2rows"></tbody>
         </table></div>
       </div>
@@ -319,7 +351,7 @@
 
     <section id="backtest">
       <h2>Accuracy Test</h2>
-      <p class="sub">For each race from round 7 on, the model only sees earlier results plus the real pole-sitter. The weights were chosen using rounds 7–18, so those rounds flatter the model a little. <strong>Mexico (highlighted) is the honest test:</strong> it was predicted before it happened. Updates live as you move the sliders.</p>
+      <p class="sub">For each race from round 7, the model only sees earlier results, plus the real starting grid where available (otherwise the pole-sitter). v3's weights and grid curve were tuned on these same races, so this table flatters it. <strong>Highlighted rows were raced live:</strong> what earlier versions actually published for them is in the Scorecard above. Las Vegas will be v3's first truly unseen race.</p>
       <div class="card">
         <div class="kpis" id="kpis"></div>
         <div class="tablewrap"><table>
@@ -331,7 +363,7 @@
 
     <section id="season">
       <h2>2026 Season Results</h2>
-      <p class="sub">Every finish of every driver in all 19 Grands Prix. Verified: these results plus the 6 sprints add up to the official points for every driver. 💧 marks the season's one wet race.</p>
+      <p class="sub">Every finish of every driver in all 20 Grands Prix. Verified: these results plus the 6 sprints add up to the official points for every driver, including post-race penalties. 💧 marks wet races.</p>
       <div class="card tablewrap"><table class="heat" id="heat"></table>
         <div class="legend">
           <span><i style="background:#ffcb2f"></i>Win</span><span><i style="background:#dfe3ec"></i>2nd–3rd</span>
@@ -342,17 +374,17 @@
     </section>
 
     <section id="track">
-      <h2>Interlagos History</h2>
-      <p class="sub">The last three São Paulo GPs, for drivers on the 2026 grid. 2024 was a famously wet race that Verstappen won from 17th on the grid.</p>
+      <h2>Las Vegas History</h2>
+      <p class="sub">The three Las Vegas GPs, for drivers on the 2026 grid. In 2025 both McLarens were disqualified after the race for a technical breach; they're left out of that year rather than counted as retirements.</p>
       <div class="card tablewrap"><table>
-        <thead><tr><th>Driver</th><th>2025</th><th>2024 💧</th><th>2023</th><th>Wins (2023–25)</th></tr></thead>
+        <thead><tr><th>Driver</th><th>2025</th><th>2024</th><th>2023</th><th>Wins (2023–25)</th></tr></thead>
         <tbody id="trackrows"></tbody>
       </table></div>
     </section>
 
     <section id="race">
       <h2>Race It Yourself</h2>
-      <p class="sub">Simulate one São Paulo GP with the current settings. The weather is rolled first, using your rain chance.</p>
+      <p class="sub">Simulate one Las Vegas GP with the current settings. The weather is rolled first, using your rain chance.</p>
       <div class="card">
         <div class="lights" id="lights"><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div></div>
         <div class="headline" id="headline">Press the button to start the race</div>
@@ -371,33 +403,35 @@
         <div class="factor"><h3>Qualifying speed</h3><p>Share of 2026 qualifying sessions where the driver reached Q3.</p></div>
         <div class="factor"><h3>Track history</h3><p>Finishes at this track over the last 3 years (50/30/20%). A retirement counts as 20th.</p></div>
         <div class="factor"><h3>Retire risk</h3><p>Real 2026 retirement rate, blended with the grid average so one bad weekend doesn't dominate.</p></div>
-        <div class="factor"><h3>Wet skill <span class="pill new">v2</span></h3><p>Team-mate head-to-head in 4 genuinely wet races (Brazil 2024, Australia 2025, Britain 2025, Sepang 2026). Comparing team-mates removes the car's effect. Pulled toward 50% because the sample is tiny.</p></div>
+        <div class="factor"><h3>Wet skill</h3><p>Team-mate head-to-head in 5 wet races (Brazil 2024, Australia 2025, Britain 2025, Sepang 2026, São Paulo 2026). Pulled toward 50% because the sample is small.</p></div>
+        <div class="factor"><h3>Starting grid <span class="pill new">v3</span></h3><p>A log curve, chosen by testing: P1 to P2 is a big step, P15 to P16 a small one. Fitted on 9 races with official grids.</p></div>
       </div>
       <div class="prose" style="margin-top:18px">
-        <p><strong>Step 2: combine them.</strong> The sliders set each factor's weight. The defaults came from testing on rounds 7–18 and keeping what predicted real winners best. They were <em>not</em> re-tuned after Mexico, so future races stay an honest test.</p>
-        <p><strong>Step 3: add the starting grid.</strong> Pole-sitters won 12 of the 17 races with a confirmed pole, so P1 gets a large boost, with smaller ones for P2 and P3 (tuned on this season). From P4 back, each place costs a little, down to a clear penalty for starting last. That back-of-grid penalty is an assumption, added in v2 when Verstappen and Hamilton took engine penalties; there wasn't full grid data to tune it.</p>
-        <p><strong>Step 4: add weather.</strong> Half the simulations are run dry and half wet, then blended using your rain chance. In a wet race the model assumes more randomness (×1.4), more retirements (×1.5), and shifts each driver by their wet skill. These rain settings are assumptions: with only one wet race in 2026, there isn't enough data to tune them.</p>
-        <p><strong>Step 5: simulate.</strong> 40,000 races, each with random retirements and "race luck." A driver's win chance is the share of races they won.</p>
-        <p><strong>Limits.</strong> No practice pace, upgrades, tyre strategy or safety-car modelling. One race is very random. Treat these as well-informed odds, not a guarantee.</p>
+        <p><strong>Step 2: combine them.</strong> The sliders set each factor's weight. The defaults came from testing on rounds 7–18, and weren't changed after Mexico or São Paulo, so the final races stay an honest test.</p>
+        <p><strong>Step 3: add the starting grid.</strong> Once qualifying is done, each driver's grid slot is added using the log curve. If only the top 3 are entered, everyone else gets the average effect of a P4–P22 start.</p>
+        <p><strong>Step 4: set the luck.</strong> Each simulated race adds random "race luck." How much was calibrated on real races: before the grid is known, the model uses one level; with the grid it uses another, because the grid already explains a lot. The Chaos slider scales both (50 = calibrated).</p>
+        <p><strong>Step 5: weather.</strong> Half the simulations run dry and half wet, blended by your rain chance. In the wet: more luck (×1.4), more retirements (×1.5), and each driver shifts by their wet skill. These rain settings are assumptions; there are too few wet races to tune them.</p>
+        <p><strong>Step 6: simulate.</strong> 40,000 races. A driver's win chance is the share of races they won.</p>
+        <p><strong>Limits.</strong> No practice pace, upgrades, tyre strategy or safety-car modelling. Grids exist for only 12 of 20 rounds. One race is very random: treat these as well-informed odds, not a guarantee.</p>
       </div>
     </section>
 
     <section id="versions">
       <h2>Versions</h2>
       <div class="card"><div class="timeline">
-        <div class="v"><h3>v2 · São Paulo GP</h3><div class="date">2 Nov 2026</div><ul>
-          <li>Added the Mexico result (round 19) and re-verified every driver's points.</li>
-          <li>New rain factor: chance-of-rain slider, wet-skill rating, dry vs wet predictions.</li>
-          <li>Swapped Mexico history for Interlagos history (2023–2025).</li>
-          <li>5 Nov: Haas driver confirmed (Rafael Câmara); rain chance raised to 55% from the latest forecast.</li>
-          <li>7 Nov, after qualifying: official starting grid added (Norris on pole). Every grid position now counts, not just the top 3, so back-of-grid starters are penalised. Rain set to 40% (official F1 forecast). Weekend settings moved to an easy-edit block at the top of the code.</li>
-          <li>Added a review of how v1 did in Mexico, and marked it as the honest test in the accuracy table.</li>
-          <li>Replaced Title Watch with the fight for 2nd, now that Antonelli is champion.</li>
+        <div class="v"><h3>v3 · Las Vegas GP</h3><div class="date">8 Nov 2026</div><ul>
+          <li>Added São Paulo (round 20) and the amended Mexico result (post-race penalties to Gasly, Colapinto and Piastri); re-verified every driver's points.</li>
+          <li>Collected official starting grids for 12 rounds and tested four grid-effect shapes on unseen races. The log curve won.</li>
+          <li>Recalibrated the amount of luck, with separate levels before and after qualifying.</li>
+          <li>Tested whether the model is overconfident: it isn't, overall. Corrected my first explanation of the São Paulo miss.</li>
+          <li>Added the São Paulo review, a season scorecard, and Las Vegas history. São Paulo is now the 5th wet race in the wet-skill data.</li>
+        </ul></div>
+        <div class="v"><h3>v2 · São Paulo GP <a href="sao-paulo/" style="font-size:.85rem;margin-left:6px">Open v2 →</a></h3><div class="date">2 Nov 2026</div><ul>
+          <li>Added Mexico, a rain factor with wet-weather skill, Interlagos history, and a review of v1.</li>
+          <li>After qualifying: official grid added, with an untested back-of-grid penalty.</li>
         </ul></div>
         <div class="v"><h3>v1 · Mexico City GP <a href="mexico/" style="font-size:.85rem;margin-left:6px">Open v1 →</a></h3><div class="date">27 Oct 2026</div><ul>
-          <li>Full 2026 season data (18 races, 6 sprints), checked against official points.</li>
-          <li>Five weighted factors, retire risk, qualifying input, 40,000-race simulation.</li>
-          <li>Backtest on rounds 7–18: favourite won 9 of 12.</li>
+          <li>Full 2026 season data, checked against official points. Five weighted factors, retire risk, 40,000-race simulation.</li>
         </ul></div>
       </div></div>
     </section>
@@ -405,34 +439,32 @@
     <section id="sources">
       <h2>Sources</h2>
       <div class="card"><ul class="src">
-        <li>Season results rounds 1–12: <a href="https://en.wikipedia.org/wiki/2026_Formula_One_World_Championship" target="_blank">Wikipedia</a>; Monaco amended result: <a href="https://www.gpfans.com/en/f1-news/1089847/f1-standings-2026-latest-points-leaders-september-4-2026/" target="_blank">GPFans</a></li>
-        <li>Rounds 13–18: <a href="https://www.gpfans.com/en/f1-news/1089963/f1-italian-grand-prix-2026-results-final-classification-late-penalties-applied/" target="_blank">Italy</a>, <a href="https://www.gpfans.com/en/f1-news/1090243/f1-spanish-grand-prix-2026-results-final-classification-all-penalties-applied-at-madring/" target="_blank">Spain</a>, <a href="https://www.gpfans.com/en/f1-news/1090761/f1-azerbaijan-grand-prix-2026-results-final-classification-with-all-penalties-applied-from-baku/" target="_blank">Azerbaijan</a>, <a href="https://www.formula1.com/en/results/2026/races/1308/malaysia/race-result" target="_blank">Bahrain GP at Sepang</a>, <a href="https://www.crash.net/f1/results/1107465/1/formula-1-singapore-grand-prix-full-race-results" target="_blank">Singapore</a>, <a href="https://www.formula1.com/en/results/2026/races/1297/united-states/race-result" target="_blank">United States</a></li>
-        <li>Mexico City GP: <a href="https://www.planetf1.com/news/f1-results-mexico-city-grand-prix-2026-race" target="_blank">race</a>, <a href="https://www.planetf1.com/news/f1-results-mexico-city-grand-prix-2026-qualifying" target="_blank">qualifying</a>, <a href="https://www.racefans.net/2026/11/01/2026-mexican-grand-prix-race-result-and-championship-points/" target="_blank">standings</a>, <a href="https://www.si.com/onsi/f1/news/f1-standings-and-results-as-kimi-antonelli-crowned-champion-at-mexican-grand-prix" target="_blank">full standings</a></li>
-        <li>Haas line-up: <a href="https://www.racefans.net/2026/10/31/ocon-out-hirakawa-in-as-haas-make-shock-mexican-grand-prix-driver-change/" target="_blank">RaceFans</a>, <a href="https://www.formula1.com/en/latest/article/f2-racer-camara-to-make-f1-debut-at-sao-paulo-grand-prix-as-haas-confirm-ocon-will-not-return.12Qa0tpaMZ9kgnEuGJBKFp" target="_blank">Formula1.com (Câmara confirmed)</a></li>
-        <li>Interlagos: <a href="https://www.crash.net/f1/results/1086378/1/2025-f1-sao-paulo-gp-results-lando-norris-wins-penalised-oscar-piastri-fifth" target="_blank">2025</a>, <a href="https://crash.net/f1/results/1059809/1/2024-f1-sao-paulo-grand-prix-race-results" target="_blank">2024</a>, <a href="https://www.crash.net/f1/news/1040250/1/f1-sao-paulo-grand-prix-2023-race-results-round-20" target="_blank">2023</a>; race info: <a href="https://www.riotimesonline.com/sao-paulo-grand-prix-2026-f1-interlagos-guide/" target="_blank">Rio Times</a>; qualifying &amp; grid: <a href="https://www.formula1.com/en/latest/article/norris-beats-russell-to-pole-position-in-dramatic-rain-affected-sao-paolo-qualifying.2V60rhlQjdS5my1uFrOKUH" target="_blank">Formula1.com</a>, <a href="https://www.the-race.com/formula-1/f1-2026-brazilian-grand-prix-starting-grid-with-four-penalties-copy/" target="_blank">The Race</a>, <a href="https://racingnews365.com/sao-paulo-gp-starting-grid-heavily-adjusted-after-severe-lewis-hamilton-max-verstappen-penalties" target="_blank">RacingNews365</a>; forecast: <a href="https://www.formula1.com/en/latest/article/what-is-the-weather-forecast-for-the-2026-sao-paulo-grand-prix.6DTTG84ES6tbC6eISpqnR8" target="_blank">Formula1.com</a>, <a href="https://www.planetf1.com/news/f1-brazil-weather-2026-rain-risk" target="_blank">PlanetF1</a>, <a href="https://www.gpblog.com/en/news/f1-sao-paulo-gp-weather-forecast-will-rain-spice-up-sundays-race-in-brazil" target="_blank">GPblog</a>, <a href="https://www.skysports.com/f1/news/13607071/sao-paulo-gp-2026-dates-schedule-weather-uk-start-time-and-how-to-watch-or-stream-f1-race-at-interlagos-in-brazil-live-on-sky-sports" target="_blank">Sky Sports</a></li>
-        <li>Wet races: <a href="https://www.crash.net/f1/results/1065305/1/2025-f1-australian-grand-prix-race-results" target="_blank">Australia 2025</a>, <a href="https://www.crash.net/f1/results/1075985/1/2025-f1-british-grand-prix-race-results" target="_blank">Britain 2025</a>, <a href="https://www.skysports.com/f1/news/13594860/bahrain-gp-in-malaysia-max-verstappen-wins-first-race-of-2026-f1-season-in-wild-rain-hit-grand-prix-as-lewis-hamilton-surges-back" target="_blank">Sepang 2026</a>; 2026 conditions: <a href="https://f1dailybrief.com/stats/weather/seasons/2026" target="_blank">F1 Daily Brief</a></li>
-        <li>Qualifying stats: <a href="https://www.lightsoutblog.com/2026-f1-qualifying-statistics/" target="_blank">Lights Out</a>, <a href="https://www.planetf1.com/news/f1-2026-head-to-head-qualifying-statistics-teammates" target="_blank">PlanetF1</a></li>
+        <li>Season results: <a href="https://en.wikipedia.org/wiki/2026_Formula_One_World_Championship" target="_blank">Wikipedia</a>, <a href="https://www.gpfans.com/en/f1-news/1089847/f1-standings-2026-latest-points-leaders-september-4-2026/" target="_blank">Monaco amended</a>, <a href="https://www.gpfans.com/en/f1-news/1089963/f1-italian-grand-prix-2026-results-final-classification-late-penalties-applied/" target="_blank">Italy</a>, <a href="https://www.gpfans.com/en/f1-news/1090243/f1-spanish-grand-prix-2026-results-final-classification-all-penalties-applied-at-madring/" target="_blank">Spain</a>, <a href="https://www.gpfans.com/en/f1-news/1090761/f1-azerbaijan-grand-prix-2026-results-final-classification-with-all-penalties-applied-from-baku/" target="_blank">Azerbaijan</a>, <a href="https://www.formula1.com/en/results/2026/races/1308/malaysia/race-result" target="_blank">Sepang</a>, <a href="https://www.crash.net/f1/results/1107465/1/formula-1-singapore-grand-prix-full-race-results" target="_blank">Singapore</a>, <a href="https://www.formula1.com/en/results/2026/races/1297/united-states/race-result" target="_blank">United States</a></li>
+        <li>Mexico City GP and amended result: <a href="https://www.planetf1.com/news/f1-results-mexico-city-grand-prix-2026-race" target="_blank">PlanetF1</a>, <a href="https://www.gpblog.com/en/news/mexican-grand-prix-result-changed-after-penalties-with-implications-for-red-bull-too" target="_blank">GPblog</a>, <a href="https://www.formula1.com/en/latest/article/alpines-gasly-and-colapinto-stripped-of-mexico-city-gp-points-after-post-race-penalties.2wLfobQHufuH1L1aMYPl7h" target="_blank">Formula1.com</a></li>
+        <li>São Paulo GP: <a href="https://www.planetf1.com/news/f1-results-sao-paulo-grand-prix-2026-race-brazil" target="_blank">PlanetF1</a>, <a href="https://www.total-motorsport.com/sao-paulo-gp-results-2026-full-race-classification/" target="_blank">Total Motorsport</a>, <a href="https://racingnews365.com/2026-f1-sao-paulo-grand-prix-brazil-results" target="_blank">RacingNews365</a>; Antonelli investigation: <a href="https://www.planetf1.com/news/kimi-antonelli-fia-investigation-f1-2026-brazilian-grand-prix" target="_blank">PlanetF1</a></li>
+        <li>Standings after São Paulo: <a href="https://www.si.com/onsi/f1/news/f1-standings-and-results-after-the-2026-brazilian-grand-prix" target="_blank">SI</a>, <a href="https://racingnews365.com/2026-f1-championship-standings-after-sao-paulo-grand-prix" target="_blank">RacingNews365</a>, <a href="https://www.gpblog.com/en/news/world-championship-standings-after-the-brazilian-gp-verstappen-makes-major-gains-in-the-battle-for-p2" target="_blank">GPblog</a></li>
+        <li>Starting grids: Formula1.com (<a href="https://www.formula1.com/en/results/2026/races/1279/australia/starting-grid" target="_blank">Australia</a>, <a href="https://www.formula1.com/en/results/2026/races/1280/malaysia/starting-grid" target="_blank">China</a>, <a href="https://www.formula1.com/en/results/2026/races/1287/barcelona/starting-grid" target="_blank">Barcelona</a>, <a href="https://www.formula1.com/en/results/2026/races/1288/austria/starting-grid" target="_blank">Austria</a>, <a href="https://www.formula1.com/en/results/2026/races/1289/united-kingdom/starting-grid" target="_blank">Britain</a>, <a href="https://www.formula1.com/en/results/2026/races/1290/belgium/starting-grid" target="_blank">Belgium</a>, <a href="https://www.formula1.com/en/results/2026/races/1295/bahrain/starting-grid" target="_blank">Azerbaijan</a>, <a href="https://www.formula1.com/en/results/2026/races/1308/malaysia/starting-grid" target="_blank">Sepang</a>), <a href="https://www.the-race.com/formula-1/f1-2026-miami-grand-prix-starting-grid/" target="_blank">Miami</a>, <a href="https://www.fia.com/system/files/decision-document/2026_hungarian_grand_prix_-_final_starting_grid.pdf" target="_blank">Hungary (FIA)</a>, <a href="https://www.crash.net/f1/news/1109059/1/f1-2026-mexico-grand-prix-full-starting-grid-after-penalties-including-max" target="_blank">Mexico</a>, <a href="https://www.the-race.com/formula-1/f1-2026-brazilian-grand-prix-starting-grid-with-four-penalties-copy/" target="_blank">São Paulo</a></li>
+        <li>Las Vegas: <a href="https://www.formula1.com/en/latest/article/formula-1-heineken-las-vegas-grand-prix-2026.1qmWzcBwKK5hkTbYbhVC22" target="_blank">2026 schedule</a>; results <a href="https://www.crash.net/f1/results/1087317/1/2025-f1-las-vegas-grand-prix-race-results" target="_blank">2025</a>, <a href="https://www.crash.net/f1/results/1060694/1/2024-f1-las-vegas-grand-prix-race-results" target="_blank">2024</a>, <a href="https://crash.net/f1/results/1041380/1/f1-las-vegas-grand-prix-2023-race-results-round-21" target="_blank">2023</a></li>
+        <li>Wet races: <a href="https://crash.net/f1/results/1059809/1/2024-f1-sao-paulo-grand-prix-race-results" target="_blank">Brazil 2024</a>, <a href="https://www.crash.net/f1/results/1065305/1/2025-f1-australian-grand-prix-race-results" target="_blank">Australia 2025</a>, <a href="https://www.crash.net/f1/results/1075985/1/2025-f1-british-grand-prix-race-results" target="_blank">Britain 2025</a>; qualifying stats: <a href="https://www.lightsoutblog.com/2026-f1-qualifying-statistics/" target="_blank">Lights Out</a></li>
       </ul></div>
     </section>
   </main>
 
-  <footer>Data as of 7 Nov 2026 (after qualifying), after the Mexico City GP (round 19 of 23).<br>A fan-made model for fun. Not affiliated with Formula 1, and not betting advice.</footer>
+  <footer>Data as of 8 Nov 2026, after the São Paulo GP (round 20 of 23).<br>A fan-made model for fun. Not affiliated with Formula 1, and not betting advice.</footer>
 
   <script>
     // =====================================================================
     // RACE-WEEKEND SETTINGS — the only part you normally need to edit
     // =====================================================================
-    // Chance of rain on Sunday, in % (from the latest forecast)
-    const RAIN_DEFAULT = 40;
+    // Chance of rain on race day, in % (from the latest forecast)
+    const RAIN_DEFAULT = 5;
     // Official starting grid after penalties, P1 first (3-letter driver codes).
-    // Leave the list empty [] before qualifying.
-    const STARTING_GRID = ["NOR","ANT","LAW","HUL","HAD","BEA","RUS","ALO","ALB","PIA","OCO",
-                           "LIN","SAI","LEC","COL","GAS","STR","BOT","BOR","HAM","VER","PER"];
-    // (OCO = the second Haas car, driven by Rafael Câmara)
+    // Leave the list empty [] before qualifying. OCO = the second Haas (Rafael Câmara).
+    const STARTING_GRID = [];
     // =====================================================================
 
-    const D = {"races":["AUS","CHN","JPN","MIA","CAN","MON","BCN","AUT","GBR","BEL","HUN","NED","ITA","ESP","AZE","BHR","SIN","USA","MEX"],"results":{"ANT":[2,1,1,1,1,1,16,3,15,1,3,2,1,1,5,2,3,1,3],"RUS":[1,2,4,4,"R",12,2,1,2,"R",7,3,2,5,1,20,9,8,6],"HAM":[4,3,6,6,2,2,1,5,3,4,5,4,6,"R",6,3,6,4,2],"NOR":[5,"R",5,2,"R","R",3,7,4,7,1,1,4,3,"R",9,4,5,5],"LEC":[3,4,3,8,4,"R",15,8,1,2,4,5,"R",4,4,4,2,2,4],"VER":[6,"R",8,5,3,"R",4,2,20,3,2,"R",3,2,2,1,1,3,1],"PIA":["R","R",2,3,11,4,5,4,11,5,"R",6,5,8,13,6,5,7,7],"HAD":["R",8,12,"R",5,3,6,6,5,6,6,null,null,null,3,5,10,6,12],"LAW":[13,7,9,"R",7,5,8,9,6,12,8,7,14,6,12,7,7,9,9],"GAS":[10,6,7,"R",8,7,7,13,10,11,12,10,7,12,"R",16,11,10,10],"LIN":[8,12,14,14,"R",6,9,10,7,9,10,12,8,9,7,10,15,12,"R"],"COL":[14,10,16,7,6,14,10,15,9,10,15,14,9,7,"R",13,"R","R",8],"BEA":[7,5,"R",11,10,"R",17,14,12,14,19,"R",15,16,9,14,12,"R","R"],"BOR":[9,"R",13,12,13,11,11,11,8,8,11,13,11,13,15,18,"R",13,11],"HUL":["R",11,11,"R",12,13,"R",12,"R",13,9,8,12,10,11,11,8,11,16],"SAI":[15,9,15,9,9,16,12,"R",17,16,18,16,13,"R",10,17,14,18,15],"ALB":[12,"R",20,10,"R",8,"R",17,"R",15,17,17,17,15,"R","R","R",17,14],"OCO":[11,14,10,13,14,9,13,16,13,17,16,"R",16,11,8,15,13,14,null],"ALO":["R","R",18,15,"R",10,"R",18,18,19,14,9,"R",17,"R",8,16,16,"R"],"STR":["R","R","R",17,15,"R","R","R",19,"R",13,"R","R","R","R",12,"R",15,"R"],"BOT":["R",13,19,18,16,"R","R","R",16,18,"R","R",19,18,16,"R",18,"R","R"],"PER":[16,15,17,16,"R",15,14,"R",14,"R","R",15,18,"R",14,19,17,19,17],"TSU":[null,null,null,null,null,null,null,null,null,null,null,11,10,14,null,null,null,null,null]},"sprints":{"CHN":{"RUS":1,"LEC":2,"HAM":3,"NOR":4,"ANT":5,"PIA":6,"LAW":7,"BEA":8},"MIA":{"NOR":1,"PIA":2,"LEC":3,"RUS":4,"VER":5,"ANT":6,"HAM":7,"GAS":8},"CAN":{"RUS":1,"NOR":2,"ANT":3,"PIA":4,"LEC":5,"HAM":6,"VER":7,"LIN":8},"GBR":{"ANT":1,"HAM":2,"NOR":3,"RUS":4,"LEC":5,"VER":6,"PIA":7,"LAW":8},"NED":{"RUS":1,"LEC":2,"NOR":3,"ANT":4,"PIA":5,"VER":6,"HAM":7,"GAS":8},"SIN":{"VER":1,"HAM":2,"LEC":3,"ANT":4,"LAW":5,"BEA":6,"HUL":7,"NOR":8}},"official":{"ANT":380,"RUS":250,"HAM":259,"VER":261,"LEC":245,"NOR":221,"PIA":150,"HAD":105,"LAW":79,"GAS":43,"LIN":38,"COL":31,"BEA":23,"HUL":13,"BOR":10,"OCO":7,"ALO":7,"SAI":7,"ALB":5,"TSU":1,"STR":0,"BOT":0,"PER":0},"track":{"2025":{"NOR":1,"ANT":2,"VER":3,"RUS":4,"PIA":5,"BEA":6,"LAW":7,"HAD":8,"HUL":9,"GAS":10,"ALB":11,"OCO":12,"SAI":13,"ALO":14,"COL":15,"STR":16,"TSU":17,"HAM":"R","LEC":"R","BOR":"R"},"2024":{"VER":1,"OCO":2,"GAS":3,"RUS":4,"LEC":5,"NOR":6,"TSU":7,"PIA":8,"LAW":9,"HAM":10,"PER":11,"BEA":12,"BOT":13,"ALO":14,"SAI":"R","COL":"R","HUL":"R"},"2023":{"VER":1,"NOR":2,"ALO":3,"PER":4,"STR":5,"SAI":6,"GAS":7,"HAM":8,"TSU":9,"OCO":10,"HUL":12,"PIA":14,"RUS":"R","BOT":"R","LEC":"R","ALB":"R"}},"q3":{"NOR":19,"PIA":18,"RUS":19,"ANT":18,"VER":17,"HAD":15,"HAM":19,"LEC":19,"SAI":1,"ALB":0,"LAW":10,"LIN":13,"ALO":0,"STR":0,"OCO":0,"BEA":1,"HUL":2,"BOR":5,"GAS":9,"COL":5,"BOT":0,"PER":0,"TSU":0},"h2h":{"NOR":"12–7","PIA":"7–12","ANT":"11–8","RUS":"8–11","VER":"12–4","HAD":"4–12","LEC":"10–9","HAM":"9–10","SAI":"15–4","ALB":"4–15","LAW":"11–5","LIN":"5–11","ALO":"17–2","STR":"2–17","BEA":"13–5","OCO":"5–13","BOR":"9–10","HUL":"10–9","GAS":"16–3","COL":"3–16","PER":"11–8","BOT":"8–11"},"poles":["RUS","ANT","ANT","ANT","RUS","ANT","RUS","RUS","ANT","ANT","NOR","NOR","GAS",null,null,"VER","VER","ANT","HAM"],"teamOverride":{"LAW":{"11":"Red Bull","12":"Red Bull","13":"Red Bull"},"TSU":{"11":"Racing Bulls","12":"Racing Bulls","13":"Racing Bulls"}},"teams":{"ANT":"Mercedes","RUS":"Mercedes","HAM":"Ferrari","LEC":"Ferrari","VER":"Red Bull","HAD":"Red Bull","NOR":"McLaren","PIA":"McLaren","LAW":"Racing Bulls","LIN":"Racing Bulls","GAS":"Alpine","COL":"Alpine","BEA":"Haas","OCO":"Haas","HUL":"Audi","BOR":"Audi","ALO":"Aston Martin","STR":"Aston Martin","SAI":"Williams","ALB":"Williams","BOT":"Cadillac","PER":"Cadillac","TSU":"Racing Bulls"},"names":{"ANT":"Kimi Antonelli","RUS":"George Russell","HAM":"Lewis Hamilton","LEC":"Charles Leclerc","VER":"Max Verstappen","HAD":"Isack Hadjar","NOR":"Lando Norris","PIA":"Oscar Piastri","LAW":"Liam Lawson","LIN":"Arvid Lindblad","GAS":"Pierre Gasly","COL":"Franco Colapinto","BEA":"Oliver Bearman","OCO":"Rafael Câmara","HUL":"Nico Hülkenberg","BOR":"Gabriel Bortoleto","ALO":"Fernando Alonso","STR":"Lance Stroll","SAI":"Carlos Sainz","ALB":"Alex Albon","BOT":"Valtteri Bottas","PER":"Sergio Pérez","TSU":"Yuki Tsunoda"},"wetRaces":[{"name":"2024 São Paulo GP","pairs":[["VER",1,"PER",11],["OCO",2,"GAS",3],["RUS",4,"HAM",10],["LEC",5,"SAI","R"],["NOR",6,"PIA",8],["TSU",7,"LAW",9],["BEA",12,"HUL","R"]]},{"name":"2025 Australian GP","pairs":[["NOR",1,"PIA",9],["VER",2,"LAW","R"],["RUS",3,"ANT",4],["ALB",5,"SAI","R"],["STR",6,"ALO","R"],["HUL",7,"BOR","R"],["LEC",8,"HAM",10],["OCO",13,"BEA",14]]},{"name":"2025 British GP","pairs":[["NOR",1,"PIA",2],["HUL",3,"BOR","R"],["HAM",4,"LEC",14],["VER",5,"TSU",15],["STR",7,"ALO",9],["ALB",8,"SAI",12],["RUS",10,"ANT","R"],["BEA",11,"OCO",13],["HAD","R","LAW","R"]]},{"name":"2026 Bahrain GP (Sepang)","pairs":[["ANT",2,"RUS",20],["HAM",3,"LEC",4],["VER",1,"HAD",5],["NOR",9,"PIA",6],["LAW",7,"LIN",10],["GAS",16,"COL",13],["BEA",14,"OCO",15],["HUL",11,"BOR",18],["ALO",8,"STR",12],["SAI",17,"ALB","R"],["BOT","R","PER",19]]}]};
-    // ===== Prediction model v2 (shared by the website and the backtests) =====
+    const D = {"races":["AUS","CHN","JPN","MIA","CAN","MON","BCN","AUT","GBR","BEL","HUN","NED","ITA","ESP","AZE","BHR","SIN","USA","MEX","SAP"],"results":{"ANT":[2,1,1,1,1,1,16,3,15,1,3,2,1,1,5,2,3,1,3,5],"RUS":[1,2,4,4,"R",12,2,1,2,"R",7,3,2,5,1,20,9,8,6,4],"HAM":[4,3,6,6,2,2,1,5,3,4,5,4,6,"R",6,3,6,4,2,9],"NOR":[5,"R",5,2,"R","R",3,7,4,7,1,1,4,3,"R",9,4,5,5,1],"LEC":[3,4,3,8,4,"R",15,8,1,2,4,5,"R",4,4,4,2,2,4,7],"VER":[6,"R",8,5,3,"R",4,2,20,3,2,"R",3,2,2,1,1,3,1,2],"PIA":["R","R",2,3,11,4,5,4,11,5,"R",6,5,8,13,6,5,7,13,6],"HAD":["R",8,12,"R",5,3,6,6,5,6,6,null,null,null,3,5,10,6,9,3],"LAW":[13,7,9,"R",7,5,8,9,6,12,8,7,14,6,12,7,7,9,7,8],"GAS":[10,6,7,"R",8,7,7,13,10,11,12,10,7,12,"R",16,11,10,17,14],"LIN":[8,12,14,14,"R",6,9,10,7,9,10,12,8,9,7,10,15,12,"R",11],"COL":[14,10,16,7,6,14,10,15,9,10,15,14,9,7,"R",13,"R","R",15,13],"BEA":[7,5,"R",11,10,"R",17,14,12,14,19,"R",15,16,9,14,12,"R","R",17],"BOR":[9,"R",13,12,13,11,11,11,8,8,11,13,11,13,15,18,"R",13,8,16],"HUL":["R",11,11,"R",12,13,"R",12,"R",13,9,8,12,10,11,11,8,11,14,10],"SAI":[15,9,15,9,9,16,12,"R",17,16,18,16,13,"R",10,17,14,18,12,19],"ALB":[12,"R",20,10,"R",8,"R",17,"R",15,17,17,17,15,"R","R","R",17,11,15],"OCO":[11,14,10,13,14,9,13,16,13,17,16,"R",16,11,8,15,13,14,null,20],"ALO":["R","R",18,15,"R",10,"R",18,18,19,14,9,"R",17,"R",8,16,16,"R",12],"STR":["R","R","R",17,15,"R","R","R",19,"R",13,"R","R","R","R",12,"R",15,"R","R"],"BOT":["R",13,19,18,16,"R","R","R",16,18,"R","R",19,18,16,"R",18,"R","R","R"],"PER":[16,15,17,16,"R",15,14,"R",14,"R","R",15,18,"R",14,19,17,19,16,18],"TSU":[null,null,null,null,null,null,null,null,null,null,null,11,10,14,null,null,null,null,null,null]},"sprints":{"CHN":{"RUS":1,"LEC":2,"HAM":3,"NOR":4,"ANT":5,"PIA":6,"LAW":7,"BEA":8},"MIA":{"NOR":1,"PIA":2,"LEC":3,"RUS":4,"VER":5,"ANT":6,"HAM":7,"GAS":8},"CAN":{"RUS":1,"NOR":2,"ANT":3,"PIA":4,"LEC":5,"HAM":6,"VER":7,"LIN":8},"GBR":{"ANT":1,"HAM":2,"NOR":3,"RUS":4,"LEC":5,"VER":6,"PIA":7,"LAW":8},"NED":{"RUS":1,"LEC":2,"NOR":3,"ANT":4,"PIA":5,"VER":6,"HAM":7,"GAS":8},"SIN":{"VER":1,"HAM":2,"LEC":3,"ANT":4,"LAW":5,"BEA":6,"HUL":7,"NOR":8}},"official":{"ANT":390,"VER":279,"RUS":262,"HAM":261,"LEC":251,"NOR":246,"PIA":152,"HAD":122,"LAW":87,"GAS":42,"LIN":38,"COL":27,"BEA":23,"BOR":14,"HUL":14,"OCO":7,"ALO":7,"SAI":7,"ALB":5,"TSU":1,"STR":0,"BOT":0,"PER":0},"track":{"2025":{"VER":1,"RUS":2,"ANT":3,"LEC":4,"SAI":5,"HAD":6,"HUL":7,"HAM":8,"OCO":9,"BEA":10,"ALO":11,"TSU":12,"GAS":13,"LAW":14,"COL":15,"ALB":"R","BOR":"R","STR":"R"},"2024":{"RUS":1,"HAM":2,"SAI":3,"LEC":4,"VER":5,"NOR":6,"PIA":7,"HUL":8,"TSU":9,"PER":10,"ALO":11,"COL":14,"STR":15,"LAW":16,"OCO":17,"BOT":18,"ALB":"R","GAS":"R"},"2023":{"VER":1,"LEC":2,"PER":3,"OCO":4,"STR":5,"SAI":6,"HAM":7,"RUS":8,"ALO":9,"PIA":10,"GAS":11,"ALB":12,"BOT":17,"TSU":"R","HUL":"R","NOR":"R"}},"q3":{"NOR":20,"PIA":18,"RUS":20,"ANT":19,"VER":17,"HAD":16,"HAM":19,"LEC":20,"SAI":1,"ALB":1,"LAW":11,"LIN":13,"ALO":1,"STR":0,"OCO":0,"BEA":2,"HUL":3,"BOR":5,"GAS":9,"COL":5,"BOT":0,"PER":0,"TSU":0},"h2h":{"NOR":"13–7","PIA":"7–13","ANT":"11–9","RUS":"9–11","VER":"12–5","HAD":"5–12","LEC":"11–9","HAM":"9–11","SAI":"15–5","ALB":"5–15","LAW":"12–5","LIN":"5–12","ALO":"18–2","STR":"2–18","BEA":"14–5","OCO":"5–14","BOR":"9–11","HUL":"11–9","GAS":"16–4","COL":"4–16","PER":"11–9","BOT":"9–11"},"poles":["RUS","ANT","ANT","ANT","RUS","ANT","RUS","RUS","ANT","ANT","NOR","NOR","GAS",null,null,"VER","VER","ANT","HAM","NOR"],"teamOverride":{"LAW":{"11":"Red Bull","12":"Red Bull","13":"Red Bull"},"TSU":{"11":"Racing Bulls","12":"Racing Bulls","13":"Racing Bulls"}},"teams":{"ANT":"Mercedes","RUS":"Mercedes","HAM":"Ferrari","LEC":"Ferrari","VER":"Red Bull","HAD":"Red Bull","NOR":"McLaren","PIA":"McLaren","LAW":"Racing Bulls","LIN":"Racing Bulls","GAS":"Alpine","COL":"Alpine","BEA":"Haas","OCO":"Haas","HUL":"Audi","BOR":"Audi","ALO":"Aston Martin","STR":"Aston Martin","SAI":"Williams","ALB":"Williams","BOT":"Cadillac","PER":"Cadillac","TSU":"Racing Bulls"},"names":{"ANT":"Kimi Antonelli","RUS":"George Russell","HAM":"Lewis Hamilton","LEC":"Charles Leclerc","VER":"Max Verstappen","HAD":"Isack Hadjar","NOR":"Lando Norris","PIA":"Oscar Piastri","LAW":"Liam Lawson","LIN":"Arvid Lindblad","GAS":"Pierre Gasly","COL":"Franco Colapinto","BEA":"Oliver Bearman","OCO":"Rafael Câmara","HUL":"Nico Hülkenberg","BOR":"Gabriel Bortoleto","ALO":"Fernando Alonso","STR":"Lance Stroll","SAI":"Carlos Sainz","ALB":"Alex Albon","BOT":"Valtteri Bottas","PER":"Sergio Pérez","TSU":"Yuki Tsunoda"},"wetRaces":[{"name":"2024 São Paulo GP","pairs":[["VER",1,"PER",11],["OCO",2,"GAS",3],["RUS",4,"HAM",10],["LEC",5,"SAI","R"],["NOR",6,"PIA",8],["TSU",7,"LAW",9],["BEA",12,"HUL","R"]]},{"name":"2025 Australian GP","pairs":[["NOR",1,"PIA",9],["VER",2,"LAW","R"],["RUS",3,"ANT",4],["ALB",5,"SAI","R"],["STR",6,"ALO","R"],["HUL",7,"BOR","R"],["LEC",8,"HAM",10],["OCO",13,"BEA",14]]},{"name":"2025 British GP","pairs":[["NOR",1,"PIA",2],["HUL",3,"BOR","R"],["HAM",4,"LEC",14],["VER",5,"TSU",15],["STR",7,"ALO",9],["ALB",8,"SAI",12],["RUS",10,"ANT","R"],["BEA",11,"OCO",13],["HAD","R","LAW","R"]]},{"name":"2026 Bahrain GP (Sepang)","round":15,"pairs":[["ANT",2,"RUS",20],["HAM",3,"LEC",4],["VER",1,"HAD",5],["NOR",9,"PIA",6],["LAW",7,"LIN",10],["GAS",16,"COL",13],["BEA",14,"OCO",15],["HUL",11,"BOR",18],["ALO",8,"STR",12],["SAI",17,"ALB","R"],["BOT","R","PER",19]]},{"name":"2026 São Paulo GP","round":19,"pairs":[["ANT",5,"RUS",4],["HAM",9,"LEC",7],["VER",2,"HAD",3],["NOR",1,"PIA",6],["LAW",8,"LIN",11],["GAS",14,"COL",13],["BEA",17,"OCO",20],["HUL",10,"BOR",16],["ALO",12,"STR","R"],["SAI",19,"ALB",15],["BOT","R","PER",18]]}],"grids":{"0":["RUS","ANT","HAD","LEC","PIA","NOR","HAM","LAW","LIN","BOR","HUL","BEA","OCO","GAS","ALB","COL","ALO","PER","BOT","VER","SAI","STR"],"1":["ANT","RUS","HAM","LEC","PIA","NOR","GAS","VER","HAD","BEA","HUL","COL","OCO","LAW","LIN","BOR","SAI","ALO","BOT","STR","PER","ALB"],"3":["ANT","VER","LEC","NOR","RUS","HAM","PIA","COL","GAS","HUL","LAW","BEA","SAI","OCO","ALB","LIN","ALO","STR","BOT","PER","BOR","HAD"],"6":["RUS","HAM","ANT","NOR","VER","HAD","PIA","LAW","HUL","LEC","LIN","BOR","COL","GAS","BEA","SAI","OCO","ALB","PER","BOT","STR","ALO"],"7":["RUS","LEC","HAM","ANT","VER","NOR","PIA","HAD","LAW","LIN","GAS","BOR","BEA","HUL","OCO","COL","SAI","ALB","PER","BOT","ALO","STR"],"8":["ANT","LEC","HAM","RUS","HAD","NOR","VER","PIA","LIN","LAW","BOR","HUL","BEA","SAI","GAS","ALB","OCO","BOT","COL","PER","ALO","STR"],"9":["ANT","VER","RUS","LEC","HAM","PIA","LIN","BOR","LAW","GAS","COL","HUL","NOR","BEA","ALB","OCO","BOT","PER","SAI","STR","HAD","ALO"],"10":["NOR","LEC","PIA","VER","HAM","RUS","ANT","HAD","LIN","HUL","LAW","GAS","COL","BOR","OCO","ALO","BEA","SAI","ALB","STR","BOT","PER"],"14":["RUS","LEC","PIA","HAD","NOR","HAM","GAS","VER","COL","BEA","LAW","ALB","OCO","SAI","LIN","ANT","BOR","HUL","BOT","PER","ALO","STR"],"15":["VER","HAM","ANT","LEC","NOR","PIA","RUS","HAD","GAS","BOR","LAW","ALO","SAI","STR","HUL","BEA","OCO","ALB","BOT","PER","COL","LIN"],"18":["HAM","RUS","LEC","ANT","VER","NOR","HAD","LIN","GAS","HUL","COL","PIA","BOR","BEA","SAI","ALB","ALO","HIR","STR","PER","BOT","LAW"],"19":["NOR","ANT","LAW","HUL","HAD","BEA","RUS","ALO","ALB","PIA","OCO","LIN","SAI","LEC","COL","GAS","STR","BOT","BOR","HAM","VER","PER"]}};
+    // ===== Prediction model v3 (shared by the website and the backtests) =====
 const GP_PTS = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
 // Smooth value of a finishing position: P1 = 1, P2 ≈ 0.75, P5 ≈ 0.32, P10 ≈ 0.08
 const posValue = p => Math.exp(-(p - 1) / 3.5);
@@ -552,6 +584,16 @@ function winProbs(F, S, temp) {
 // retirements are more likely, and wet-weather skill shifts each driver's strength.
 const WET = { tempMult: 1.4, dnfMult: 1.5, skill: 0.4 };
 
+// v3 starting-grid effect, chosen by leave-one-race-out testing on 9 races:
+// a log curve — big gaps at the front, small gaps further back. P1 = 0, P2 = −0.42, P10 = −1.38, P22 = −1.85
+const GRID_A = 0.6;
+const gridEffect = p => -GRID_A * Math.log(p);
+// Average effect of an unknown grid slot from P4 back (used when only the top 3 are entered)
+const UNKNOWN_BACK = (() => { let s = 0; for (let p = 4; p <= 22; p++) s += gridEffect(p); return s / 19; })();
+// Calibrated "temperatures": how much luck there is relative to strength. Before the grid is known
+// strengths are less certain; once the grid is added, its large spread needs a larger temperature.
+const T_PRE = 0.22, T_GRID = 0.40;
+
 const gumbel = () => -Math.log(-Math.log(Math.random() + 1e-12) + 1e-12);
 function raceOnce(F, S, temp, wet) {
   const t = wet ? temp * WET.tempMult : temp;
@@ -562,46 +604,43 @@ function raceOnce(F, S, temp, wet) {
   }).sort((a, b) => (a.dnf - b.dnf) || (b.perf - a.perf));
 }
 
-if (typeof module !== "undefined") module.exports = { buildFeatures, strengths, winProbs, raceOnce, posValue, wetSkill, GP_PTS };
+if (typeof module !== "undefined") module.exports = { buildFeatures, strengths, winProbs, raceOnce, posValue, wetSkill, GP_PTS, gridEffect, UNKNOWN_BACK, T_PRE, T_GRID };
 
 
     const TEAM_COLORS = { "Mercedes": "#00b89a", "Ferrari": "#e8002d", "Red Bull": "#3671c6", "McLaren": "#ff8000", "Racing Bulls": "#6692ff",
       "Alpine": "#f06aa8", "Haas": "#8c9096", "Audi": "#b0182f", "Aston Martin": "#229971", "Williams": "#3aa6e8", "Cadillac": "#b8932a" };
-    const DEFAULTS = { season: 35, car: 35, form: 15, quali: 10, mex: 5, chaos: 35, rain: RAIN_DEFAULT };
-    const GRID_BONUS = [0.6, 0.3, 0.15];
+    const DEFAULTS = { season: 35, car: 35, form: 15, quali: 10, mex: 5, chaos: 50, rain: RAIN_DEFAULT };
     const SIMS = 40000, ROUNDS = D.races.length;
-    const RACE_START = Date.UTC(2026, 10, 8, 17, 0);
-    const WET_ROUNDS = [15];
+    const RACE_START = Date.UTC(2026, 10, 22, 4, 0);   // Sat 21 Nov, 8 PM Las Vegas = 04:00 UTC Sunday
+    const WET_ROUNDS = [15, 19];
+    const UNSEEN = [18, 19];
     const GRID = Object.keys(D.results).filter(c => c !== "TSU");
-    const P2_FIGHT = ["VER", "HAM", "RUS", "LEC", "NOR"];
-    const color = c => TEAM_COLORS[D.teams[c]];
+    const P2_FIGHT = ["VER", "RUS", "HAM", "LEC", "NOR"];
+    const color = c => TEAM_COLORS[D.teams[c]] || "#999";
     const short = c => D.names[c].split(" ").slice(-1)[0];
     const $ = id => document.getElementById(id);
     const pct = x => x >= 0.995 ? ">99%" : x < 0.001 ? "<0.1%" : (x * 100).toFixed(x < 0.1 ? 1 : 0) + "%";
-    const temp = () => 0.12 + (+$("chaos").value / 100) * 0.38;
+    const luck = () => 0.5 + +$("chaos").value / 100;           // 50 -> 1.0 (calibrated)
     const weights = () => ({ season: +$("w-season").value, car: +$("w-car").value, form: +$("w-form").value, quali: +$("w-quali").value, mex: +$("w-mex").value });
-    // Starting position effect: P1–P3 use the tuned boosts; from P4 back there is a gentle,
-    // steady penalty down to −0.25 at P22 (an assumption, explained in How it works).
-    const gridEffect = p => p <= 3 ? GRID_BONUS[p - 1] : -0.25 * (p - 4) / 18;
+
+    // Grid advantages from the official grid and/or the P1–P3 boxes
     function gridBonus() {
-      const b = {};
-      const picks = ["g1", "g2", "g3"].map(id => $(id).value);
+      const b = {}, picks = ["g1", "g2", "g3"].map(id => $(id).value);
       if (STARTING_GRID.length) {
-        // Drivers picked in the P1–P3 boxes take those slots; everyone else keeps their official order
-        const rest = STARTING_GRID.filter(c => !picks.includes(c));
-        const order = [...picks.filter(Boolean), ...rest];
+        const order = [...picks.filter(Boolean), ...STARTING_GRID.filter(c => !picks.includes(c))];
         order.forEach((c, k) => { if (!(c in b)) b[c] = gridEffect(k + 1); });
-      } else {
-        picks.forEach((c, k) => { if (c && !(c in b)) b[c] = GRID_BONUS[k]; });
+      } else if (picks.some(Boolean)) {
+        GRID.forEach(c => b[c] = UNKNOWN_BACK);
+        picks.forEach((c, k) => { if (c) b[c] = gridEffect(k + 1); });
       }
       return b;
     }
     const FEATURES = buildFeatures(D, ROUNDS, GRID);
     let model;
 
-    // Run half the sims dry and half wet, then blend by the rain chance
     function simulate() {
-      const S = strengths(FEATURES, weights(), gridBonus()), T = temp(), rain = +$("rain").value / 100;
+      const gb = gridBonus(), gridKnown = Object.keys(gb).length > 0;
+      const S = strengths(FEATURES, weights(), gb), T = (gridKnown ? T_GRID : T_PRE) * luck(), rain = +$("rain").value / 100;
       const half = SIMS / 2, res = {};
       for (const wet of [false, true]) {
         const win = {}, pod = {}, p2 = {};
@@ -624,7 +663,7 @@ if (typeof module !== "undefined") module.exports = { buildFeatures, strengths, 
       const win = {}, pod = {}, p2 = {};
       GRID.forEach(c => { win[c] = mix(res.dry.win[c], res.wet.win[c]); pod[c] = mix(res.dry.pod[c], res.wet.pod[c]); });
       P2_FIGHT.forEach(c => p2[c] = mix(res.dry.p2[c], res.wet.p2[c]));
-      return { S, T, rain, win, pod, p2, dry: res.dry, wet: res.wet };
+      return { S, T, rain, win, pod, p2, dry: res.dry, wet: res.wet, gridKnown };
     }
 
     function render() {
@@ -633,7 +672,6 @@ if (typeof module !== "undefined") module.exports = { buildFeatures, strengths, 
       model = simulate();
       const ranked = [...GRID].sort((a, b) => model.win[b] - model.win[a]);
       $("heroFav").textContent = D.names[ranked[0]]; $("heroPct").textContent = pct(model.win[ranked[0]]);
-
       $("podium").innerHTML = [1, 0, 2].map(k => {
         const c = ranked[k];
         return `<div class="step ${k === 0 ? "p1" : ""}" style="--tc:${color(c)}"><div class="pos">${k + 1}</div>
@@ -646,8 +684,10 @@ if (typeof module !== "undefined") module.exports = { buildFeatures, strengths, 
         <div class="v">${pct(model.win[c])}<small>podium ${pct(model.pod[c])}</small></div></div>`).join("");
       const top3 = w => [...GRID].sort((a, b) => w[b] - w[a]).slice(0, 3).map(c => `${short(c)} ${pct(w[c])}`).join(" · ");
       $("dryTop").textContent = top3(model.dry.win); $("wetTop").textContent = top3(model.wet.win);
+      $("gridNote").textContent = STARTING_GRID.length ? "Filled in with the official grid after penalties. Change P1–P3 for “what if” scenarios."
+        : "Qualifying hasn't happened yet. Pick a top 3 to try “what if” scenarios; everyone else gets an average grid slot.";
       $("simnote").textContent = `${SIMS.toLocaleString()} simulated races, blended for a ${$("rain").value}% chance of rain. ` +
-        (STARTING_GRID.length ? "Includes the official starting grid after penalties." : Object.keys(gridBonus()).length ? "Includes your qualifying result." : "Qualifying not entered yet — add the top 3 on Saturday.");
+        (STARTING_GRID.length ? "Includes the official starting grid." : model.gridKnown ? "Includes your “what if” top 3." : "Before qualifying: no grid information yet.");
 
       const mini = v => `<span class="mini"><i style="width:${Math.round(v * 100)}%"></i></span>${Math.round(v * 100)}`;
       $("breakdown").innerHTML = ranked.map(c => {
@@ -660,8 +700,7 @@ if (typeof module !== "undefined") module.exports = { buildFeatures, strengths, 
           <td class="num">${Math.round(f.dnf * 100)}%</td><td class="num">${D.official[c]}</td>
           <td class="num">${D.q3[c]}/${f.starts}</td><td class="num">${D.h2h[c] || "–"}</td></tr>`;
       }).join("");
-
-      const lead = D.official[P2_FIGHT[0]];
+      const lead = Math.max(...P2_FIGHT.map(c => D.official[c]));
       $("p2rows").innerHTML = [...P2_FIGHT].sort((a, b) => D.official[b] - D.official[a]).map(c => `<tr>
         <td><span class="dot" style="--tc:${color(c)}"></span>${D.names[c]}</td><td class="num">${D.official[c]}</td>
         <td class="num">${D.official[c] === lead ? "–" : "−" + (lead - D.official[c])}</td><td class="num"><b>${pct(model.p2[c])}</b></td></tr>`).join("");
@@ -671,18 +710,21 @@ if (typeof module !== "undefined") module.exports = { buildFeatures, strengths, 
     function renderBacktest() {
       const w = { ...weights(), quali: 0, mex: 0 };
       if (w.season + w.car + w.form === 0) w.season = 1;
+      const AVG_2_22 = (() => { let s = 0; for (let p = 2; p <= 22; p++) s += gridEffect(p); return s / 21; })();
       let hits = 0, top3 = 0, sumP = 0, n = 0, rows = "";
       for (let r = 6; r < ROUNDS; r++) {
         const field = Object.keys(D.results).filter(c => D.results[c][r] !== null);
         const F = buildFeatures(D, r, field);
-        const bonus = D.poles[r] ? { [D.poles[r]]: GRID_BONUS[0] } : {};
-        const P = winProbs(F, strengths(F, w, bonus), temp());
+        let bonus = {}, T = T_PRE, info = "";
+        if (D.grids[r]) { D.grids[r].forEach((c, k) => { if (field.includes(c)) bonus[c] = gridEffect(k + 1); }); T = T_GRID; info = "grid"; }
+        else if (D.poles[r]) { field.forEach(c => bonus[c] = AVG_2_22); bonus[D.poles[r]] = gridEffect(1); T = T_GRID; info = "pole"; }
+        const P = winProbs(F, strengths(F, w, bonus), T * luck());
         const winner = field.find(c => D.results[c][r] === 1);
-        const rank = field.sort((a, b) => P[b] - P[a]);
+        const rank = [...field].sort((a, b) => P[b] - P[a]);
         const hit = rank[0] === winner, in3 = rank.slice(0, 3).includes(winner);
         hits += hit; top3 += in3; sumP += P[winner]; n++;
-        const unseen = r === ROUNDS - 1;
-        rows += `<tr class="${unseen ? "unseen" : ""}"><td>${r + 1} · ${D.races[r]}${WET_ROUNDS.includes(r) ? " 💧" : ""}${unseen ? ' <span class="pill">unseen</span>' : ""}</td>
+        const unseen = UNSEEN.includes(r);
+        rows += `<tr class="${unseen ? "unseen" : ""}"><td>${r + 1} · ${D.races[r]}${WET_ROUNDS.includes(r) ? " 💧" : ""}${unseen ? ' <span class="pill">raced live</span>' : ""} <span class="pill">${info || "no grid"}</span></td>
           <td><span class="dot" style="--tc:${color(winner)}"></span>${D.names[winner]}</td>
           <td class="num">${pct(P[winner])}</td><td>${D.names[rank[0]]} <span class="num" style="color:var(--muted)">(${pct(P[rank[0]])})</span></td>
           <td class="${hit ? "hit" : "miss"}">${hit ? "✓ correct" : in3 ? "in top 3" : "miss"}</td></tr>`;
@@ -716,13 +758,23 @@ if (typeof module !== "undefined") module.exports = { buildFeatures, strengths, 
       const tOrder = [...GRID].sort((a, b) => wins(b) - wins(a) || FEATURES[b].mex - FEATURES[a].mex);
       const fmt = p => p === undefined ? '<span style="color:var(--muted)">–</span>' : p === "R" ? '<span style="color:#b0182f">DNF</span>' : "P" + p;
       $("trackrows").innerHTML = tOrder.map(c => `<tr><td><span class="dot" style="--tc:${color(c)}"></span>${D.names[c]}</td>
-        <td class="num">${fmt(D.track["2025"][c])}</td><td class="num">${fmt(D.track["2024"][c])}</td><td class="num">${fmt(D.track["2023"][c])}</td>
+        <td class="num">${fmt(D.track["2025"][c])}${["NOR", "PIA"].includes(c) ? ' <span style="color:var(--muted)">(DSQ)</span>' : ""}</td><td class="num">${fmt(D.track["2024"][c])}</td><td class="num">${fmt(D.track["2023"][c])}</td>
         <td class="num">${wins(c)}</td></tr>`).join("");
-      // Mexico review lists (v1's pre-qualifying predicted order vs the real result)
-      const pred = ["ANT", "HAM", "RUS", "LEC", "VER", "HAD", "NOR", "PIA", "LAW", "LIN"];
-      const real = ["VER", "HAM", "ANT", "LEC", "NOR", "RUS", "PIA", "COL", "LAW", "GAS"];
+
+      // São Paulo review: v2's final published predicted order vs the real top 10
+      const pred = ["ANT", "NOR", "RUS", "LEC", "HAM", "VER", "HAD", "LAW", "PIA", "LIN"];
+      const real = ["NOR", "VER", "HAD", "RUS", "ANT", "PIA", "LEC", "LAW", "HAM", "HUL"];
       $("predList").innerHTML = pred.map(c => `<li class="${real.includes(c) ? "ok" : ""}"><span class="dot" style="--tc:${color(c)}"></span>${D.names[c]}<small>${real.includes(c) ? "finished P" + (real.indexOf(c) + 1) : "outside top 10"}</small></li>`).join("");
       $("realList").innerHTML = real.map(c => `<li><span class="dot" style="--tc:${color(c)}"></span>${D.names[c]}<small>${pred.includes(c) ? "predicted P" + (pred.indexOf(c) + 1) : "not predicted"}</small></li>`).join("");
+
+      // Season scorecard
+      const SC = [
+        { race: "Mexico City", v: "v1", fav: "Antonelli (28%)", win: "Verstappen", gave: "13%", rank: "2nd", pod: "2/3" },
+        { race: "São Paulo 💧", v: "v2", fav: "Antonelli (43%)", win: "Norris", gave: "28%", rank: "2nd", pod: "1/3" },
+        { race: "Las Vegas", v: "v3", pending: true }, { race: "Qatar", v: "–", pending: true }, { race: "Abu Dhabi", v: "–", pending: true }];
+      $("scorerows").innerHTML = SC.map(s => s.pending
+        ? `<tr><td>${s.race}</td><td>${s.v}</td><td colspan="5" class="pending">${s.race === "Las Vegas" ? "Prediction live now — scored after the race" : "Upcoming"}</td></tr>`
+        : `<tr class="score-row"><td>${s.race}</td><td>${s.v}</td><td>${s.fav}</td><td>${s.win}</td><td class="num">${s.gave}</td><td>${s.rank}</td><td class="num">${s.pod}</td></tr>`).join("");
     }
 
     const opts = '<option value="">—</option>' + [...GRID].sort((a, b) => D.official[b] - D.official[a]).map(c => `<option value="${c}">${D.names[c]}</option>`).join("");
@@ -742,7 +794,7 @@ if (typeof module !== "undefined") module.exports = { buildFeatures, strengths, 
     $("raceBtn").onclick = () => {
       if (racing) return; racing = true;
       const wet = Math.random() < model.rain;
-      $("result").innerHTML = ""; $("headline").textContent = wet ? "🌧 Rain at Interlagos! Formation lap…" : "☀️ Dry track. Formation lap…";
+      $("result").innerHTML = ""; $("headline").textContent = wet ? "🌧 Rain on the Strip! Formation lap…" : "🌙 Cold, dry night. Formation lap…";
       lights.forEach(l => l.classList.remove("on"));
       lights.forEach((l, k) => setTimeout(() => l.classList.add("on"), 600 + k * 700));
       setTimeout(() => {
@@ -754,7 +806,7 @@ if (typeof module !== "undefined") module.exports = { buildFeatures, strengths, 
         const rows = [...$("result").children];
         rows.forEach((row, k) => setTimeout(() => row.classList.add("show"), 300 + k * 110));
         setTimeout(() => {
-          $("headline").innerHTML = `🏆 ${D.names[o[0].c]} wins in São Paulo!<br><small style="color:var(--muted)">${wet ? "A wet race" : "A dry race"} · ${o.filter(x => x.dnf).length} retirements</small>`;
+          $("headline").innerHTML = `🏆 ${D.names[o[0].c]} wins in Las Vegas!<br><small style="color:var(--muted)">${wet ? "A wet race" : "A dry race"} · ${o.filter(x => x.dnf).length} retirements</small>`;
           racing = false;
         }, 300 + rows.length * 110);
       }, 600 + 5 * 700 + 400 + Math.random() * 1200);
@@ -762,7 +814,7 @@ if (typeof module !== "undefined") module.exports = { buildFeatures, strengths, 
 
     function tick() {
       let ms = RACE_START - Date.now();
-      if (ms <= 0) { $("countdown").innerHTML = '<div class="cd"><b>🏁</b><small>Race day</small></div>'; return; }
+      if (ms <= 0) { $("countdown").innerHTML = '<div class="cd"><b>🏁</b><small>Race night</small></div>'; return; }
       $("countdown").innerHTML = [["days", 864e5], ["hrs", 36e5], ["min", 6e4], ["sec", 1e3]].map(([l, u]) => {
         const v = Math.floor(ms / u); ms -= v * u; return `<div class="cd"><b>${String(v).padStart(2, "0")}</b><small>${l}</small></div>`;
       }).join("");
