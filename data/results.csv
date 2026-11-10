@@ -1,0 +1,441 @@
+round,race_code,driver_code,team,grid_position,finish_position,status,race_points
+1,AUS,RUS,Mercedes,1,1,classified,25
+1,AUS,ANT,Mercedes,2,2,classified,18
+1,AUS,LEC,Ferrari,4,3,classified,15
+1,AUS,HAM,Ferrari,7,4,classified,12
+1,AUS,NOR,McLaren,6,5,classified,10
+1,AUS,VER,Red Bull,20,6,classified,8
+1,AUS,BEA,Haas,12,7,classified,6
+1,AUS,LIN,Racing Bulls,9,8,classified,4
+1,AUS,BOR,Audi,10,9,classified,2
+1,AUS,GAS,Alpine,14,10,classified,1
+1,AUS,OCO,Haas,13,11,classified,0
+1,AUS,ALB,Williams,15,12,classified,0
+1,AUS,LAW,Racing Bulls,8,13,classified,0
+1,AUS,COL,Alpine,16,14,classified,0
+1,AUS,SAI,Williams,21,15,classified,0
+1,AUS,PER,Cadillac,18,16,classified,0
+1,AUS,ALO,Aston Martin,17,,DNF/NC,0
+1,AUS,BOT,Cadillac,19,,DNF/NC,0
+1,AUS,HAD,Red Bull,3,,DNF/NC,0
+1,AUS,HUL,Audi,11,,DNF/NC,0
+1,AUS,PIA,McLaren,5,,DNF/NC,0
+1,AUS,STR,Aston Martin,22,,DNF/NC,0
+2,CHN,ANT,Mercedes,1,1,classified,25
+2,CHN,RUS,Mercedes,2,2,classified,18
+2,CHN,HAM,Ferrari,3,3,classified,15
+2,CHN,LEC,Ferrari,4,4,classified,12
+2,CHN,BEA,Haas,10,5,classified,10
+2,CHN,GAS,Alpine,7,6,classified,8
+2,CHN,LAW,Racing Bulls,14,7,classified,6
+2,CHN,HAD,Red Bull,9,8,classified,4
+2,CHN,SAI,Williams,17,9,classified,2
+2,CHN,COL,Alpine,12,10,classified,1
+2,CHN,HUL,Audi,11,11,classified,0
+2,CHN,LIN,Racing Bulls,15,12,classified,0
+2,CHN,BOT,Cadillac,19,13,classified,0
+2,CHN,OCO,Haas,13,14,classified,0
+2,CHN,PER,Cadillac,21,15,classified,0
+2,CHN,ALB,Williams,22,,DNF/NC,0
+2,CHN,ALO,Aston Martin,18,,DNF/NC,0
+2,CHN,BOR,Audi,16,,DNF/NC,0
+2,CHN,NOR,McLaren,6,,DNF/NC,0
+2,CHN,PIA,McLaren,5,,DNF/NC,0
+2,CHN,STR,Aston Martin,20,,DNF/NC,0
+2,CHN,VER,Red Bull,8,,DNF/NC,0
+3,JPN,ANT,Mercedes,,1,classified,25
+3,JPN,PIA,McLaren,,2,classified,18
+3,JPN,LEC,Ferrari,,3,classified,15
+3,JPN,RUS,Mercedes,,4,classified,12
+3,JPN,NOR,McLaren,,5,classified,10
+3,JPN,HAM,Ferrari,,6,classified,8
+3,JPN,GAS,Alpine,,7,classified,6
+3,JPN,VER,Red Bull,,8,classified,4
+3,JPN,LAW,Racing Bulls,,9,classified,2
+3,JPN,OCO,Haas,,10,classified,1
+3,JPN,HUL,Audi,,11,classified,0
+3,JPN,HAD,Red Bull,,12,classified,0
+3,JPN,BOR,Audi,,13,classified,0
+3,JPN,LIN,Racing Bulls,,14,classified,0
+3,JPN,SAI,Williams,,15,classified,0
+3,JPN,COL,Alpine,,16,classified,0
+3,JPN,PER,Cadillac,,17,classified,0
+3,JPN,ALO,Aston Martin,,18,classified,0
+3,JPN,BOT,Cadillac,,19,classified,0
+3,JPN,ALB,Williams,,20,classified,0
+3,JPN,BEA,Haas,,,DNF/NC,0
+3,JPN,STR,Aston Martin,,,DNF/NC,0
+4,MIA,ANT,Mercedes,1,1,classified,25
+4,MIA,NOR,McLaren,4,2,classified,18
+4,MIA,PIA,McLaren,7,3,classified,15
+4,MIA,RUS,Mercedes,5,4,classified,12
+4,MIA,VER,Red Bull,2,5,classified,10
+4,MIA,HAM,Ferrari,6,6,classified,8
+4,MIA,COL,Alpine,8,7,classified,6
+4,MIA,LEC,Ferrari,3,8,classified,4
+4,MIA,SAI,Williams,13,9,classified,2
+4,MIA,ALB,Williams,15,10,classified,1
+4,MIA,BEA,Haas,12,11,classified,0
+4,MIA,BOR,Audi,21,12,classified,0
+4,MIA,OCO,Haas,14,13,classified,0
+4,MIA,LIN,Racing Bulls,16,14,classified,0
+4,MIA,ALO,Aston Martin,17,15,classified,0
+4,MIA,PER,Cadillac,20,16,classified,0
+4,MIA,STR,Aston Martin,18,17,classified,0
+4,MIA,BOT,Cadillac,19,18,classified,0
+4,MIA,GAS,Alpine,9,,DNF/NC,0
+4,MIA,HAD,Red Bull,22,,DNF/NC,0
+4,MIA,HUL,Audi,10,,DNF/NC,0
+4,MIA,LAW,Racing Bulls,11,,DNF/NC,0
+5,CAN,ANT,Mercedes,,1,classified,25
+5,CAN,HAM,Ferrari,,2,classified,18
+5,CAN,VER,Red Bull,,3,classified,15
+5,CAN,LEC,Ferrari,,4,classified,12
+5,CAN,HAD,Red Bull,,5,classified,10
+5,CAN,COL,Alpine,,6,classified,8
+5,CAN,LAW,Racing Bulls,,7,classified,6
+5,CAN,GAS,Alpine,,8,classified,4
+5,CAN,SAI,Williams,,9,classified,2
+5,CAN,BEA,Haas,,10,classified,1
+5,CAN,PIA,McLaren,,11,classified,0
+5,CAN,HUL,Audi,,12,classified,0
+5,CAN,BOR,Audi,,13,classified,0
+5,CAN,OCO,Haas,,14,classified,0
+5,CAN,STR,Aston Martin,,15,classified,0
+5,CAN,BOT,Cadillac,,16,classified,0
+5,CAN,ALB,Williams,,,DNF/NC,0
+5,CAN,ALO,Aston Martin,,,DNF/NC,0
+5,CAN,LIN,Racing Bulls,,,DNF/NC,0
+5,CAN,NOR,McLaren,,,DNF/NC,0
+5,CAN,PER,Cadillac,,,DNF/NC,0
+5,CAN,RUS,Mercedes,,,DNF/NC,0
+6,MON,ANT,Mercedes,,1,classified,25
+6,MON,HAM,Ferrari,,2,classified,18
+6,MON,HAD,Red Bull,,3,classified,15
+6,MON,PIA,McLaren,,4,classified,12
+6,MON,LAW,Racing Bulls,,5,classified,10
+6,MON,LIN,Racing Bulls,,6,classified,8
+6,MON,GAS,Alpine,,7,classified,6
+6,MON,ALB,Williams,,8,classified,4
+6,MON,OCO,Haas,,9,classified,2
+6,MON,ALO,Aston Martin,,10,classified,1
+6,MON,BOR,Audi,,11,classified,0
+6,MON,RUS,Mercedes,,12,classified,0
+6,MON,HUL,Audi,,13,classified,0
+6,MON,COL,Alpine,,14,classified,0
+6,MON,PER,Cadillac,,15,classified,0
+6,MON,SAI,Williams,,16,classified,0
+6,MON,BEA,Haas,,,DNF/NC,0
+6,MON,BOT,Cadillac,,,DNF/NC,0
+6,MON,LEC,Ferrari,,,DNF/NC,0
+6,MON,NOR,McLaren,,,DNF/NC,0
+6,MON,STR,Aston Martin,,,DNF/NC,0
+6,MON,VER,Red Bull,,,DNF/NC,0
+7,BCN,HAM,Ferrari,2,1,classified,25
+7,BCN,RUS,Mercedes,1,2,classified,18
+7,BCN,NOR,McLaren,4,3,classified,15
+7,BCN,VER,Red Bull,5,4,classified,12
+7,BCN,PIA,McLaren,7,5,classified,10
+7,BCN,HAD,Red Bull,6,6,classified,8
+7,BCN,GAS,Alpine,14,7,classified,6
+7,BCN,LAW,Racing Bulls,8,8,classified,4
+7,BCN,LIN,Racing Bulls,11,9,classified,2
+7,BCN,COL,Alpine,13,10,classified,1
+7,BCN,BOR,Audi,12,11,classified,0
+7,BCN,SAI,Williams,16,12,classified,0
+7,BCN,OCO,Haas,17,13,classified,0
+7,BCN,PER,Cadillac,19,14,classified,0
+7,BCN,LEC,Ferrari,10,15,classified,0
+7,BCN,ANT,Mercedes,3,16,classified,0
+7,BCN,BEA,Haas,15,17,classified,0
+7,BCN,ALB,Williams,18,,DNF/NC,0
+7,BCN,ALO,Aston Martin,22,,DNF/NC,0
+7,BCN,BOT,Cadillac,20,,DNF/NC,0
+7,BCN,HUL,Audi,9,,DNF/NC,0
+7,BCN,STR,Aston Martin,21,,DNF/NC,0
+8,AUT,RUS,Mercedes,1,1,classified,25
+8,AUT,VER,Red Bull,5,2,classified,18
+8,AUT,ANT,Mercedes,4,3,classified,15
+8,AUT,PIA,McLaren,7,4,classified,12
+8,AUT,HAM,Ferrari,3,5,classified,10
+8,AUT,HAD,Red Bull,8,6,classified,8
+8,AUT,NOR,McLaren,6,7,classified,6
+8,AUT,LEC,Ferrari,2,8,classified,4
+8,AUT,LAW,Racing Bulls,9,9,classified,2
+8,AUT,LIN,Racing Bulls,10,10,classified,1
+8,AUT,BOR,Audi,12,11,classified,0
+8,AUT,HUL,Audi,14,12,classified,0
+8,AUT,GAS,Alpine,11,13,classified,0
+8,AUT,BEA,Haas,13,14,classified,0
+8,AUT,COL,Alpine,16,15,classified,0
+8,AUT,OCO,Haas,15,16,classified,0
+8,AUT,ALB,Williams,18,17,classified,0
+8,AUT,ALO,Aston Martin,21,18,classified,0
+8,AUT,BOT,Cadillac,20,,DNF/NC,0
+8,AUT,PER,Cadillac,19,,DNF/NC,0
+8,AUT,SAI,Williams,17,,DNF/NC,0
+8,AUT,STR,Aston Martin,22,,DNF/NC,0
+9,GBR,LEC,Ferrari,2,1,classified,25
+9,GBR,RUS,Mercedes,4,2,classified,18
+9,GBR,HAM,Ferrari,3,3,classified,15
+9,GBR,NOR,McLaren,6,4,classified,12
+9,GBR,HAD,Red Bull,5,5,classified,10
+9,GBR,LAW,Racing Bulls,10,6,classified,8
+9,GBR,LIN,Racing Bulls,9,7,classified,6
+9,GBR,BOR,Audi,11,8,classified,4
+9,GBR,COL,Alpine,19,9,classified,2
+9,GBR,GAS,Alpine,15,10,classified,1
+9,GBR,PIA,McLaren,8,11,classified,0
+9,GBR,BEA,Haas,13,12,classified,0
+9,GBR,OCO,Haas,17,13,classified,0
+9,GBR,PER,Cadillac,20,14,classified,0
+9,GBR,ANT,Mercedes,1,15,classified,0
+9,GBR,BOT,Cadillac,18,16,classified,0
+9,GBR,SAI,Williams,14,17,classified,0
+9,GBR,ALO,Aston Martin,21,18,classified,0
+9,GBR,STR,Aston Martin,22,19,classified,0
+9,GBR,VER,Red Bull,7,20,classified,0
+9,GBR,ALB,Williams,16,,DNF/NC,0
+9,GBR,HUL,Audi,12,,DNF/NC,0
+10,BEL,ANT,Mercedes,1,1,classified,25
+10,BEL,LEC,Ferrari,4,2,classified,18
+10,BEL,VER,Red Bull,2,3,classified,15
+10,BEL,HAM,Ferrari,5,4,classified,12
+10,BEL,PIA,McLaren,6,5,classified,10
+10,BEL,HAD,Red Bull,21,6,classified,8
+10,BEL,NOR,McLaren,13,7,classified,6
+10,BEL,BOR,Audi,8,8,classified,4
+10,BEL,LIN,Racing Bulls,7,9,classified,2
+10,BEL,COL,Alpine,11,10,classified,1
+10,BEL,GAS,Alpine,10,11,classified,0
+10,BEL,LAW,Racing Bulls,9,12,classified,0
+10,BEL,HUL,Audi,12,13,classified,0
+10,BEL,BEA,Haas,14,14,classified,0
+10,BEL,ALB,Williams,15,15,classified,0
+10,BEL,SAI,Williams,19,16,classified,0
+10,BEL,OCO,Haas,16,17,classified,0
+10,BEL,BOT,Cadillac,17,18,classified,0
+10,BEL,ALO,Aston Martin,22,19,classified,0
+10,BEL,PER,Cadillac,18,,DNF/NC,0
+10,BEL,RUS,Mercedes,3,,DNF/NC,0
+10,BEL,STR,Aston Martin,20,,DNF/NC,0
+11,HUN,NOR,McLaren,1,1,classified,25
+11,HUN,VER,Red Bull,4,2,classified,18
+11,HUN,ANT,Mercedes,7,3,classified,15
+11,HUN,LEC,Ferrari,2,4,classified,12
+11,HUN,HAM,Ferrari,5,5,classified,10
+11,HUN,HAD,Red Bull,8,6,classified,8
+11,HUN,RUS,Mercedes,6,7,classified,6
+11,HUN,LAW,Racing Bulls,11,8,classified,4
+11,HUN,HUL,Audi,10,9,classified,2
+11,HUN,LIN,Racing Bulls,9,10,classified,1
+11,HUN,BOR,Audi,14,11,classified,0
+11,HUN,GAS,Alpine,12,12,classified,0
+11,HUN,STR,Aston Martin,20,13,classified,0
+11,HUN,ALO,Aston Martin,16,14,classified,0
+11,HUN,COL,Alpine,13,15,classified,0
+11,HUN,OCO,Haas,15,16,classified,0
+11,HUN,ALB,Williams,19,17,classified,0
+11,HUN,SAI,Williams,18,18,classified,0
+11,HUN,BEA,Haas,17,19,classified,0
+11,HUN,BOT,Cadillac,21,,DNF/NC,0
+11,HUN,PER,Cadillac,22,,DNF/NC,0
+11,HUN,PIA,McLaren,3,,DNF/NC,0
+12,NED,NOR,McLaren,,1,classified,25
+12,NED,ANT,Mercedes,,2,classified,18
+12,NED,RUS,Mercedes,,3,classified,15
+12,NED,HAM,Ferrari,,4,classified,12
+12,NED,LEC,Ferrari,,5,classified,10
+12,NED,PIA,McLaren,,6,classified,8
+12,NED,LAW,Red Bull,,7,classified,6
+12,NED,HUL,Audi,,8,classified,4
+12,NED,ALO,Aston Martin,,9,classified,2
+12,NED,GAS,Alpine,,10,classified,1
+12,NED,TSU,Racing Bulls,,11,classified,0
+12,NED,LIN,Racing Bulls,,12,classified,0
+12,NED,BOR,Audi,,13,classified,0
+12,NED,COL,Alpine,,14,classified,0
+12,NED,PER,Cadillac,,15,classified,0
+12,NED,SAI,Williams,,16,classified,0
+12,NED,ALB,Williams,,17,classified,0
+12,NED,BEA,Haas,,,DNF/NC,0
+12,NED,BOT,Cadillac,,,DNF/NC,0
+12,NED,OCO,Haas,,,DNF/NC,0
+12,NED,STR,Aston Martin,,,DNF/NC,0
+12,NED,VER,Red Bull,,,DNF/NC,0
+13,ITA,ANT,Mercedes,,1,classified,25
+13,ITA,RUS,Mercedes,,2,classified,18
+13,ITA,VER,Red Bull,,3,classified,15
+13,ITA,NOR,McLaren,,4,classified,12
+13,ITA,PIA,McLaren,,5,classified,10
+13,ITA,HAM,Ferrari,,6,classified,8
+13,ITA,GAS,Alpine,,7,classified,6
+13,ITA,LIN,Racing Bulls,,8,classified,4
+13,ITA,COL,Alpine,,9,classified,2
+13,ITA,TSU,Racing Bulls,,10,classified,1
+13,ITA,BOR,Audi,,11,classified,0
+13,ITA,HUL,Audi,,12,classified,0
+13,ITA,SAI,Williams,,13,classified,0
+13,ITA,LAW,Red Bull,,14,classified,0
+13,ITA,BEA,Haas,,15,classified,0
+13,ITA,OCO,Haas,,16,classified,0
+13,ITA,ALB,Williams,,17,classified,0
+13,ITA,PER,Cadillac,,18,classified,0
+13,ITA,BOT,Cadillac,,19,classified,0
+13,ITA,ALO,Aston Martin,,,DNF/NC,0
+13,ITA,LEC,Ferrari,,,DNF/NC,0
+13,ITA,STR,Aston Martin,,,DNF/NC,0
+14,ESP,ANT,Mercedes,,1,classified,25
+14,ESP,VER,Red Bull,,2,classified,18
+14,ESP,NOR,McLaren,,3,classified,15
+14,ESP,LEC,Ferrari,,4,classified,12
+14,ESP,RUS,Mercedes,,5,classified,10
+14,ESP,LAW,Red Bull,,6,classified,8
+14,ESP,COL,Alpine,,7,classified,6
+14,ESP,PIA,McLaren,,8,classified,4
+14,ESP,LIN,Racing Bulls,,9,classified,2
+14,ESP,HUL,Audi,,10,classified,1
+14,ESP,OCO,Haas,,11,classified,0
+14,ESP,GAS,Alpine,,12,classified,0
+14,ESP,BOR,Audi,,13,classified,0
+14,ESP,TSU,Racing Bulls,,14,classified,0
+14,ESP,ALB,Williams,,15,classified,0
+14,ESP,BEA,Haas,,16,classified,0
+14,ESP,ALO,Aston Martin,,17,classified,0
+14,ESP,BOT,Cadillac,,18,classified,0
+14,ESP,HAM,Ferrari,,,DNF/NC,0
+14,ESP,PER,Cadillac,,,DNF/NC,0
+14,ESP,SAI,Williams,,,DNF/NC,0
+14,ESP,STR,Aston Martin,,,DNF/NC,0
+15,AZE,RUS,Mercedes,1,1,classified,25
+15,AZE,VER,Red Bull,8,2,classified,18
+15,AZE,HAD,Red Bull,4,3,classified,15
+15,AZE,LEC,Ferrari,2,4,classified,12
+15,AZE,ANT,Mercedes,16,5,classified,10
+15,AZE,HAM,Ferrari,6,6,classified,8
+15,AZE,LIN,Racing Bulls,15,7,classified,6
+15,AZE,OCO,Haas,13,8,classified,4
+15,AZE,BEA,Haas,10,9,classified,2
+15,AZE,SAI,Williams,14,10,classified,1
+15,AZE,HUL,Audi,18,11,classified,0
+15,AZE,LAW,Racing Bulls,11,12,classified,0
+15,AZE,PIA,McLaren,3,13,classified,0
+15,AZE,PER,Cadillac,20,14,classified,0
+15,AZE,BOR,Audi,17,15,classified,0
+15,AZE,BOT,Cadillac,19,16,classified,0
+15,AZE,ALB,Williams,12,,DNF/NC,0
+15,AZE,ALO,Aston Martin,21,,DNF/NC,0
+15,AZE,COL,Alpine,9,,DNF/NC,0
+15,AZE,GAS,Alpine,7,,DNF/NC,0
+15,AZE,NOR,McLaren,5,,DNF/NC,0
+15,AZE,STR,Aston Martin,22,,DNF/NC,0
+16,BHR,VER,Red Bull,1,1,classified,25
+16,BHR,ANT,Mercedes,3,2,classified,18
+16,BHR,HAM,Ferrari,2,3,classified,15
+16,BHR,LEC,Ferrari,4,4,classified,12
+16,BHR,HAD,Red Bull,8,5,classified,10
+16,BHR,PIA,McLaren,6,6,classified,8
+16,BHR,LAW,Racing Bulls,11,7,classified,6
+16,BHR,ALO,Aston Martin,12,8,classified,4
+16,BHR,NOR,McLaren,5,9,classified,2
+16,BHR,LIN,Racing Bulls,22,10,classified,1
+16,BHR,HUL,Audi,15,11,classified,0
+16,BHR,STR,Aston Martin,14,12,classified,0
+16,BHR,COL,Alpine,21,13,classified,0
+16,BHR,BEA,Haas,16,14,classified,0
+16,BHR,OCO,Haas,17,15,classified,0
+16,BHR,GAS,Alpine,9,16,classified,0
+16,BHR,SAI,Williams,13,17,classified,0
+16,BHR,BOR,Audi,10,18,classified,0
+16,BHR,PER,Cadillac,20,19,classified,0
+16,BHR,RUS,Mercedes,7,20,classified,0
+16,BHR,ALB,Williams,18,,DNF/NC,0
+16,BHR,BOT,Cadillac,19,,DNF/NC,0
+17,SIN,VER,Red Bull,,1,classified,25
+17,SIN,LEC,Ferrari,,2,classified,18
+17,SIN,ANT,Mercedes,,3,classified,15
+17,SIN,NOR,McLaren,,4,classified,12
+17,SIN,PIA,McLaren,,5,classified,10
+17,SIN,HAM,Ferrari,,6,classified,8
+17,SIN,LAW,Racing Bulls,,7,classified,6
+17,SIN,HUL,Audi,,8,classified,4
+17,SIN,RUS,Mercedes,,9,classified,2
+17,SIN,HAD,Red Bull,,10,classified,1
+17,SIN,GAS,Alpine,,11,classified,0
+17,SIN,BEA,Haas,,12,classified,0
+17,SIN,OCO,Haas,,13,classified,0
+17,SIN,SAI,Williams,,14,classified,0
+17,SIN,LIN,Racing Bulls,,15,classified,0
+17,SIN,ALO,Aston Martin,,16,classified,0
+17,SIN,PER,Cadillac,,17,classified,0
+17,SIN,BOT,Cadillac,,18,classified,0
+17,SIN,ALB,Williams,,,DNF/NC,0
+17,SIN,BOR,Audi,,,DNF/NC,0
+17,SIN,COL,Alpine,,,DNF/NC,0
+17,SIN,STR,Aston Martin,,,DNF/NC,0
+18,USA,ANT,Mercedes,,1,classified,25
+18,USA,LEC,Ferrari,,2,classified,18
+18,USA,VER,Red Bull,,3,classified,15
+18,USA,HAM,Ferrari,,4,classified,12
+18,USA,NOR,McLaren,,5,classified,10
+18,USA,HAD,Red Bull,,6,classified,8
+18,USA,PIA,McLaren,,7,classified,6
+18,USA,RUS,Mercedes,,8,classified,4
+18,USA,LAW,Racing Bulls,,9,classified,2
+18,USA,GAS,Alpine,,10,classified,1
+18,USA,HUL,Audi,,11,classified,0
+18,USA,LIN,Racing Bulls,,12,classified,0
+18,USA,BOR,Audi,,13,classified,0
+18,USA,OCO,Haas,,14,classified,0
+18,USA,STR,Aston Martin,,15,classified,0
+18,USA,ALO,Aston Martin,,16,classified,0
+18,USA,ALB,Williams,,17,classified,0
+18,USA,SAI,Williams,,18,classified,0
+18,USA,PER,Cadillac,,19,classified,0
+18,USA,BEA,Haas,,,DNF/NC,0
+18,USA,BOT,Cadillac,,,DNF/NC,0
+18,USA,COL,Alpine,,,DNF/NC,0
+19,MEX,VER,Red Bull,5,1,classified,25
+19,MEX,HAM,Ferrari,1,2,classified,18
+19,MEX,ANT,Mercedes,4,3,classified,15
+19,MEX,LEC,Ferrari,3,4,classified,12
+19,MEX,NOR,McLaren,6,5,classified,10
+19,MEX,RUS,Mercedes,2,6,classified,8
+19,MEX,LAW,Racing Bulls,22,7,classified,6
+19,MEX,BOR,Audi,13,8,classified,4
+19,MEX,HAD,Red Bull,7,9,classified,2
+19,MEX,HIR,Haas,18,10,classified,1
+19,MEX,ALB,Williams,16,11,classified,0
+19,MEX,SAI,Williams,15,12,classified,0
+19,MEX,PIA,McLaren,12,13,classified,0
+19,MEX,HUL,Audi,10,14,classified,0
+19,MEX,COL,Alpine,11,15,classified,0
+19,MEX,PER,Cadillac,20,16,classified,0
+19,MEX,GAS,Alpine,9,17,classified,0
+19,MEX,ALO,Aston Martin,17,,DNF/NC,0
+19,MEX,BEA,Haas,14,,DNF/NC,0
+19,MEX,BOT,Cadillac,21,,DNF/NC,0
+19,MEX,LIN,Racing Bulls,8,,DNF/NC,0
+19,MEX,STR,Aston Martin,19,,DNF/NC,0
+20,SAP,NOR,McLaren,1,1,classified,25
+20,SAP,VER,Red Bull,21,2,classified,18
+20,SAP,HAD,Red Bull,5,3,classified,15
+20,SAP,RUS,Mercedes,7,4,classified,12
+20,SAP,ANT,Mercedes,2,5,classified,10
+20,SAP,PIA,McLaren,10,6,classified,8
+20,SAP,LEC,Ferrari,14,7,classified,6
+20,SAP,LAW,Racing Bulls,3,8,classified,4
+20,SAP,HAM,Ferrari,20,9,classified,2
+20,SAP,HUL,Audi,4,10,classified,1
+20,SAP,LIN,Racing Bulls,12,11,classified,0
+20,SAP,ALO,Aston Martin,8,12,classified,0
+20,SAP,COL,Alpine,15,13,classified,0
+20,SAP,GAS,Alpine,16,14,classified,0
+20,SAP,ALB,Williams,9,15,classified,0
+20,SAP,BOR,Audi,19,16,classified,0
+20,SAP,BEA,Haas,6,17,classified,0
+20,SAP,PER,Cadillac,22,18,classified,0
+20,SAP,SAI,Williams,13,19,classified,0
+20,SAP,CAM,Haas,11,20,classified,0
+20,SAP,BOT,Cadillac,18,,DNF/NC,0
+20,SAP,STR,Aston Martin,17,,DNF/NC,0

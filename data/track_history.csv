@@ -1,0 +1,162 @@
+circuit,year,driver_code,finish_position,status
+Mexico City,2025,NOR,1,classified
+Mexico City,2025,LEC,2,classified
+Mexico City,2025,VER,3,classified
+Mexico City,2025,BEA,4,classified
+Mexico City,2025,PIA,5,classified
+Mexico City,2025,ANT,6,classified
+Mexico City,2025,RUS,7,classified
+Mexico City,2025,HAM,8,classified
+Mexico City,2025,OCO,9,classified
+Mexico City,2025,BOR,10,classified
+Mexico City,2025,TSU,11,classified
+Mexico City,2025,ALB,12,classified
+Mexico City,2025,HAD,13,classified
+Mexico City,2025,STR,14,classified
+Mexico City,2025,GAS,15,classified
+Mexico City,2025,COL,16,classified
+Mexico City,2025,SAI,,DNF
+Mexico City,2025,ALO,,DNF
+Mexico City,2025,HUL,,DNF
+Mexico City,2025,LAW,,DNF
+Mexico City,2024,SAI,1,classified
+Mexico City,2024,NOR,2,classified
+Mexico City,2024,LEC,3,classified
+Mexico City,2024,HAM,4,classified
+Mexico City,2024,RUS,5,classified
+Mexico City,2024,VER,6,classified
+Mexico City,2024,PIA,8,classified
+Mexico City,2024,HUL,9,classified
+Mexico City,2024,GAS,10,classified
+Mexico City,2024,STR,11,classified
+Mexico City,2024,COL,12,classified
+Mexico City,2024,OCO,13,classified
+Mexico City,2024,BOT,14,classified
+Mexico City,2024,LAW,16,classified
+Mexico City,2024,PER,17,classified
+Mexico City,2024,ALO,,DNF
+Mexico City,2024,ALB,,DNF
+Mexico City,2024,TSU,,DNF
+Mexico City,2023,VER,1,classified
+Mexico City,2023,HAM,2,classified
+Mexico City,2023,LEC,3,classified
+Mexico City,2023,SAI,4,classified
+Mexico City,2023,NOR,5,classified
+Mexico City,2023,RUS,6,classified
+Mexico City,2023,PIA,8,classified
+Mexico City,2023,ALB,9,classified
+Mexico City,2023,OCO,10,classified
+Mexico City,2023,GAS,11,classified
+Mexico City,2023,TSU,12,classified
+Mexico City,2023,HUL,13,classified
+Mexico City,2023,BOT,14,classified
+Mexico City,2023,STR,17,classified
+Mexico City,2023,ALO,,DNF
+Mexico City,2023,PER,,DNF
+Interlagos,2025,NOR,1,classified
+Interlagos,2025,ANT,2,classified
+Interlagos,2025,VER,3,classified
+Interlagos,2025,RUS,4,classified
+Interlagos,2025,PIA,5,classified
+Interlagos,2025,BEA,6,classified
+Interlagos,2025,LAW,7,classified
+Interlagos,2025,HAD,8,classified
+Interlagos,2025,HUL,9,classified
+Interlagos,2025,GAS,10,classified
+Interlagos,2025,ALB,11,classified
+Interlagos,2025,OCO,12,classified
+Interlagos,2025,SAI,13,classified
+Interlagos,2025,ALO,14,classified
+Interlagos,2025,COL,15,classified
+Interlagos,2025,STR,16,classified
+Interlagos,2025,TSU,17,classified
+Interlagos,2025,HAM,,DNF
+Interlagos,2025,LEC,,DNF
+Interlagos,2025,BOR,,DNF
+Interlagos,2024,VER,1,classified
+Interlagos,2024,OCO,2,classified
+Interlagos,2024,GAS,3,classified
+Interlagos,2024,RUS,4,classified
+Interlagos,2024,LEC,5,classified
+Interlagos,2024,NOR,6,classified
+Interlagos,2024,TSU,7,classified
+Interlagos,2024,PIA,8,classified
+Interlagos,2024,LAW,9,classified
+Interlagos,2024,HAM,10,classified
+Interlagos,2024,PER,11,classified
+Interlagos,2024,BEA,12,classified
+Interlagos,2024,BOT,13,classified
+Interlagos,2024,ALO,14,classified
+Interlagos,2024,SAI,,DNF
+Interlagos,2024,COL,,DNF
+Interlagos,2024,HUL,,DNF
+Interlagos,2023,VER,1,classified
+Interlagos,2023,NOR,2,classified
+Interlagos,2023,ALO,3,classified
+Interlagos,2023,PER,4,classified
+Interlagos,2023,STR,5,classified
+Interlagos,2023,SAI,6,classified
+Interlagos,2023,GAS,7,classified
+Interlagos,2023,HAM,8,classified
+Interlagos,2023,TSU,9,classified
+Interlagos,2023,OCO,10,classified
+Interlagos,2023,HUL,12,classified
+Interlagos,2023,PIA,14,classified
+Interlagos,2023,RUS,,DNF
+Interlagos,2023,BOT,,DNF
+Interlagos,2023,LEC,,DNF
+Interlagos,2023,ALB,,DNF
+Las Vegas,2025,VER,1,classified
+Las Vegas,2025,RUS,2,classified
+Las Vegas,2025,ANT,3,classified
+Las Vegas,2025,LEC,4,classified
+Las Vegas,2025,SAI,5,classified
+Las Vegas,2025,HAD,6,classified
+Las Vegas,2025,HUL,7,classified
+Las Vegas,2025,HAM,8,classified
+Las Vegas,2025,OCO,9,classified
+Las Vegas,2025,BEA,10,classified
+Las Vegas,2025,ALO,11,classified
+Las Vegas,2025,TSU,12,classified
+Las Vegas,2025,GAS,13,classified
+Las Vegas,2025,LAW,14,classified
+Las Vegas,2025,COL,15,classified
+Las Vegas,2025,ALB,,DNF
+Las Vegas,2025,BOR,,DNF
+Las Vegas,2025,STR,,DNF
+Las Vegas,2024,RUS,1,classified
+Las Vegas,2024,HAM,2,classified
+Las Vegas,2024,SAI,3,classified
+Las Vegas,2024,LEC,4,classified
+Las Vegas,2024,VER,5,classified
+Las Vegas,2024,NOR,6,classified
+Las Vegas,2024,PIA,7,classified
+Las Vegas,2024,HUL,8,classified
+Las Vegas,2024,TSU,9,classified
+Las Vegas,2024,PER,10,classified
+Las Vegas,2024,ALO,11,classified
+Las Vegas,2024,COL,14,classified
+Las Vegas,2024,STR,15,classified
+Las Vegas,2024,LAW,16,classified
+Las Vegas,2024,OCO,17,classified
+Las Vegas,2024,BOT,18,classified
+Las Vegas,2024,ALB,,DNF
+Las Vegas,2024,GAS,,DNF
+Las Vegas,2023,VER,1,classified
+Las Vegas,2023,LEC,2,classified
+Las Vegas,2023,PER,3,classified
+Las Vegas,2023,OCO,4,classified
+Las Vegas,2023,STR,5,classified
+Las Vegas,2023,SAI,6,classified
+Las Vegas,2023,HAM,7,classified
+Las Vegas,2023,RUS,8,classified
+Las Vegas,2023,ALO,9,classified
+Las Vegas,2023,PIA,10,classified
+Las Vegas,2023,GAS,11,classified
+Las Vegas,2023,ALB,12,classified
+Las Vegas,2023,BOT,17,classified
+Las Vegas,2023,TSU,,DNF
+Las Vegas,2023,HUL,,DNF
+Las Vegas,2023,NOR,,DNF
+Las Vegas,2025,NOR,,DSQ (technical)
+Las Vegas,2025,PIA,,DSQ (technical)

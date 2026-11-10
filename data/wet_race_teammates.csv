@@ -1,0 +1,47 @@
+race,driver_a,finish_a,driver_b,finish_b
+2024 São Paulo GP,VER,1,PER,11
+2024 São Paulo GP,OCO,2,GAS,3
+2024 São Paulo GP,RUS,4,HAM,10
+2024 São Paulo GP,LEC,5,SAI,R
+2024 São Paulo GP,NOR,6,PIA,8
+2024 São Paulo GP,TSU,7,LAW,9
+2024 São Paulo GP,BEA,12,HUL,R
+2025 Australian GP,NOR,1,PIA,9
+2025 Australian GP,VER,2,LAW,R
+2025 Australian GP,RUS,3,ANT,4
+2025 Australian GP,ALB,5,SAI,R
+2025 Australian GP,STR,6,ALO,R
+2025 Australian GP,HUL,7,BOR,R
+2025 Australian GP,LEC,8,HAM,10
+2025 Australian GP,OCO,13,BEA,14
+2025 British GP,NOR,1,PIA,2
+2025 British GP,HUL,3,BOR,R
+2025 British GP,HAM,4,LEC,14
+2025 British GP,VER,5,TSU,15
+2025 British GP,STR,7,ALO,9
+2025 British GP,ALB,8,SAI,12
+2025 British GP,RUS,10,ANT,R
+2025 British GP,BEA,11,OCO,13
+2025 British GP,HAD,R,LAW,R
+2026 Bahrain GP (Sepang),ANT,2,RUS,20
+2026 Bahrain GP (Sepang),HAM,3,LEC,4
+2026 Bahrain GP (Sepang),VER,1,HAD,5
+2026 Bahrain GP (Sepang),NOR,9,PIA,6
+2026 Bahrain GP (Sepang),LAW,7,LIN,10
+2026 Bahrain GP (Sepang),GAS,16,COL,13
+2026 Bahrain GP (Sepang),BEA,14,OCO,15
+2026 Bahrain GP (Sepang),HUL,11,BOR,18
+2026 Bahrain GP (Sepang),ALO,8,STR,12
+2026 Bahrain GP (Sepang),SAI,17,ALB,R
+2026 Bahrain GP (Sepang),BOT,R,PER,19
+2026 São Paulo GP,ANT,5,RUS,4
+2026 São Paulo GP,HAM,9,LEC,7
+2026 São Paulo GP,VER,2,HAD,3
+2026 São Paulo GP,NOR,1,PIA,6
+2026 São Paulo GP,LAW,8,LIN,11
+2026 São Paulo GP,GAS,14,COL,13
+2026 São Paulo GP,BEA,17,OCO,20
+2026 São Paulo GP,HUL,10,BOR,16
+2026 São Paulo GP,ALO,12,STR,R
+2026 São Paulo GP,SAI,19,ALB,15
+2026 São Paulo GP,BOT,R,PER,18

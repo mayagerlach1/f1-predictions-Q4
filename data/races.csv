@@ -1,0 +1,21 @@
+round,race_code,grand_prix,circuit,race_date,season_half,sprint_weekend,conditions,pole_driver,grid_available
+1,AUS,Australian Grand Prix,"Albert Park, Melbourne",2026-03-08,H1,no,dry,RUS,yes
+2,CHN,Chinese Grand Prix,Shanghai International Circuit,2026-03-15,H1,yes,dry,ANT,yes
+3,JPN,Japanese Grand Prix,Suzuka,2026-03-29,H1,no,dry,ANT,no
+4,MIA,Miami Grand Prix,Miami International Autodrome,2026-05-03,H1,yes,dry,ANT,yes
+5,CAN,Canadian Grand Prix,Circuit Gilles-Villeneuve,2026-05-24,H1,yes,dry,RUS,no
+6,MON,Monaco Grand Prix,Circuit de Monaco,2026-06-07,H1,no,dry,ANT,no
+7,BCN,Barcelona-Catalunya Grand Prix,Circuit de Barcelona-Catalunya,2026-06-14,H1,no,dry,RUS,yes
+8,AUT,Austrian Grand Prix,Red Bull Ring,2026-06-28,H1,no,dry,RUS,yes
+9,GBR,British Grand Prix,Silverstone,2026-07-05,H1,yes,dry,ANT,yes
+10,BEL,Belgian Grand Prix,Spa-Francorchamps,2026-07-19,H1,no,dry,ANT,yes
+11,HUN,Hungarian Grand Prix,Hungaroring,2026-07-26,H2,no,dry,NOR,yes
+12,NED,Dutch Grand Prix,Zandvoort,2026-08-23,H2,yes,dry,NOR,no
+13,ITA,Italian Grand Prix,Monza,2026-09-06,H2,no,dry,GAS,no
+14,ESP,Spanish Grand Prix,"Madring, Madrid",2026-09-13,H2,no,dry,,no
+15,AZE,Azerbaijan Grand Prix,Baku City Circuit,2026-09-26,H2,no,dry,,yes
+16,BHR,"Bahrain Grand Prix (held at Sepang, Malaysia)",Sepang International Circuit,2026-10-04,H2,no,wet,VER,yes
+17,SIN,Singapore Grand Prix,Marina Bay,2026-10-11,H2,yes,dry,VER,no
+18,USA,United States Grand Prix,Circuit of the Americas,2026-10-25,H2,no,dry,ANT,no
+19,MEX,Mexico City Grand Prix,Autódromo Hermanos Rodríguez,2026-11-01,H2,no,dry,HAM,yes
+20,SAP,São Paulo Grand Prix,Interlagos,2026-11-08,H2,no,wet,NOR,yes
