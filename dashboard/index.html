@@ -3,239 +3,325 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>F1 Fantasy Dashboard</title>
-<meta name="description" content="Three-level dashboard for F1 Fantasy picks: overview, diagnosis and race-by-race records, built on verified 2026 data.">
+<title>Fantasy Pit Wall</title>
+<meta name="description" content="Telemetry-style three-level dashboard for F1 Fantasy picks: overview, diagnosis and race-by-race records, built on verified 2026 data.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;0,900;1,700;1,900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f7f6f3; --panel: #ffffff; --panel2: #f2f1ed; --border: #e8e6e0;
-    --text: #16161d; --muted: #6f6d78; --faint: #a5a3ad;
-    --red: #d4002a; --green: #00875a; --amber: #b7791f; --blue: #3d5bd9;
-    --shadow: 0 1px 2px rgba(22,22,29,.04), 0 8px 24px -14px rgba(22,22,29,.14);
+    /* page = light, instrument screen = soft slate (lighter than a real dash) */
+    --page: #e8ebef; --page2: #f6f7f9; --ink: #171a20; --inkm: #5d6573;
+    --tile: #3b434f; --tile2: #444d5a; --face: #343b46; --div: #525b69; --tick: #8b95a5;
+    --text: #f4f6f9; --muted: #b3bbc8; --faint: #8590a0;
+    --red: #ff3b30; --red2: #ff6259; --green: #46c86e; --blue: #3d8eff; --purple: #b553db; --amber: #ffb23f;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: "Titillium Web", system-ui, sans-serif; line-height: 1.45; -webkit-font-smoothing: antialiased; }
-  .mono, .num { font-family: "JetBrains Mono", monospace; }
+  html { background: var(--page); }
+  body { color: var(--ink); font-family: "Titillium Web", system-ui, sans-serif; line-height: 1.45; -webkit-font-smoothing: antialiased; min-height: 100vh;
+    background: radial-gradient(900px 400px at 90% -5%, rgba(255,59,48,.10), transparent 60%), linear-gradient(180deg, var(--page2), var(--page) 420px); }
   button, select, input { font: inherit; color: inherit; }
-  a { color: var(--green); }
+  a { color: inherit; text-decoration-color: var(--red); text-underline-offset: 3px; }
 
-  /* Shell */
-  .shell { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
-  aside.nav { background: #16161d; color: #fff; padding: 22px 14px; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 6px; }
-  .brand { display: flex; align-items: center; gap: 10px; font-weight: 900; font-style: italic; font-size: 1.05rem; padding: 0 8px 18px; }
-  .brand svg { width: 34px; height: 22px; }
-  .brand em { color: #ff4d6d; font-style: italic; }
-  .navbtn { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: none; border: none; color: #c9c8d3; padding: 10px 12px; border-radius: 10px; cursor: pointer; font-weight: 600; }
-  .navbtn .lv { font-family: "JetBrains Mono", monospace; font-size: .72rem; color: #8a89a0; width: 22px; }
-  .navbtn:hover { background: #24242e; color: #fff; }
-  .navbtn.on { background: #fff; color: #16161d; }
-  .navbtn.on .lv { color: var(--red); }
-  .nav .foot { margin-top: auto; font-size: .76rem; color: #8a89a0; padding: 0 8px; line-height: 1.5; }
-  .nav .foot a { color: #c9c8d3; }
-  main { padding: 26px 32px 48px; min-width: 0; }
-  @media (max-width: 900px) {
-    .shell { grid-template-columns: 1fr; }
-    aside.nav { position: sticky; height: auto; flex-direction: row; align-items: center; padding: 10px 12px; z-index: 30; overflow-x: auto; }
-    .brand { padding: 0 8px 0 0; font-size: .95rem; white-space: nowrap; }
-    .brand span.full { display: none; }
-    .navbtn { width: auto; white-space: nowrap; padding: 8px 10px; }
-    .nav .foot { display: none; }
-    main { padding: 18px 16px 40px; }
-  }
+  /* ---------- top bar ---------- */
+  header.top { position: sticky; top: 0; z-index: 40; background: rgba(255,255,255,.88); backdrop-filter: blur(12px); border-bottom: 1px solid #d9dde3; }
+  .topin { max-width: 1320px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; gap: 22px; height: 62px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 900; font-style: italic; font-size: 1.22rem; letter-spacing: -.02em; text-transform: uppercase; white-space: nowrap; }
+  .brand .mark { width: 38px; height: 24px; }
+  .brand em { color: var(--red); }
+  nav.tabs { display: flex; gap: 4px; height: 100%; overflow-x: auto; scrollbar-width: none; }
+  .tab { position: relative; background: none; border: none; color: var(--inkm); padding: 0 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; font-size: .88rem; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+  .tab .lv { font-family: "JetBrains Mono", monospace; font-size: .7rem; color: #a2a9b4; }
+  .tab:hover, .tab.on { color: var(--ink); }
+  .tab.on::after { content: ""; position: absolute; left: 10px; right: 10px; bottom: 0; height: 4px; background: var(--red); border-radius: 4px 4px 0 0; }
+  .tab.on .lv { color: var(--red); }
+  .topin .meta { margin-left: auto; font-size: .78rem; color: var(--inkm); white-space: nowrap; }
+  .checker { height: 5px; background: repeating-linear-gradient(90deg, #171a20 0 8px, #fff 8px 16px); }
+  @media (max-width: 800px) { .topin { padding: 0 12px; gap: 10px; } .brand .full, .topin .meta { display: none; } .tab { padding: 0 8px; font-size: .8rem; } .tab .lv { display: none; } .brand .mark { width: 28px; } }
+  @media (max-width: 440px) { .brand > span { display: none; } }
 
-  /* Page header */
-  .crumb { font-size: .8rem; color: var(--muted); display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
-  .crumb b { color: var(--text); font-weight: 600; }
-  .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin: 4px 0 16px; }
-  h1 { font-size: clamp(1.6rem, 3.4vw, 2.2rem); letter-spacing: -.025em; line-height: 1.05; }
-  h1 .lv { color: var(--red); }
-  .q { color: var(--muted); font-size: 1rem; margin-top: 4px; }
-  .btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); background: var(--panel); padding: 8px 14px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: .9rem; }
-  .btn:hover { border-color: #cfcdc6; }
-  .btn.primary { background: var(--text); color: #fff; border-color: var(--text); }
-  .btn.primary:hover { background: var(--red); border-color: var(--red); }
+  main { max-width: 1320px; margin: 0 auto; padding: 0 24px 60px; }
+  @media (max-width: 800px) { main { padding: 0 12px 50px; } }
 
-  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-  .filters label { display: inline-flex; align-items: center; gap: 6px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 0 4px 0 12px; font-size: .82rem; color: var(--muted); }
-  .filters select { border: none; background: transparent; padding: 8px 6px; font-weight: 600; font-size: .9rem; color: var(--text); cursor: pointer; outline: none; }
+  /* ---------- page title ---------- */
+  .hero { position: relative; overflow: hidden; margin: 22px 0 16px; padding: 4px 0 0 30px; min-height: 150px; }
+  .hero .stripe { position: absolute; left: 6px; top: 8px; bottom: 8px; width: 6px; background: var(--red); border-radius: 3px; transform: skewX(-10deg); }
+  .hero .crumb { font-size: .78rem; color: var(--inkm); letter-spacing: .08em; text-transform: uppercase; font-weight: 700; }
+  .hero .crumb b { color: var(--ink); }
+  .hero h1 { font-size: clamp(2rem, 4.8vw, 3.4rem); font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -.035em; line-height: .95; margin: 8px 0 8px; position: relative; max-width: 720px; }
+  .hero h1 .lv { color: var(--red); }
+  .hero .q { color: var(--inkm); font-size: 1.04rem; max-width: 540px; position: relative; }
+  .hero .car { position: absolute; right: 0; bottom: 0; width: min(440px, 42%); pointer-events: none; filter: drop-shadow(0 14px 14px rgba(20,25,35,.25)); }
+  .hero .actions { position: relative; margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .hero.small { min-height: 0; }
+  @media (max-width: 800px) { .hero { min-height: 0; padding-left: 26px; } .hero .car { display: none; } }
 
-  /* Cards */
-  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
-  @media (max-width: 1100px) { .grid4 { grid-template-columns: repeat(2, 1fr); } }
-  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px 18px; box-shadow: var(--shadow); min-width: 0; }
-  .kpi .t { font-size: .78rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); font-weight: 700; }
-  .kpi .v { font-family: "JetBrains Mono", monospace; font-size: 1.85rem; font-weight: 600; line-height: 1.15; margin-top: 6px; letter-spacing: -.02em; }
-  .kpi .who { font-weight: 700; font-size: 1rem; margin-top: 2px; display: flex; align-items: center; gap: 6px; }
-  .kpi .s { font-size: .82rem; color: var(--muted); margin-top: 4px; }
-  .kpi .s .up { color: var(--green); font-weight: 700; } .kpi .s .down { color: var(--red); font-weight: 700; }
-  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--tc, #999); flex: none; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,.18); background: var(--tile2); color: var(--text); padding: 9px 16px; border-radius: 999px; cursor: pointer; font-weight: 700; font-size: .86rem; text-transform: uppercase; letter-spacing: .04em; }
+  .btn.primary { background: var(--red); border-color: var(--red); color: #fff; box-shadow: 0 8px 22px -10px rgba(255,59,48,.9); }
+  .btn.primary:hover { background: var(--red2); }
 
-  .row2 { display: grid; grid-template-columns: 1.15fr 1fr; gap: 12px; margin-bottom: 12px; }
-  @media (max-width: 1100px) { .row2 { grid-template-columns: 1fr; } }
-  .card h2 { font-size: 1.05rem; letter-spacing: -.01em; display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-  .card h2 small { font-weight: 400; color: var(--muted); font-size: .8rem; }
-  .legend { display: flex; gap: 14px; font-size: .78rem; color: var(--muted); margin: 6px 0 4px; flex-wrap: wrap; }
-  .legend i { display: inline-block; width: 12px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .filters label { display: inline-flex; align-items: center; gap: 6px; background: #fff; border: 1px solid #d6dbe2; border-radius: 999px; padding: 0 6px 0 14px; font-size: .72rem; color: var(--inkm); text-transform: uppercase; letter-spacing: .08em; font-weight: 700; }
+  .filters select { border: none; background: transparent; padding: 9px 6px; font-weight: 700; font-size: .9rem; color: var(--ink); cursor: pointer; outline: none; text-transform: none; letter-spacing: 0; }
+
+  /* ---------- instrument screen ---------- */
+  .screen { background: var(--div); border-radius: 20px; padding: 1px; overflow: hidden; display: grid; gap: 1px; box-shadow: 0 0 0 7px #2a3039, 0 0 0 8px #ff3b3055, 0 24px 50px -20px rgba(20,25,35,.55); margin: 8px 8px 22px; color: var(--text); }
+  .tile { background: var(--tile); padding: 16px 18px; min-width: 0; position: relative; }
+  .tile h2, .tile .tt { font-size: .74rem; text-transform: uppercase; letter-spacing: .14em; color: var(--muted); font-weight: 700; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; text-align: left; }
+  .tile h2 small { text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--faint); font-size: .78rem; }
+  .s4 { grid-template-columns: repeat(4, 1fr); }
+  .s2 { grid-template-columns: 1.1fr 1fr; }
+  @media (max-width: 1100px) { .s4 { grid-template-columns: repeat(2, 1fr); } .s2 { grid-template-columns: 1fr; } }
+  @media (max-width: 800px) { .screen { margin: 6px 6px 18px; border-radius: 16px; } }
+  .tile.center { text-align: center; display: flex; flex-direction: column; align-items: center; }
+  .gauge { width: 100%; max-width: 230px; height: auto; display: block; margin: 4px auto 0; }
   svg text { font-family: "JetBrains Mono", monospace; }
+  .gv { font-size: 2.9rem; font-weight: 300; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .gv small { font-size: .95rem; color: var(--muted); font-weight: 400; margin-left: 3px; }
+  .gl { font-size: .72rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); font-weight: 700; margin-top: 4px; }
+  .gw { font-size: .95rem; font-weight: 900; font-style: italic; text-transform: uppercase; margin-top: 6px; display: inline-flex; align-items: center; gap: 7px; }
+  .gs { font-size: .78rem; color: var(--faint); margin-top: 2px; }
+  .tag { display: inline-block; width: 5px; height: 16px; border-radius: 2px; background: var(--tc, #888); flex: none; transform: skewX(-14deg); }
+  .legend { display: flex; gap: 16px; font-size: .76rem; color: var(--muted); margin: 6px 0 2px; flex-wrap: wrap; }
+  .legend i { display: inline-block; width: 12px; height: 10px; border-radius: 1px; margin-right: 6px; vertical-align: -1px; }
+  .meters { display: flex; justify-content: center; gap: 4px; width: 100%; }
+  .meters svg { width: 33%; max-width: 92px; height: auto; }
 
-  /* Tables */
-  .tw { overflow-x: auto; margin-top: 8px; }
-  table { width: 100%; border-collapse: collapse; font-size: .88rem; }
-  th { text-align: left; color: var(--muted); font-weight: 600; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; padding: 8px 8px; border-bottom: 1px solid var(--border); white-space: nowrap; }
-  th.sort { cursor: pointer; user-select: none; } th.sort:hover { color: var(--text); }
-  td { padding: 8px 8px; border-bottom: 1px solid var(--border); white-space: nowrap; }
-  td.num, th.num { text-align: right; font-family: "JetBrains Mono", monospace; }
-  tbody tr.click { cursor: pointer; } tbody tr.click:hover td { background: #faf9f6; }
-  tr.sel td { background: #fff4f1 !important; }
-  tfoot td { font-weight: 700; border-top: 2px solid var(--border); border-bottom: none; }
-  .bar { display: inline-block; height: 7px; border-radius: 4px; background: var(--tc, var(--blue)); vertical-align: middle; margin-right: 8px; }
-  .pill { display: inline-block; font-size: .72rem; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: var(--panel2); color: var(--muted); }
-  .pill.dnf { background: #fbe3e6; color: #b0182f; } .pill.wet { background: #e6effc; color: #2b54b8; } .pill.win { background: #fff1c2; color: #6b4e00; }
-  .pos { color: var(--green); font-weight: 700; } .neg { color: var(--red); font-weight: 700; }
+  /* ---------- timing tower ---------- */
+  .tower { display: flex; flex-direction: column; gap: 3px; margin-top: 10px; }
+  .trow { display: grid; grid-template-columns: 30px 6px 1fr 74px 54px 56px 66px; align-items: center; gap: 10px; background: var(--face); border-radius: 6px; padding: 7px 12px 7px 7px; cursor: pointer; font-size: .9rem; border: 1px solid transparent; }
+  .trow:hover { border-color: #6b7483; }
+  .trow.head { background: none; cursor: default; font-size: .64rem; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; font-weight: 700; padding-top: 0; padding-bottom: 2px; }
+  .trow.head:hover { border-color: transparent; }
+  .trow .p { font-family: "JetBrains Mono", monospace; font-weight: 700; text-align: center; background: #59626f; border-radius: 4px; padding: 1px 0; font-size: .8rem; }
+  .trow:nth-child(2) .p { background: var(--red); }
+  .trow .c { height: 20px; width: 6px; border-radius: 2px; background: var(--tc); transform: skewX(-14deg); }
+  .trow .n { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .trow .n b { font-style: italic; font-weight: 900; letter-spacing: .02em; margin-right: 6px; }
+  .trow .n span { color: var(--muted); font-weight: 400; font-size: .82rem; }
+  .trow .r { font-family: "JetBrains Mono", monospace; text-align: right; font-size: .86rem; }
+  .trow.head .r { font: inherit; }
+  .trow .r.big { font-weight: 700; }
+  @media (max-width: 560px) { .trow { grid-template-columns: 24px 5px 1fr 54px 40px 50px; gap: 7px; font-size: .84rem; } .trow .hide-s, .trow .n span { display: none; } .trow.head { font-size: .58rem; letter-spacing: .04em; } }
+  .pos { color: var(--green); } .neg { color: var(--red2); }
+  .note { color: var(--faint); font-size: .78rem; margin-top: 10px; }
 
-  .focus { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; border-left: 4px solid var(--red); }
-  .focus b { font-size: 1.1rem; } .focus p { color: var(--muted); }
-  .note { color: var(--muted); font-size: .8rem; margin-top: 10px; }
-  .src { color: var(--faint); font-size: .76rem; margin-top: 18px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  /* focus = "lap time" tile */
+  .focus { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 22px; }
+  @media (max-width: 900px) { .focus { grid-template-columns: auto 1fr; } .focus .fcar { display: none; } }
+  @media (max-width: 560px) { .focus { grid-template-columns: 1fr; gap: 12px; } .roundel { display: none; } .focus .lap { text-align: left; } .gv { font-size: 2.1rem; } .gv small { display: block; margin: 2px 0 0; font-size: .75rem; } .tile { padding: 14px 12px; } }
+  .roundel { width: 84px; height: 84px; border-radius: 50%; border: 3px solid #c9d0da; display: grid; place-items: center; position: relative; background: radial-gradient(circle, #4a5360, #3b434f 70%); }
+  .roundel::before, .roundel::after { content: ""; position: absolute; width: 8px; background: #c9d0da; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); opacity: .25; }
+  .roundel::after { width: auto; height: 8px; left: 0; right: 0; top: 50%; bottom: auto; transform: translateY(-50%); }
+  .roundel span { position: relative; z-index: 1; font-size: 2.2rem; font-weight: 300; }
+  .focus .ft { font-size: .7rem; text-transform: uppercase; letter-spacing: .14em; color: var(--red2); font-weight: 700; }
+  .focus b { font-size: 1.4rem; font-weight: 900; font-style: italic; text-transform: uppercase; display: block; }
+  .focus p { color: var(--muted); max-width: 640px; font-size: .92rem; }
+  .focus .lap { text-align: center; }
+  .focus .fcar { width: 220px; }
+  .src { color: var(--inkm); font-size: .76rem; margin-top: 4px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; border-top: 1px solid #d6dbe2; padding-top: 12px; }
 
-  /* Analysis layout */
-  .split { display: grid; grid-template-columns: 250px 1fr; gap: 12px; }
+  /* ---------- analysis ---------- */
+  .split { display: grid; grid-template-columns: 260px 1fr; gap: 1px; align-items: stretch; }
   @media (max-width: 1000px) { .split { grid-template-columns: 1fr; } }
-  .dlist { padding: 8px; max-height: 760px; overflow-y: auto; }
-  @media (max-width: 1000px) { .dlist { max-height: 220px; } }
-  .ditem { display: grid; grid-template-columns: 22px 1fr auto; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 10px; cursor: pointer; font-size: .9rem; border: 1px solid transparent; }
-  .ditem:hover { background: var(--panel2); }
-  .ditem.on { background: #fff4f1; border-color: #f3c9c0; }
-  .ditem .r { color: var(--faint); font-family: "JetBrains Mono", monospace; font-size: .75rem; }
-  .ditem .p { font-family: "JetBrains Mono", monospace; font-size: .8rem; color: var(--muted); }
-  .dhead { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
-  .dhead .nm { font-size: 1.6rem; font-weight: 700; letter-spacing: -.02em; display: flex; align-items: center; gap: 10px; }
-  .dhead .tm { color: var(--muted); }
-  .chips { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
-  @media (max-width: 700px) { .chips { grid-template-columns: repeat(2, 1fr); } }
-  .chip { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; }
-  .chip .t { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-weight: 700; }
-  .chip .v { font-family: "JetBrains Mono", monospace; font-size: 1.3rem; font-weight: 600; }
-  .chip .s { font-size: .75rem; color: var(--muted); }
-  .read { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; color: #3b3a44; font-size: .92rem; margin-bottom: 12px; }
+  .dlist { padding: 10px; display: flex; flex-direction: column; gap: 3px; }
+  @media (max-width: 1000px) { .dlist { max-height: 220px; overflow-y: auto; } }
+  .ditem { display: grid; grid-template-columns: 22px 5px 1fr auto; align-items: center; gap: 9px; padding: 7px 10px; border-radius: 6px; cursor: pointer; font-size: .88rem; background: var(--face); border: 1px solid transparent; }
+  .ditem:hover { border-color: #6b7483; }
+  .ditem.on { border-color: var(--red); background: #4b3b42; }
+  .ditem .r { color: var(--faint); font-family: "JetBrains Mono", monospace; font-size: .74rem; text-align: center; }
+  .ditem .c { height: 16px; width: 5px; border-radius: 2px; background: var(--tc); transform: skewX(-14deg); }
+  .ditem .p { font-family: "JetBrains Mono", monospace; font-size: .78rem; color: var(--muted); }
+  .dband { position: relative; padding: 20px 22px 18px; background: linear-gradient(100deg, color-mix(in srgb, var(--tc) 45%, #3b434f) 0%, #3b434f 65%); min-height: 160px; overflow: hidden; }
+  .dband .code { position: absolute; right: 20px; top: 4px; font-size: 6rem; font-weight: 900; font-style: italic; letter-spacing: -.05em; color: rgba(255,255,255,.08); line-height: 1; }
+  .dband .car { position: absolute; right: 8px; bottom: 4px; width: min(400px, 46%); z-index: 1; filter: drop-shadow(0 12px 14px rgba(0,0,0,.4)); }
+  .dband .nm { position: relative; z-index: 2; font-size: clamp(1.7rem, 3.8vw, 2.6rem); font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -.03em; line-height: 1; }
+  .dband .tm { position: relative; z-index: 2; color: #e4e8ee; font-weight: 600; margin-top: 6px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .dband .tm .chipr { background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.18); border-radius: 999px; padding: 1px 10px; font-size: .8rem; }
+  .dband .go { position: relative; z-index: 2; margin-top: 14px; }
+  @media (max-width: 700px) { .dband .car { opacity: .3; width: 70%; } .dband .code { font-size: 4.2rem; } }
+  .read { color: var(--muted); font-size: .94rem; }
   .read b { color: var(--text); }
-  .segs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 8px; }
+  .segs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 10px; }
   @media (max-width: 700px) { .segs { grid-template-columns: 1fr; } }
-  .seg h3 { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 8px; }
-  .sbar { display: grid; grid-template-columns: 74px 1fr 46px; align-items: center; gap: 8px; font-size: .82rem; margin-bottom: 6px; }
-  .sbar .tr { height: 14px; background: var(--panel2); border-radius: 5px; overflow: hidden; }
-  .sbar .tr i { display: block; height: 100%; background: var(--tc, var(--blue)); border-radius: 5px; }
-  .sbar .val { font-family: "JetBrains Mono", monospace; text-align: right; }
+  .seg h3 { font-size: .7rem; text-transform: uppercase; letter-spacing: .12em; color: var(--faint); margin-bottom: 10px; }
+  .sbar { display: grid; grid-template-columns: 78px 1fr 46px; align-items: center; gap: 8px; font-size: .84rem; margin-bottom: 8px; }
+  .sbar .tr { height: 12px; background: var(--face); border-radius: 2px; overflow: hidden; background-image: repeating-linear-gradient(90deg, transparent 0 9px, rgba(255,255,255,.08) 9px 10px); }
+  .sbar .tr i { display: block; height: 100%; background: var(--tc, var(--blue)); }
+  .sbar .val { font-family: "JetBrains Mono", monospace; text-align: right; font-weight: 700; }
   .sbar .lab small { color: var(--faint); }
-  .h2h { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; text-align: center; }
-  .h2h .big { font-family: "JetBrains Mono", monospace; font-size: 1.6rem; font-weight: 600; }
+  .h2h { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; text-align: center; }
+  .h2h .big { font-size: 3rem; font-weight: 300; line-height: 1; }
+  .h2h .who { font-weight: 900; font-style: italic; text-transform: uppercase; margin-top: 4px; }
+  .h2h .bar2 { grid-column: 1 / -1; height: 10px; border-radius: 2px; overflow: hidden; display: flex; margin-top: 6px; }
 
-  .toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-  .search { border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; background: var(--panel); min-width: 200px; }
+  /* ---------- records ---------- */
+  .tw { overflow-x: auto; margin-top: 8px; }
+  table { width: 100%; border-collapse: separate; border-spacing: 0 3px; font-size: .88rem; }
+  th { text-align: left; color: var(--muted); font-weight: 700; font-size: .64rem; text-transform: uppercase; letter-spacing: .1em; padding: 4px 10px; white-space: nowrap; }
+  th.sort { cursor: pointer; user-select: none; } th.sort:hover { color: var(--text); }
+  td { padding: 8px 10px; background: var(--face); white-space: nowrap; }
+  td:first-child { border-radius: 6px 0 0 6px; box-shadow: inset 4px 0 0 var(--tc, transparent); } td:last-child { border-radius: 0 6px 6px 0; }
+  td.num, th.num { text-align: right; font-family: "JetBrains Mono", monospace; }
+  tfoot td { background: #4b3b42; font-weight: 700; }
+  .pill { display: inline-block; font-size: .68rem; font-weight: 700; padding: 1px 9px; border-radius: 999px; background: #56606d; color: #dfe4ea; text-transform: uppercase; letter-spacing: .04em; }
+  .pill.dnf { background: rgba(255,59,48,.25); color: #ffb0ab; } .pill.wet { background: rgba(61,142,255,.25); color: #b7d3ff; } .pill.win { background: #ffcb2f; color: #2a1d00; }
+  .toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .search { border: 1px solid #5f6876; border-radius: 999px; padding: 8px 16px; background: var(--face); color: var(--text); min-width: 220px; outline: none; }
+  .search::placeholder { color: var(--faint); }
+  .search:focus { border-color: var(--red); }
   .empty { padding: 30px; text-align: center; color: var(--muted); }
-  .loading { padding: 80px; text-align: center; color: var(--muted); }
-  .view { display: none; } .view.on { display: block; }
+  .loading { padding: 120px 20px; text-align: center; color: var(--inkm); }
+  .view { display: none; } .view.on { display: block; animation: in .35s ease; }
+  @keyframes in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .view.on { animation: none; } }
 </style>
 </head>
 <body>
-<div class="shell">
-  <aside class="nav">
+<!-- Original illustration (not an official F1 or team design): a generic open-wheel race car, side view.
+     Body colour comes from the CSS variable --tc on the <svg>. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="bodyshine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></linearGradient>
+    <radialGradient id="tyre" cx=".5" cy=".5" r=".5"><stop offset=".55" stop-color="#2a2a30"/><stop offset=".62" stop-color="#111114"/><stop offset="1" stop-color="#050506"/></radialGradient>
+    <symbol id="car" viewBox="0 0 640 170">
+      <ellipse cx="320" cy="160" rx="300" ry="8" fill="#000" opacity=".3"/>
+      <path d="M40 132 L600 132 L604 140 L36 140 Z" fill="#0b0b0e"/>
+      <path d="M548 36 L620 30 L622 46 L552 52 Z" fill="var(--tc)"/>
+      <path d="M548 36 L620 30 L622 46 L552 52 Z" fill="url(#bodyshine)"/>
+      <rect x="604" y="44" width="10" height="70" rx="2" fill="#141418"/>
+      <path d="M556 60 L616 56 L617 64 L558 68 Z" fill="#141418"/>
+      <path d="M92 118 C120 104 170 98 228 96 L292 70 C312 60 340 56 372 58 L420 62 C452 64 480 72 508 82 L560 88 C584 90 600 100 604 118 L604 130 L92 130 Z" fill="var(--tc)"/>
+      <path d="M92 118 C120 104 170 98 228 96 L292 70 C312 60 340 56 372 58 L420 62 C452 64 480 72 508 82 L560 88 C584 90 600 100 604 118 L604 130 L92 130 Z" fill="url(#bodyshine)"/>
+      <path d="M18 122 C40 114 70 110 104 112 L120 126 L18 130 Z" fill="var(--tc)"/>
+      <path d="M6 126 L104 124 L106 136 L4 138 Z" fill="#141418"/>
+      <path d="M8 118 L40 116 L42 128 L10 130 Z" fill="var(--tc)" opacity=".85"/>
+      <path d="M300 104 C360 96 430 96 520 104" stroke="#000" stroke-opacity=".35" stroke-width="3" fill="none"/>
+      <path d="M380 60 L398 40 L420 40 L428 62 Z" fill="var(--tc)"/>
+      <path d="M380 60 L398 40 L420 40 L428 62 Z" fill="#000" opacity=".25"/>
+      <path d="M296 72 C310 66 330 64 352 66 L346 84 L300 86 Z" fill="#08080a"/>
+      <circle cx="318" cy="70" r="11" fill="#f4f4f7"/><path d="M308 70 h20" stroke="#0d0d12" stroke-width="4"/>
+      <path d="M270 84 C290 58 330 52 364 62" stroke="#1b1b20" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M150 112 L590 112 L592 118 L148 118 Z" fill="#fff" opacity=".22"/>
+      <circle cx="140" cy="122" r="34" fill="url(#tyre)"/><circle cx="140" cy="122" r="15" fill="#2e2e36"/><circle cx="140" cy="122" r="5" fill="var(--tc)"/>
+      <path d="M118 104 a28 28 0 0 1 44 0" stroke="#ff3b30" stroke-width="3" fill="none" opacity=".9"/>
+      <circle cx="532" cy="120" r="38" fill="url(#tyre)"/><circle cx="532" cy="120" r="17" fill="#2e2e36"/><circle cx="532" cy="120" r="5" fill="var(--tc)"/>
+      <path d="M507 100 a32 32 0 0 1 50 0" stroke="#ff3b30" stroke-width="3" fill="none" opacity=".9"/>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="top">
+  <div class="topin">
     <div class="brand">
-      <svg viewBox="0 0 44 28" aria-hidden="true"><g transform="skewX(-18)"><rect x="12" y="3" width="8" height="22" rx="2" fill="#ff4d6d"/><rect x="23" y="3" width="8" height="22" rx="2" fill="#ffcb2f"/><rect x="34" y="3" width="8" height="22" rx="2" fill="#7c9cff"/></g></svg>
-      <span><span class="full">FANTASY </span>BOARD<em>26</em></span>
+      <svg class="mark" viewBox="0 0 44 28" aria-hidden="true"><g transform="skewX(-18)"><rect x="12" y="3" width="8" height="22" rx="2" fill="#ff3b30"/><rect x="23" y="3" width="8" height="22" rx="2" fill="#171a20"/><rect x="34" y="3" width="8" height="22" rx="2" fill="#ff3b30"/></g></svg>
+      <span><span class="full">Fantasy </span>Pit Wall <em>26</em></span>
     </div>
-    <button class="navbtn" data-view="overview"><span class="lv">01</span>Overview</button>
-    <button class="navbtn" data-view="analysis"><span class="lv">02</span>Analysis</button>
-    <button class="navbtn" data-view="records"><span class="lv">03</span>Records</button>
-    <div class="foot">Real 2026 data · 20 races<br>Same tables as Supabase<br><a href="../data/">Data dictionary</a> · <a href="../">Race predictor</a></div>
-  </aside>
+    <nav class="tabs">
+      <button class="tab navbtn" data-view="overview"><span class="lv">01</span>Overview</button>
+      <button class="tab navbtn" data-view="analysis"><span class="lv">02</span>Analysis</button>
+      <button class="tab navbtn" data-view="records"><span class="lv">03</span>Records</button>
+    </nav>
+    <div class="meta">Real 2026 data · 20 races · <a href="../data/">Dictionary</a> · <a href="../">Predictor</a></div>
+  </div>
+  <div class="checker"></div>
+</header>
 
-  <main>
-    <div class="loading" id="loading">Loading the 2026 season…</div>
+<main>
+  <div class="loading" id="loading">Warming up the tyres…</div>
 
-    <!-- ===================== LEVEL 1 · OVERVIEW ===================== -->
-    <section class="view" id="v-overview">
+  <!-- ===================== LEVEL 1 · OVERVIEW ===================== -->
+  <section class="view" id="v-overview">
+    <div class="hero">
+      <div class="stripe"></div>
+      <svg class="car" style="--tc:#ff3b30" viewBox="0 0 640 170"><use href="#car"/></svg>
       <div class="crumb"><b>Overview</b> › 01 / Executive overview</div>
-      <div class="head">
-        <div><h1><span class="lv">01</span> / Who's worth picking?</h1><p class="q">Fantasy value and risk for every driver, before teams lock at qualifying.</p></div>
+      <h1><span class="lv">01</span> / Who's worth picking?</h1>
+      <p class="q">Fantasy value and risk for every driver, before teams lock at qualifying.</p>
+    </div>
+    <div class="filters">
+      <label>Period <select id="f-period"><option value="all">Season (R1–20)</option><option value="h1">First half (R1–10)</option><option value="h2">Second half (R11–20)</option><option value="last5">Last 5 races</option></select></label>
+      <label>Conditions <select id="f-cond"><option value="all">All races</option><option value="dry">Dry</option><option value="wet">Wet</option></select></label>
+      <label>Team <select id="f-team"></select></label>
+    </div>
+    <div class="screen s4" id="kpis"></div>
+    <div class="screen s2">
+      <div class="tile">
+        <h2>Points per start · first vs second half <small>top 8 this season</small></h2>
+        <div class="legend"><span><i style="background:#8b95a5"></i>First half (R1–10)</span><span><i style="background:#ff3b30"></i>Second half (R11–20)</span></div>
+        <div id="chart-halves"></div>
       </div>
-      <div class="filters">
-        <label>Period <select id="f-period"><option value="all">Season (R1–20)</option><option value="h1">First half (R1–10)</option><option value="h2">Second half (R11–20)</option><option value="last5">Last 5 races</option></select></label>
-        <label>Conditions <select id="f-cond"><option value="all">All races</option><option value="dry">Dry</option><option value="wet">Wet</option></select></label>
-        <label>Team <select id="f-team"></select></label>
+      <div class="tile">
+        <h2>Pick board <small id="pb-note"></small></h2>
+        <div class="tower" id="pickboard"></div>
+        <p class="note">Tap a driver to see why. Risk = share of starts ending in retirement (−20 fantasy points each).</p>
       </div>
-      <div class="grid4" id="kpis"></div>
-      <div class="row2">
-        <div class="card">
-          <h2>Points per start: first vs second half <small>top 8 this season</small></h2>
-          <div class="legend"><span><i style="background:#c9cfe9"></i>First half (R1–10)</span><span><i style="background:#3d5bd9"></i>Second half (R11–20)</span></div>
-          <div id="chart-halves"></div>
-        </div>
-        <div class="card">
-          <h2>Pick board <small id="pb-note"></small></h2>
-          <div class="tw"><table id="pickboard"></table></div>
-          <p class="note">Click a driver to see why. Risk = share of starts that ended in retirement (−20 fantasy points each).</p>
-        </div>
-      </div>
-      <div class="card focus" id="focus"></div>
-      <div class="src"><span>KPIs follow the KPI contract: ratios are recalculated from sums, never averaged.</span><span>Real data · verified against official standings · 8 Mar – 8 Nov 2026</span></div>
-    </section>
+      <div class="tile focus" id="focus" style="grid-column:1/-1"></div>
+    </div>
+    <div class="src"><span>KPIs follow the KPI contract: ratios are recalculated from sums, never averaged.</span><span>Real data · verified against official standings · 8 Mar – 8 Nov 2026 · illustrations are original</span></div>
+  </section>
 
-    <!-- ===================== LEVEL 2 · ANALYSIS ===================== -->
-    <section class="view" id="v-analysis">
+  <!-- ===================== LEVEL 2 · ANALYSIS ===================== -->
+  <section class="view" id="v-analysis">
+    <div class="hero small">
+      <div class="stripe"></div>
       <div class="crumb"><a href="#overview">Overview</a> › <b>02 / Diagnostic</b></div>
-      <div class="head">
-        <div><h1><span class="lv">02</span> / Why does this driver score?</h1><p class="q">Form, conditions, starting position and team-mate: what drives a pick's points and risk.</p></div>
-      </div>
-      <div class="split">
-        <div class="card dlist" id="dlist"></div>
-        <div>
-          <div class="card">
-            <div class="dhead">
-              <div class="nm" id="a-name"></div>
-              <button class="btn primary" id="a-records">See race-by-race records →</button>
-            </div>
-            <div class="chips" id="a-chips"></div>
-            <div class="read" id="a-read"></div>
-            <h2>Finishing position, race by race <small>higher is better · ✕ = retired · blue band = wet race</small></h2>
-            <div id="chart-form"></div>
-          </div>
-          <div class="card" style="margin-top:12px">
-            <h2>Points per start by segment <small>same KPI, split three ways · n = starts</small></h2>
-            <div class="segs" id="a-segs"></div>
-          </div>
-          <div class="card" style="margin-top:12px">
-            <h2>Against the team-mate <small>same car, so this isolates the driver</small></h2>
-            <div id="a-h2h" style="margin-top:10px"></div>
-          </div>
+      <h1><span class="lv">02</span> / Why does this driver score?</h1>
+      <p class="q">Form, conditions, starting position and team-mate: what drives a pick's points and risk.</p>
+    </div>
+    <div class="screen split">
+      <div class="tile dlist" id="dlist"></div>
+      <div class="screen" id="dcard" style="margin:0;border-radius:0;box-shadow:none;padding:0">
+        <div class="dband" id="dband">
+          <div class="code" id="a-code"></div>
+          <svg class="car" id="a-car" viewBox="0 0 640 170"><use href="#car"/></svg>
+          <div class="nm" id="a-name"></div>
+          <div class="tm" id="a-team"></div>
+          <div class="go"><button class="btn primary" id="a-records">Race-by-race records →</button></div>
+        </div>
+        <div class="screen s4" id="a-chips" style="margin:0;border-radius:0;box-shadow:none;padding:0"></div>
+        <div class="tile read" id="a-read"></div>
+        <div class="tile">
+          <h2>Telemetry · finishing position, race by race <small>higher is better · ✕ retired · blue = wet race</small></h2>
+          <div id="chart-form" style="margin-top:8px"></div>
+        </div>
+        <div class="tile">
+          <h2>Points per start by segment <small>same KPI, split three ways · n = starts</small></h2>
+          <div class="segs" id="a-segs"></div>
+        </div>
+        <div class="tile">
+          <h2>Against the team-mate <small>same car, so this isolates the driver</small></h2>
+          <div id="a-h2h" style="margin-top:14px"></div>
         </div>
       </div>
-      <div class="src"><span>Positions gained only uses the 12 races with a published starting grid.</span><span>Real data · 2026 season</span></div>
-    </section>
+    </div>
+    <div class="src"><span>Positions gained only uses the 12 races with a published starting grid.</span><span>Real data · 2026 season</span></div>
+  </section>
 
-    <!-- ===================== LEVEL 3 · RECORDS ===================== -->
-    <section class="view" id="v-records">
+  <!-- ===================== LEVEL 3 · RECORDS ===================== -->
+  <section class="view" id="v-records">
+    <div class="hero small">
+      <div class="stripe"></div>
       <div class="crumb"><a href="#overview">Overview</a> › <a href="#" id="r-back">Analysis</a> › <b>03 / Record detail</b></div>
-      <div class="head">
-        <div><h1><span class="lv">03</span> / The evidence</h1><p class="q">Every race result behind the numbers. One row = one driver at one Grand Prix.</p></div>
-        <button class="btn" id="export">⬇ Export CSV</button>
-      </div>
-      <div class="filters">
-        <label>Driver <select id="r-driver"></select></label>
-        <label>Team <select id="r-team"></select></label>
-        <label>Result <select id="r-status"><option value="all">All</option><option value="classified">Classified</option><option value="DNF/NC">Retired</option><option value="points">Scored points</option></select></label>
-        <label>Conditions <select id="r-cond"><option value="all">All</option><option value="dry">Dry</option><option value="wet">Wet</option></select></label>
-      </div>
-      <div class="card">
+      <h1><span class="lv">03</span> / The evidence</h1>
+      <p class="q">Every race result behind the numbers. One row = one driver at one Grand Prix.</p>
+      <div class="actions"><button class="btn primary" id="export">⬇ Export CSV</button></div>
+    </div>
+    <div class="filters">
+      <label>Driver <select id="r-driver"></select></label>
+      <label>Team <select id="r-team"></select></label>
+      <label>Result <select id="r-status"><option value="all">All</option><option value="classified">Classified</option><option value="DNF/NC">Retired</option><option value="points">Scored points</option></select></label>
+      <label>Conditions <select id="r-cond"><option value="all">All</option><option value="dry">Dry</option><option value="wet">Wet</option></select></label>
+    </div>
+    <div class="screen">
+      <div class="tile">
         <div class="toolbar"><span class="note" id="r-count" style="margin:0"></span><input class="search" id="r-search" placeholder="Search race or driver…"></div>
         <div class="tw"><table id="records"></table></div>
       </div>
-      <div class="src"><span>Totals: points are summed; ratios are recalculated from the filtered rows.</span><span>Source: results + sprint_results (same key, merged) · <a href="../data/">dictionary</a></span></div>
-    </section>
-  </main>
-</div>
+    </div>
+    <div class="src"><span>Totals: points are summed; ratios are recalculated from the filtered rows.</span><span>Source: results + sprint_results (same key, merged) · <a href="../data/">dictionary</a></span></div>
+  </section>
+</main>
 
 <script>
 // ===================================================================
@@ -319,6 +405,53 @@ window.addEventListener("hashchange", () => go(readHash()));
 // ===================================================================
 const NS = "http://www.w3.org/2000/svg";
 function svg(w, h) { const s = document.createElementNS(NS, "svg"); s.setAttribute("viewBox", `0 0 ${w} ${h}`); s.style.width = "100%"; s.style.height = "auto"; s.style.display = "block"; return s; }
+// ---- instrument gauges (return SVG markup) ----
+const pol = (cx, cy, r, deg) => { const a = (deg - 90) * Math.PI / 180; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; };
+const arcD = (cx, cy, r, a0, a1) => { const [x0, y0] = pol(cx, cy, r, a0), [x1, y1] = pol(cx, cy, r, a1); return `M${x0.toFixed(1)},${y0.toFixed(1)} A${r},${r} 0 ${a1 - a0 > 180 ? 1 : 0} 1 ${x1.toFixed(1)},${y1.toFixed(1)}`; };
+// Speedometer: 270° sweep, numbered ticks, red needle
+function dial(value, max, step, col) {
+  const cx = 110, cy = 100, r = 84, ang = v => -135 + 270 * Math.min(1, Math.max(0, (v || 0) / max));
+  let s = `<svg class="gauge" viewBox="0 0 220 176"><path d="${arcD(cx, cy, r, -135, 135)}" stroke="#5d6674" stroke-width="2" fill="none"/>`;
+  s += `<path d="${arcD(cx, cy, r - 7, -135, ang(value))}" stroke="${col}" stroke-width="5" fill="none" opacity=".9"/>`;
+  for (let v = 0; v <= max + 1e-9; v += step / 5) {
+    const major = Math.abs(v / step - Math.round(v / step)) < 1e-6, [x0, y0] = pol(cx, cy, r, ang(v)), [x1, y1] = pol(cx, cy, r - (major ? 12 : 6), ang(v));
+    s += `<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="#e8ecf1" stroke-width="${major ? 2.4 : 1.2}" opacity="${major ? 1 : .6}"/>`;
+    if (major) { const [tx, ty] = pol(cx, cy, r - 26, ang(v)); s += `<text x="${tx}" y="${ty + 4}" text-anchor="middle" font-size="12" fill="#e8ecf1">${Math.round(v)}</text>`; }
+  }
+  const [nx, ny] = pol(cx, cy, r - 14, ang(value)), [bx, by] = pol(cx, cy, 16, ang(value) + 180);
+  s += `<line x1="${bx}" y1="${by}" x2="${nx}" y2="${ny}" stroke="#ff3b30" stroke-width="3.5" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="9" fill="#3b434f" stroke="#ff3b30" stroke-width="3.5"/>`;
+  return s + `</svg>`;
+}
+// Half-circle meter for rates (0–100%)
+function arcMeter(rate, col, maxRate = 1) {
+  const cx = 110, cy = 112, r = 86, a = -90 + 180 * Math.min(1, (rate || 0) / maxRate);
+  let s = `<svg class="gauge" viewBox="0 0 220 126"><path d="${arcD(cx, cy, r, -90, 90)}" stroke="#343b46" stroke-width="18" fill="none"/>`;
+  if (rate > 0) s += `<path d="${arcD(cx, cy, r, -90, Math.max(-89, a))}" stroke="${col}" stroke-width="18" fill="none"/>`;
+  for (let i = 0; i <= 20; i++) { const ang = -90 + 9 * i, [x0, y0] = pol(cx, cy, r - 14, ang), [x1, y1] = pol(cx, cy, r - (i % 5 ? 18 : 24), ang); s += `<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="#e8ecf1" stroke-width="${i % 5 ? 1 : 2}" opacity=".7"/>`; }
+  [[0, -72], [.5, 0], [1, 72]].forEach(([f, ang]) => { const [x, y] = pol(cx, cy, r - 40, ang); s += `<text x="${x}" y="${y + 4}" text-anchor="middle" font-size="11" fill="#b3bbc8">${Math.round(f * maxRate * 100)}%</text>`; });
+  return s + `</svg>`;
+}
+// "Fuel trim" strip: dashed scale from lo to hi with a marker at value
+function trim(value, lo, hi, col) {
+  const W = 240, x = v => 12 + (W - 24) * (Math.min(hi, Math.max(lo, v)) - lo) / (hi - lo);
+  let s = `<svg class="gauge" viewBox="0 0 ${W} 74" style="max-width:280px">`;
+  for (let v = lo; v <= hi; v += (hi - lo) / 6) s += `<text x="${x(v)}" y="12" text-anchor="middle" font-size="10.5" fill="#e8ecf1">${v > 0 ? "+" : ""}${Math.round(v)}</text>`;
+  s += `<line x1="12" x2="${W - 12}" y1="26" y2="26" stroke="#46c86e" stroke-width="3" stroke-dasharray="5 3"/>`;
+  s += `<line x1="12" x2="${W - 12}" y1="44" y2="44" stroke="#c9d0da" stroke-width="2"/><line x1="${x(0)}" x2="${x(0)}" y1="36" y2="52" stroke="#c9d0da" stroke-width="2"/>`;
+  s += `<line x1="12" x2="${W - 12}" y1="62" y2="62" stroke="#3d8eff" stroke-width="3" stroke-dasharray="5 3"/>`;
+  if (value != null) s += `<line x1="${x(0)}" x2="${x(value)}" y1="44" y2="44" stroke="${col}" stroke-width="5"/><path d="M${x(value) - 7},32 l14,0 l-7,11 z" fill="${col}"/>`;
+  return s + `</svg>`;
+}
+// Vertical bar meter (like a power / torque column)
+function vmeter(value, max, col, label, valText) {
+  const H = 170, T = 8, B = 150, y = v => B - (B - T) * Math.min(1, (v || 0) / max);
+  let s = `<svg viewBox="0 0 92 ${H + 34}">`;
+  for (let i = 0; i <= 5; i++) { const v = max * i / 5; s += `<line x1="22" x2="30" y1="${y(v)}" y2="${y(v)}" stroke="#e8ecf1" stroke-width="1.5"/><text x="18" y="${y(v) + 4}" text-anchor="end" font-size="10" fill="#e8ecf1">${Math.round(v * (max <= 1 ? 100 : 1))}</text>`; }
+  s += `<line x1="30" x2="30" y1="${T}" y2="${B}" stroke="${col}" stroke-width="2" stroke-dasharray="4 3"/>`;
+  s += `<rect x="38" y="${T}" width="40" height="${B - T}" fill="none" stroke="${col}" stroke-opacity=".6"/><rect x="40" y="${y(value)}" width="36" height="${B - y(value)}" fill="${col}"/>`;
+  s += `<text x="58" y="${B + 18}" text-anchor="middle" font-size="15" fill="#f4f6f9" font-family="Titillium Web">${valText}</text><text x="58" y="${B + 32}" text-anchor="middle" font-size="9" fill="#b3bbc8" letter-spacing="1">${label}</text>`;
+  return s + `</svg>`;
+}
 function el(tag, attrs, parent, text) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; parent.appendChild(e); return e; }
 
 // ===================================================================
@@ -351,53 +484,58 @@ function renderOverview() {
   const allField = kpis(FACT);
 
   $("kpis").innerHTML = `
-    <div class="card kpi"><div class="t">Top scorer</div><div class="v">${fmt(top.pps)}</div>
-      <div class="who" style="--tc:${color(top.d)}"><span class="dot"></span>${name(top.d)}</div><div class="s">points per start · ${top.starts} starts</div></div>
-    <div class="card kpi"><div class="t">Safest top-8 pick</div><div class="v">${pct(safest.dnf)}</div>
-      <div class="who" style="--tc:${color(safest.d)}"><span class="dot"></span>${name(safest.d)}</div><div class="s">retirement rate · ${fmt(safest.pps)} pts/start</div></div>
-    <div class="card kpi"><div class="t">Biggest riser</div><div class="v">${riser ? (riser.delta >= 0 ? "+" : "") + fmt(riser.delta, 1) : "–"}</div>
-      <div class="who" style="--tc:${riser ? color(riser.d) : "#999"}"><span class="dot"></span>${riser ? name(riser.d) : "–"}</div><div class="s">${riser ? `pts/start, ${fmt(riser.a, 1)} → ${fmt(riser.b, 1)} (H1 → H2)` : "needs both halves"}</div></div>
-    <div class="card kpi"><div class="t">Field retirement rate</div><div class="v">${pct(field.dnf)}</div>
-      <div class="who">${field.starts} starts · ${nRaces} races</div><div class="s">season average ${pct(allField.dnf)} · each retirement −20 pts</div></div>`;
+    <div class="tile center" style="--tc:${color(top.d)}"><div class="tt" style="align-self:stretch">Top scorer</div>${dial(top.pps, 25, 5, color(top.d))}
+      <div class="gv">${fmt(top.pps)}<small>pts/start</small></div><div class="gw"><span class="tag"></span>${name(top.d)}</div><div class="gs">${top.starts} starts</div></div>
+    <div class="tile center" style="--tc:${color(safest.d)}"><div class="tt" style="align-self:stretch">Safest top-8 pick</div>${arcMeter(safest.dnf, "#46c86e", .5)}
+      <div class="gv" style="margin-top:6px">${pct(safest.dnf)}</div><div class="gl">retirement rate</div><div class="gw"><span class="tag"></span>${name(safest.d)}</div><div class="gs">${fmt(safest.pps)} pts/start</div></div>
+    <div class="tile center" style="--tc:${riser ? color(riser.d) : "#999"}"><div class="tt" style="align-self:stretch">Biggest riser · H1 → H2</div>${trim(riser ? riser.delta : null, -15, 15, riser ? color(riser.d) : "#999")}
+      <div class="gv" style="margin-top:10px">${riser ? (riser.delta >= 0 ? "+" : "") + fmt(riser.delta, 1) : "–"}<small>pts/start</small></div><div class="gw"><span class="tag"></span>${riser ? name(riser.d) : "–"}</div><div class="gs">${riser ? `${fmt(riser.a, 1)} → ${fmt(riser.b, 1)} per start` : "needs both halves"}</div></div>
+    <div class="tile center"><div class="tt" style="align-self:stretch">Field retirement rate</div>
+      <div class="meters">${vmeter(field.dnf, 1, "#b553db", "RETIRED %", pct(field.dnf))}${vmeter(field.pf, 1, "#46c86e", "POINTS %", pct(field.pf))}${vmeter(allField.dnf, 1, "#3d8eff", "SEASON", pct(allField.dnf))}</div>
+      <div class="gs">${field.starts} starts · ${nRaces} races · each retirement −20 pts</div></div>`;
+  document.querySelector("#v-overview .hero .car").style.setProperty("--tc", color(top.d));
 
   // Chart: H1 vs H2 points per start, top 8 by season PPS (within conditions/team filter)
   const seasonBoard = Object.entries(byDriver(base)).map(([d, rs]) => ({ d, ...kpis(rs) })).filter(x => x.starts >= 3).sort((a, b) => b.pps - a.pps).slice(0, 8);
   const W = 640, H = 400, L = 36, B = 40, T = 14, bw = (W - L - 10) / seasonBoard.length;
   const vals = seasonBoard.flatMap(x => half(x.d).map(h => h.pps || 0)); const max = Math.max(5, Math.ceil(Math.max(...vals) / 5) * 5);
   const s = svg(W, H); const y = v => T + (H - T - B) * (1 - v / max);
-  for (let v = 0; v <= max; v += 5) { el("line", { x1: L, x2: W - 6, y1: y(v), y2: y(v), stroke: "#eeece7" }, s); el("text", { x: L - 6, y: y(v) + 4, "text-anchor": "end", "font-size": 10, fill: "#a5a3ad" }, s, v); }
+  for (let v = 0; v <= max; v += 5) { el("line", { x1: L, x2: W - 6, y1: y(v), y2: y(v), stroke: "#525b69", "stroke-dasharray": "3 4" }, s); el("text", { x: L - 6, y: y(v) + 4, "text-anchor": "end", "font-size": 10, fill: "#b3bbc8" }, s, v); }
   seasonBoard.forEach((x, i) => {
     const [a, b] = half(x.d), cx = L + i * bw + bw / 2, w = Math.min(22, bw / 3);
-    [[a.pps, "#c9cfe9", -w - 1], [b.pps, "#3d5bd9", 1]].forEach(([v, col, off]) => {
+    [[a.pps, "#8b95a5", -w - 1], [b.pps, "#ff3b30", 1]].forEach(([v, col, off]) => {
       if (v == null) return;
-      const r = el("rect", { x: cx + off, y: y(v), width: w, height: y(0) - y(v), rx: 3, fill: col }, s);
+      const r = el("rect", { x: cx + off, y: y(v), width: w, height: y(0) - y(v), rx: 2, fill: col, transform: `skewX(0)` }, s);
       el("title", {}, r, `${name(x.d)}: ${fmt(v)} pts/start`);
     });
-    if (b.pps != null) el("text", { x: cx + 1 + w / 2, y: y(b.pps) - 5, "text-anchor": "middle", "font-size": 10, fill: "#3b3a44" }, s, fmt(b.pps, 1));
+    if (b.pps != null) el("text", { x: cx + 1 + w / 2, y: y(b.pps) - 5, "text-anchor": "middle", "font-size": 10, fill: "#f4f4f7", "font-weight": 700 }, s, fmt(b.pps, 1));
     const g = el("g", { style: "cursor:pointer" }, s); g.onclick = () => go("analysis", x.d);
-    el("circle", { cx: cx - 26 > L ? cx - 28 : cx - 22, cy: H - B + 17, r: 4, fill: color(x.d) }, g);
-    el("text", { x: cx, y: H - B + 21, "text-anchor": "middle", "font-size": 11, fill: "#16161d", "font-weight": 600 }, g, x.d);
+    el("rect", { x: cx - 16, y: H - B + 26, width: 32, height: 3, rx: 1, fill: color(x.d) }, g);
+    el("text", { x: cx, y: H - B + 21, "text-anchor": "middle", "font-size": 11, fill: "#f4f4f7", "font-weight": 700 }, g, x.d);
   });
   $("chart-halves").innerHTML = ""; $("chart-halves").appendChild(s);
 
   // Pick board
   $("pb-note").textContent = `${board.length} drivers · min ${minStarts} starts`;
-  const maxP = board[0].pps;
-  $("pickboard").innerHTML = `<thead><tr><th>#</th><th>Driver</th><th class="num">Pts / start</th><th class="num">Risk</th><th class="num">Scores</th><th class="num">Trend</th></tr></thead><tbody>` +
+    $("pickboard").innerHTML = `<div class="trow head"><span>Pos</span><span></span><span>Driver</span><span class="r">Pts/start</span><span class="r">Risk</span><span class="r hide-s">Scores</span><span class="r">Trend</span></div>` +
     board.slice(0, 10).map((x, i) => { const [a, b] = half(x.d); const tr = a.starts >= 2 && b.starts >= 2 ? b.pps - a.pps : null;
-      return `<tr class="click" data-d="${x.d}" style="--tc:${color(x.d)}"><td class="num" style="text-align:left;color:var(--faint)">${i + 1}</td>
-      <td><span class="dot"></span> ${name(x.d)}</td>
-      <td class="num"><span class="bar" style="width:${Math.max(3, x.pps / maxP * 60)}px"></span>${fmt(x.pps)}</td>
-      <td class="num ${x.dnf >= .15 ? "neg" : ""}">${pct(x.dnf)}</td><td class="num">${pct(x.pf)}</td>
-      <td class="num ${tr == null ? "" : tr >= 0 ? "pos" : "neg"}">${tr == null ? "–" : (tr >= 0 ? "▲ " : "▼ ") + fmt(Math.abs(tr), 1)}</td></tr>`; }).join("") + "</tbody>";
-  document.querySelectorAll("#pickboard tr.click").forEach(tr => tr.onclick = () => go("analysis", tr.dataset.d));
+      return `<div class="trow click" data-d="${x.d}" style="--tc:${color(x.d)}"><span class="p">${i + 1}</span><span class="c"></span>
+      <span class="n"><b>${x.d}</b><span>${last(x.d)}</span></span>
+      <span class="r big">${fmt(x.pps)}</span>
+      <span class="r ${x.dnf >= .15 ? "neg" : ""}">${pct(x.dnf)}</span><span class="r hide-s">${pct(x.pf)}</span>
+      <span class="r ${tr == null ? "" : tr >= 0 ? "pos" : "neg"}">${tr == null ? "–" : (tr >= 0 ? "▲ " : "▼ ") + fmt(Math.abs(tr), 1)}</span></div>`; }).join("");
+  document.querySelectorAll("#pickboard .trow.click").forEach(tr => tr.onclick = () => go("analysis", tr.dataset.d));
 
   // Focus callout = biggest riser (or top scorer)
   const f = riser && riser.delta > 0 ? riser.d : top.d;
   const fk = kpis(rows.filter(r => r.driver === f));
-  $("focus").innerHTML = riser && riser.delta > 0
-    ? `<div><b>Focus: ${name(f)}</b><p>Points per start rose from ${fmt(riser.a, 1)} to ${fmt(riser.b, 1)} between the first and second half — the biggest jump on the grid. Retirement risk: ${pct(fk.dnf)}.</p></div><button class="btn primary" id="focus-go">Explore ${last(f)} →</button>`
-    : `<div><b>Focus: ${name(f)}</b><p>Highest points per start for these filters (${fmt(top.pps)}).</p></div><button class="btn primary" id="focus-go">Explore ${last(f)} →</button>`;
+  const rank = board.findIndex(x => x.d === f) + 1, isRiser = riser && riser.delta > 0;
+  $("focus").innerHTML = `<div class="roundel"><span>${rank || "–"}</span></div>
+    <div><div class="ft">Focus pick · ${isRiser ? "biggest riser" : "top scorer"}</div><b>${name(f)}</b>
+      <p>${isRiser ? `Points per start rose from ${fmt(riser.a, 1)} to ${fmt(riser.b, 1)} between the first and second half, the biggest jump on the grid. Retirement risk: ${pct(fk.dnf)}.` : `Highest points per start for these filters (${fmt(top.pps)}).`}</p>
+      <button class="btn primary" id="focus-go" style="margin-top:10px">Explore ${last(f)} →</button></div>
+    <div class="lap"><div class="gl">${isRiser ? "Second-half pace" : "Pace"}</div><div class="gv" style="font-size:3.4rem">${fmt(isRiser ? riser.b : top.pps, 1)}</div><div class="gs">pts / start</div></div>
+    <svg class="fcar" viewBox="0 0 640 170" style="--tc:${color(f)}"><use href="#car"/></svg>`;
   $("focus-go").onclick = () => go("analysis", f);
 }
 
@@ -407,15 +545,18 @@ function renderOverview() {
 function renderAnalysis() {
   const d = state.driver, rows = FACT.filter(r => r.driver === d).sort((a, b) => a.round - b.round), k = kpis(rows);
   const ranked = Object.entries(byDriver(FACT)).map(([x, rs]) => ({ x, ...kpis(rs) })).sort((a, b) => b.pps - a.pps);
-  $("dlist").innerHTML = ranked.map((r, i) => `<div class="ditem ${r.x === d ? "on" : ""}" data-d="${r.x}" style="--tc:${color(r.x)}"><span class="r">${i + 1}</span><span><span class="dot"></span> ${name(r.x)}</span><span class="p">${fmt(r.pps, 1)}</span></div>`).join("");
+  $("dlist").innerHTML = ranked.map((r, i) => `<div class="ditem ${r.x === d ? "on" : ""}" data-d="${r.x}" style="--tc:${color(r.x)}"><span class="r">${i + 1}</span><span class="c"></span><span>${name(r.x)}</span><span class="p">${fmt(r.pps, 1)}</span></div>`).join("");
   document.querySelectorAll(".ditem").forEach(e => e.onclick = () => go("analysis", e.dataset.d));
   const team = teamOf(d, FACT);
-  $("a-name").innerHTML = `<span class="dot" style="--tc:${color(d)};width:14px;height:14px"></span>${name(d)} <span class="tm" style="font-size:1rem;font-weight:400">${team} · rank ${ranked.findIndex(r => r.x === d) + 1} of ${ranked.length}</span>`;
+  $("dcard").style.setProperty("--tc", color(d));
+  $("a-code").textContent = d;
+  $("a-name").textContent = name(d);
+  $("a-team").innerHTML = `<span class="tag"></span>${team}<span class="chipr">Rank ${ranked.findIndex(r => r.x === d) + 1} of ${ranked.length}</span><span class="chipr">${k.total} pts</span>`;
   $("a-chips").innerHTML = `
-    <div class="chip"><div class="t">Pts / start</div><div class="v">${fmt(k.pps)}</div><div class="s">${k.total} pts · ${k.starts} starts</div></div>
-    <div class="chip"><div class="t">Retirement rate</div><div class="v" style="color:${k.dnf >= .15 ? "var(--red)" : "inherit"}">${pct(k.dnf)}</div><div class="s">${rows.filter(r => r.dnf).length} retirements</div></div>
-    <div class="chip"><div class="t">Points-finish rate</div><div class="v">${pct(k.pf)}</div><div class="s">top-10 finishes</div></div>
-    <div class="chip"><div class="t">Positions gained</div><div class="v">${k.gained == null ? "–" : (k.gained >= 0 ? "+" : "") + fmt(k.gained, 1)}</div><div class="s">avg · n = ${k.gn} races with grid</div></div>`;
+    <div class="tile center"><div class="tt" style="align-self:stretch">Pts / start</div>${dial(k.pps, 25, 5, color(d))}<div class="gv">${fmt(k.pps)}</div><div class="gs">${k.total} pts · ${k.starts} starts</div></div>
+    <div class="tile center"><div class="tt" style="align-self:stretch">Retirement rate</div>${arcMeter(k.dnf, k.dnf >= .15 ? "#ff3b30" : "#46c86e", .5)}<div class="gv" style="margin-top:6px;color:${k.dnf >= .15 ? "var(--red2)" : "inherit"}">${pct(k.dnf)}</div><div class="gs">${rows.filter(r => r.dnf).length} retirements</div></div>
+    <div class="tile center"><div class="tt" style="align-self:stretch">Points-finish rate</div>${arcMeter(k.pf, "#3d8eff")}<div class="gv" style="margin-top:6px">${pct(k.pf)}</div><div class="gs">top-10 finishes</div></div>
+    <div class="tile center"><div class="tt" style="align-self:stretch">Positions gained</div>${trim(k.gained, -6, 6, color(d))}<div class="gv" style="margin-top:10px">${k.gained == null ? "–" : (k.gained >= 0 ? "+" : "") + fmt(k.gained, 1)}</div><div class="gs">avg · n = ${k.gn} races with grid</div></div>`;
 
   // Segments
   const seg = (label, rs) => ({ label, ...kpis(rs) });
@@ -440,16 +581,16 @@ function renderAnalysis() {
   // Form chart: finishing position by round
   const W = 760, H = 250, L = 34, R = 10, T = 12, B = 34, n = 20, step = (W - L - R) / n;
   const s = svg(W, H), y = p => T + (H - T - B) * (p - 1) / 21, x = r => L + (r - 0.5) * step;
-  Object.values(RACES).filter(r => r.conditions === "wet").forEach(r => el("rect", { x: x(r.round) - step / 2, y: T - 4, width: step, height: H - T - B + 8, fill: "#e6effc" }, s));
-  [1, 5, 10, 15, 20].forEach(p => { el("line", { x1: L, x2: W - R, y1: y(p), y2: y(p), stroke: p === 10 ? "#d9d6cf" : "#eeece7", "stroke-dasharray": p === 10 ? "4 4" : "" }, s); el("text", { x: L - 6, y: y(p) + 4, "text-anchor": "end", "font-size": 10, fill: "#a5a3ad" }, s, "P" + p); });
-  el("text", { x: W - R, y: y(10) - 5, "text-anchor": "end", "font-size": 10, fill: "#a5a3ad" }, s, "points line");
+  Object.values(RACES).filter(r => r.conditions === "wet").forEach(r => el("rect", { x: x(r.round) - step / 2, y: T - 4, width: step, height: H - T - B + 8, fill: "rgba(61,142,255,.2)" }, s));
+  [1, 5, 10, 15, 20].forEach(p => { el("line", { x1: L, x2: W - R, y1: y(p), y2: y(p), stroke: p === 10 ? "#8b95a5" : "#525b69", "stroke-dasharray": p === 10 ? "4 4" : "" }, s); el("text", { x: L - 6, y: y(p) + 4, "text-anchor": "end", "font-size": 10, fill: "#b3bbc8" }, s, "P" + p); });
+  el("text", { x: W - R, y: y(10) - 5, "text-anchor": "end", "font-size": 10, fill: "#b3bbc8" }, s, "points line");
   const fin = rows.filter(r => r.finish != null);
-  if (fin.length > 1) el("polyline", { points: fin.map(r => `${x(r.round)},${y(r.finish)}`).join(" "), fill: "none", stroke: color(d), "stroke-width": 2.5, "stroke-linejoin": "round", opacity: .85 }, s);
+  if (fin.length > 1) el("polyline", { points: fin.map(r => `${x(r.round)},${y(r.finish)}`).join(" "), fill: "none", stroke: color(d), "stroke-width": 2.5, "stroke-linejoin": "round", opacity: .95 }, s);
   rows.forEach(r => {
-    if (r.finish != null) { const c = el("circle", { cx: x(r.round), cy: y(r.finish), r: 5, fill: "#fff", stroke: color(d), "stroke-width": 2.5 }, s); el("title", {}, c, `R${r.round} ${RACES[r.round].race_code}: P${r.finish} · ${r.total} pts`); }
-    else { const g = el("g", {}, s); el("path", { d: `M${x(r.round) - 5},${y(21) - 5} l10,10 m0,-10 l-10,10`, stroke: "#d4002a", "stroke-width": 2.5 }, g); el("title", {}, g, `R${r.round} ${RACES[r.round].race_code}: retired`); }
+    if (r.finish != null) { const c = el("circle", { cx: x(r.round), cy: y(r.finish), r: 5, fill: "#3b434f", stroke: color(d), "stroke-width": 2.5 }, s); el("title", {}, c, `R${r.round} ${RACES[r.round].race_code}: P${r.finish} · ${r.total} pts`); }
+    else { const g = el("g", {}, s); el("path", { d: `M${x(r.round) - 5},${y(21) - 5} l10,10 m0,-10 l-10,10`, stroke: "#ff2d24", "stroke-width": 2.5 }, g); el("title", {}, g, `R${r.round} ${RACES[r.round].race_code}: retired`); }
   });
-  for (let r = 1; r <= n; r++) if (r % 2 === 1 || W > 600) el("text", { x: x(r), y: H - B + 18, "text-anchor": "middle", "font-size": 9.5, fill: rows.some(q => q.round === r) ? "#6f6d78" : "#d9d6cf" }, s, RACES[r].race_code);
+  for (let r = 1; r <= n; r++) if (r % 2 === 1 || W > 600) el("text", { x: x(r), y: H - B + 18, "text-anchor": "middle", "font-size": 9.5, fill: rows.some(q => q.round === r) ? "#c9d0da" : "#6b7483" }, s, RACES[r].race_code);
   $("chart-form").innerHTML = ""; $("chart-form").appendChild(s);
 
   // Team-mate head-to-head (races where both started, same team)
@@ -459,9 +600,10 @@ function renderAnalysis() {
     const [m, pairs] = mate; let w = 0, l = 0; pairs.forEach(([a, b]) => { const pa = a.finish ?? 99, pb = b.finish ?? 99; if (pa < pb) w++; else if (pb < pa) l++; });
     const km = kpis(pairs.map(p => p[1])), kd = kpis(pairs.map(p => p[0]));
     $("a-h2h").innerHTML = `<div class="h2h">
-      <div><div class="big" style="color:${color(d)}">${w}</div><div>${name(d)}</div><div class="note" style="margin:2px 0 0">${fmt(kd.pps, 1)} pts/start · ${pct(kd.dnf)} retired</div></div>
+      <div><div class="big" style="color:${color(d)}">${w}</div><div class="who">${name(d)}</div><div class="note" style="margin:2px 0 0">${fmt(kd.pps, 1)} pts/start · ${pct(kd.dnf)} retired</div></div>
       <div class="note" style="margin:0">ahead in<br>${pairs.length} shared races</div>
-      <div><div class="big">${l}</div><div>${name(m)}</div><div class="note" style="margin:2px 0 0">${fmt(km.pps, 1)} pts/start · ${pct(km.dnf)} retired</div></div></div>`;
+      <div><div class="big">${l}</div><div class="who">${name(m)}</div><div class="note" style="margin:2px 0 0">${fmt(km.pps, 1)} pts/start · ${pct(km.dnf)} retired</div></div>
+      <div class="bar2"><i style="flex:${w || 0.001};background:${color(d)}"></i><i style="flex:${pairs.length - w - l};background:#59626f"></i><i style="flex:${l || 0.001};background:#c9d0da"></i></div></div>`;
   } else $("a-h2h").innerHTML = `<p class="note">No shared races with a team-mate.</p>`;
   $("a-records").onclick = () => { $("r-driver").value = d; go("records"); };
 }
@@ -487,7 +629,7 @@ function renderRecords(fromNav) {
     recRows.map(r => { const race = RACES[r.round];
       return `<tr style="--tc:${color(r.driver)}"><td class="num">${r.round}</td><td>${race.race_date}</td>
       <td>${r.code}${race.conditions === "wet" ? ' <span class="pill wet">wet</span>' : ""}</td>
-      <td><span class="dot"></span> ${name(r.driver)}</td><td>${r.team}</td>
+      <td><b>${name(r.driver)}</b></td><td>${r.team}</td>
       <td class="num">${r.grid ?? "–"}</td><td class="num">${r.finish == null ? "–" : r.finish === 1 ? '<span class="pill win">P1</span>' : "P" + r.finish}</td>
       <td class="num ${r.gained > 0 ? "pos" : r.gained < 0 ? "neg" : ""}">${r.gained == null ? "–" : (r.gained > 0 ? "+" : "") + r.gained}</td>
       <td class="num">${r.race_points}</td><td class="num">${r.sprint_points || "–"}</td><td class="num"><b>${r.total}</b></td>
