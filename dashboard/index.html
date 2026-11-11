@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F1 Fantasy Dashboard</title>
+<meta name="description" content="Three-level dashboard for F1 Fantasy picks: overview, diagnosis and race-by-race records, built on verified 2026 data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f6f3; --panel: #ffffff; --panel2: #f2f1ed; --border: #e8e6e0;
+    --text: #16161d; --muted: #6f6d78; --faint: #a5a3ad;
+    --red: #d4002a; --green: #00875a; --amber: #b7791f; --blue: #3d5bd9;
+    --shadow: 0 1px 2px rgba(22,22,29,.04), 0 8px 24px -14px rgba(22,22,29,.14);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: "Titillium Web", system-ui, sans-serif; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+  .mono, .num { font-family: "JetBrains Mono", monospace; }
+  button, select, input { font: inherit; color: inherit; }
+  a { color: var(--green); }
+
+  /* Shell */
+  .shell { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+  aside.nav { background: #16161d; color: #fff; padding: 22px 14px; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 6px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 900; font-style: italic; font-size: 1.05rem; padding: 0 8px 18px; }
+  .brand svg { width: 34px; height: 22px; }
+  .brand em { color: #ff4d6d; font-style: italic; }
+  .navbtn { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: none; border: none; color: #c9c8d3; padding: 10px 12px; border-radius: 10px; cursor: pointer; font-weight: 600; }
+  .navbtn .lv { font-family: "JetBrains Mono", monospace; font-size: .72rem; color: #8a89a0; width: 22px; }
+  .navbtn:hover { background: #24242e; color: #fff; }
+  .navbtn.on { background: #fff; color: #16161d; }
+  .navbtn.on .lv { color: var(--red); }
+  .nav .foot { margin-top: auto; font-size: .76rem; color: #8a89a0; padding: 0 8px; line-height: 1.5; }
+  .nav .foot a { color: #c9c8d3; }
+  main { padding: 26px 32px 48px; min-width: 0; }
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: 1fr; }
+    aside.nav { position: sticky; height: auto; flex-direction: row; align-items: center; padding: 10px 12px; z-index: 30; overflow-x: auto; }
+    .brand { padding: 0 8px 0 0; font-size: .95rem; white-space: nowrap; }
+    .brand span.full { display: none; }
+    .navbtn { width: auto; white-space: nowrap; padding: 8px 10px; }
+    .nav .foot { display: none; }
+    main { padding: 18px 16px 40px; }
+  }
+
+  /* Page header */
+  .crumb { font-size: .8rem; color: var(--muted); display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .crumb b { color: var(--text); font-weight: 600; }
+  .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin: 4px 0 16px; }
+  h1 { font-size: clamp(1.6rem, 3.4vw, 2.2rem); letter-spacing: -.025em; line-height: 1.05; }
+  h1 .lv { color: var(--red); }
+  .q { color: var(--muted); font-size: 1rem; margin-top: 4px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); background: var(--panel); padding: 8px 14px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: .9rem; }
+  .btn:hover { border-color: #cfcdc6; }
+  .btn.primary { background: var(--text); color: #fff; border-color: var(--text); }
+  .btn.primary:hover { background: var(--red); border-color: var(--red); }
+
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .filters label { display: inline-flex; align-items: center; gap: 6px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 0 4px 0 12px; font-size: .82rem; color: var(--muted); }
+  .filters select { border: none; background: transparent; padding: 8px 6px; font-weight: 600; font-size: .9rem; color: var(--text); cursor: pointer; outline: none; }
+
+  /* Cards */
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
+  @media (max-width: 1100px) { .grid4 { grid-template-columns: repeat(2, 1fr); } }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px 18px; box-shadow: var(--shadow); min-width: 0; }
+  .kpi .t { font-size: .78rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); font-weight: 700; }
+  .kpi .v { font-family: "JetBrains Mono", monospace; font-size: 1.85rem; font-weight: 600; line-height: 1.15; margin-top: 6px; letter-spacing: -.02em; }
+  .kpi .who { font-weight: 700; font-size: 1rem; margin-top: 2px; display: flex; align-items: center; gap: 6px; }
+  .kpi .s { font-size: .82rem; color: var(--muted); margin-top: 4px; }
+  .kpi .s .up { color: var(--green); font-weight: 700; } .kpi .s .down { color: var(--red); font-weight: 700; }
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--tc, #999); flex: none; }
+
+  .row2 { display: grid; grid-template-columns: 1.15fr 1fr; gap: 12px; margin-bottom: 12px; }
+  @media (max-width: 1100px) { .row2 { grid-template-columns: 1fr; } }
+  .card h2 { font-size: 1.05rem; letter-spacing: -.01em; display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .card h2 small { font-weight: 400; color: var(--muted); font-size: .8rem; }
+  .legend { display: flex; gap: 14px; font-size: .78rem; color: var(--muted); margin: 6px 0 4px; flex-wrap: wrap; }
+  .legend i { display: inline-block; width: 12px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+  svg text { font-family: "JetBrains Mono", monospace; }
+
+  /* Tables */
+  .tw { overflow-x: auto; margin-top: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  th { text-align: left; color: var(--muted); font-weight: 600; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; padding: 8px 8px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  th.sort { cursor: pointer; user-select: none; } th.sort:hover { color: var(--text); }
+  td { padding: 8px 8px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  td.num, th.num { text-align: right; font-family: "JetBrains Mono", monospace; }
+  tbody tr.click { cursor: pointer; } tbody tr.click:hover td { background: #faf9f6; }
+  tr.sel td { background: #fff4f1 !important; }
+  tfoot td { font-weight: 700; border-top: 2px solid var(--border); border-bottom: none; }
+  .bar { display: inline-block; height: 7px; border-radius: 4px; background: var(--tc, var(--blue)); vertical-align: middle; margin-right: 8px; }
+  .pill { display: inline-block; font-size: .72rem; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: var(--panel2); color: var(--muted); }
+  .pill.dnf { background: #fbe3e6; color: #b0182f; } .pill.wet { background: #e6effc; color: #2b54b8; } .pill.win { background: #fff1c2; color: #6b4e00; }
+  .pos { color: var(--green); font-weight: 700; } .neg { color: var(--red); font-weight: 700; }
+
+  .focus { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; border-left: 4px solid var(--red); }
+  .focus b { font-size: 1.1rem; } .focus p { color: var(--muted); }
+  .note { color: var(--muted); font-size: .8rem; margin-top: 10px; }
+  .src { color: var(--faint); font-size: .76rem; margin-top: 18px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+  /* Analysis layout */
+  .split { display: grid; grid-template-columns: 250px 1fr; gap: 12px; }
+  @media (max-width: 1000px) { .split { grid-template-columns: 1fr; } }
+  .dlist { padding: 8px; max-height: 760px; overflow-y: auto; }
+  @media (max-width: 1000px) { .dlist { max-height: 220px; } }
+  .ditem { display: grid; grid-template-columns: 22px 1fr auto; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 10px; cursor: pointer; font-size: .9rem; border: 1px solid transparent; }
+  .ditem:hover { background: var(--panel2); }
+  .ditem.on { background: #fff4f1; border-color: #f3c9c0; }
+  .ditem .r { color: var(--faint); font-family: "JetBrains Mono", monospace; font-size: .75rem; }
+  .ditem .p { font-family: "JetBrains Mono", monospace; font-size: .8rem; color: var(--muted); }
+  .dhead { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .dhead .nm { font-size: 1.6rem; font-weight: 700; letter-spacing: -.02em; display: flex; align-items: center; gap: 10px; }
+  .dhead .tm { color: var(--muted); }
+  .chips { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+  @media (max-width: 700px) { .chips { grid-template-columns: repeat(2, 1fr); } }
+  .chip { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; }
+  .chip .t { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-weight: 700; }
+  .chip .v { font-family: "JetBrains Mono", monospace; font-size: 1.3rem; font-weight: 600; }
+  .chip .s { font-size: .75rem; color: var(--muted); }
+  .read { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; color: #3b3a44; font-size: .92rem; margin-bottom: 12px; }
+  .read b { color: var(--text); }
+  .segs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 8px; }
+  @media (max-width: 700px) { .segs { grid-template-columns: 1fr; } }
+  .seg h3 { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 8px; }
+  .sbar { display: grid; grid-template-columns: 74px 1fr 46px; align-items: center; gap: 8px; font-size: .82rem; margin-bottom: 6px; }
+  .sbar .tr { height: 14px; background: var(--panel2); border-radius: 5px; overflow: hidden; }
+  .sbar .tr i { display: block; height: 100%; background: var(--tc, var(--blue)); border-radius: 5px; }
+  .sbar .val { font-family: "JetBrains Mono", monospace; text-align: right; }
+  .sbar .lab small { color: var(--faint); }
+  .h2h { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; text-align: center; }
+  .h2h .big { font-family: "JetBrains Mono", monospace; font-size: 1.6rem; font-weight: 600; }
+
+  .toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .search { border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; background: var(--panel); min-width: 200px; }
+  .empty { padding: 30px; text-align: center; color: var(--muted); }
+  .loading { padding: 80px; text-align: center; color: var(--muted); }
+  .view { display: none; } .view.on { display: block; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="nav">
+    <div class="brand">
+      <svg viewBox="0 0 44 28" aria-hidden="true"><g transform="skewX(-18)"><rect x="12" y="3" width="8" height="22" rx="2" fill="#ff4d6d"/><rect x="23" y="3" width="8" height="22" rx="2" fill="#ffcb2f"/><rect x="34" y="3" width="8" height="22" rx="2" fill="#7c9cff"/></g></svg>
+      <span><span class="full">FANTASY </span>BOARD<em>26</em></span>
+    </div>
+    <button class="navbtn" data-view="overview"><span class="lv">01</span>Overview</button>
+    <button class="navbtn" data-view="analysis"><span class="lv">02</span>Analysis</button>
+    <button class="navbtn" data-view="records"><span class="lv">03</span>Records</button>
+    <div class="foot">Real 2026 data · 20 races<br>Same tables as Supabase<br><a href="../data/">Data dictionary</a> · <a href="../">Race predictor</a></div>
+  </aside>
+
+  <main>
+    <div class="loading" id="loading">Loading the 2026 season…</div>
+
+    <!-- ===================== LEVEL 1 · OVERVIEW ===================== -->
+    <section class="view" id="v-overview">
+      <div class="crumb"><b>Overview</b> › 01 / Executive overview</div>
+      <div class="head">
+        <div><h1><span class="lv">01</span> / Who's worth picking?</h1><p class="q">Fantasy value and risk for every driver, before teams lock at qualifying.</p></div>
+      </div>
+      <div class="filters">
+        <label>Period <select id="f-period"><option value="all">Season (R1–20)</option><option value="h1">First half (R1–10)</option><option value="h2">Second half (R11–20)</option><option value="last5">Last 5 races</option></select></label>
+        <label>Conditions <select id="f-cond"><option value="all">All races</option><option value="dry">Dry</option><option value="wet">Wet</option></select></label>
+        <label>Team <select id="f-team"></select></label>
+      </div>
+      <div class="grid4" id="kpis"></div>
+      <div class="row2">
+        <div class="card">
+          <h2>Points per start: first vs second half <small>top 8 this season</small></h2>
+          <div class="legend"><span><i style="background:#c9cfe9"></i>First half (R1–10)</span><span><i style="background:#3d5bd9"></i>Second half (R11–20)</span></div>
+          <div id="chart-halves"></div>
+        </div>
+        <div class="card">
+          <h2>Pick board <small id="pb-note"></small></h2>
+          <div class="tw"><table id="pickboard"></table></div>
+          <p class="note">Click a driver to see why. Risk = share of starts that ended in retirement (−20 fantasy points each).</p>
+        </div>
+      </div>
+      <div class="card focus" id="focus"></div>
+      <div class="src"><span>KPIs follow the KPI contract: ratios are recalculated from sums, never averaged.</span><span>Real data · verified against official standings · 8 Mar – 8 Nov 2026</span></div>
+    </section>
+
+    <!-- ===================== LEVEL 2 · ANALYSIS ===================== -->
+    <section class="view" id="v-analysis">
+      <div class="crumb"><a href="#overview">Overview</a> › <b>02 / Diagnostic</b></div>
+      <div class="head">
+        <div><h1><span class="lv">02</span> / Why does this driver score?</h1><p class="q">Form, conditions, starting position and team-mate: what drives a pick's points and risk.</p></div>
+      </div>
+      <div class="split">
+        <div class="card dlist" id="dlist"></div>
+        <div>
+          <div class="card">
+            <div class="dhead">
+              <div class="nm" id="a-name"></div>
+              <button class="btn primary" id="a-records">See race-by-race records →</button>
+            </div>
+            <div class="chips" id="a-chips"></div>
+            <div class="read" id="a-read"></div>
+            <h2>Finishing position, race by race <small>higher is better · ✕ = retired · blue band = wet race</small></h2>
+            <div id="chart-form"></div>
+          </div>
+          <div class="card" style="margin-top:12px">
+            <h2>Points per start by segment <small>same KPI, split three ways · n = starts</small></h2>
+            <div class="segs" id="a-segs"></div>
+          </div>
+          <div class="card" style="margin-top:12px">
+            <h2>Against the team-mate <small>same car, so this isolates the driver</small></h2>
+            <div id="a-h2h" style="margin-top:10px"></div>
+          </div>
+        </div>
+      </div>
+      <div class="src"><span>Positions gained only uses the 12 races with a published starting grid.</span><span>Real data · 2026 season</span></div>
+    </section>
+
+    <!-- ===================== LEVEL 3 · RECORDS ===================== -->
+    <section class="view" id="v-records">
+      <div class="crumb"><a href="#overview">Overview</a> › <a href="#" id="r-back">Analysis</a> › <b>03 / Record detail</b></div>
+      <div class="head">
+        <div><h1><span class="lv">03</span> / The evidence</h1><p class="q">Every race result behind the numbers. One row = one driver at one Grand Prix.</p></div>
+        <button class="btn" id="export">⬇ Export CSV</button>
+      </div>
+      <div class="filters">
+        <label>Driver <select id="r-driver"></select></label>
+        <label>Team <select id="r-team"></select></label>
+        <label>Result <select id="r-status"><option value="all">All</option><option value="classified">Classified</option><option value="DNF/NC">Retired</option><option value="points">Scored points</option></select></label>
+        <label>Conditions <select id="r-cond"><option value="all">All</option><option value="dry">Dry</option><option value="wet">Wet</option></select></label>
+      </div>
+      <div class="card">
+        <div class="toolbar"><span class="note" id="r-count" style="margin:0"></span><input class="search" id="r-search" placeholder="Search race or driver…"></div>
+        <div class="tw"><table id="records"></table></div>
+      </div>
+      <div class="src"><span>Totals: points are summed; ratios are recalculated from the filtered rows.</span><span>Source: results + sprint_results (same key, merged) · <a href="../data/">dictionary</a></span></div>
+    </section>
+  </main>
+</div>
+
+<script>
+// ===================================================================
+// Data: the published CSV tables (same as the Supabase tables)
+// ===================================================================
+const TEAM = { "Mercedes":"#00a58a","Ferrari":"#e8002d","Red Bull":"#3671c6","McLaren":"#ff8000","Racing Bulls":"#6692ff",
+  "Alpine":"#f06aa8","Haas":"#8c9096","Audi":"#b0182f","Aston Martin":"#229971","Williams":"#3aa6e8","Cadillac":"#b8932a" };
+const $ = id => document.getElementById(id);
+const fmt = (x, d = 2) => x == null || isNaN(x) ? "–" : x.toFixed(d);
+const pct = x => x == null || isNaN(x) ? "–" : Math.round(x * 100) + "%";
+
+function parseCSV(text) {
+  const rows = []; let row = [], cur = "", q = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (q) { if (ch === '"') { if (text[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += ch; }
+    else if (ch === '"') q = true;
+    else if (ch === ",") { row.push(cur); cur = ""; }
+    else if (ch === "\n" || ch === "\r") { if (ch === "\r" && text[i + 1] === "\n") i++; row.push(cur); rows.push(row); row = []; cur = ""; }
+    else cur += ch;
+  }
+  if (cur !== "" || row.length) { row.push(cur); rows.push(row); }
+  const head = rows.shift();
+  return rows.filter(r => r.length === head.length).map(r => Object.fromEntries(head.map((h, i) => [h, r[i]])));
+}
+const num = v => v === "" || v == null ? null : +v;
+
+let RACES = {}, DRIVERS = {}, FACT = [], TEAMS = [];
+
+// FACT = fact_driver_race: results left-joined to sprint_results on (round, driver_code)
+function buildFact(results, sprints) {
+  const sp = {}; sprints.forEach(s => sp[s.round + "|" + s.driver_code] = +s.sprint_points);
+  return results.map(r => {
+    const grid = num(r.grid_position), fin = num(r.finish_position), rp = +r.race_points, spp = sp[r.round + "|" + r.driver_code] || 0;
+    return { round: +r.round, code: r.race_code, driver: r.driver_code, team: r.team, grid, finish: fin, status: r.status,
+      race_points: rp, sprint_points: spp, total: rp + spp, dnf: r.status === "DNF/NC" ? 1 : 0,
+      pf: fin != null && fin <= 10 ? 1 : 0, gained: grid != null && fin != null ? grid - fin : null };
+  });
+}
+
+// KPI contract (identical to the kpi_driver view in Supabase)
+function kpis(rows) {
+  const starts = rows.length, total = rows.reduce((a, r) => a + r.total, 0);
+  const g = rows.filter(r => r.gained != null);
+  return { starts, total,
+    pps: starts ? total / starts : null,
+    dnf: starts ? rows.reduce((a, r) => a + r.dnf, 0) / starts : null,
+    pf: starts ? rows.reduce((a, r) => a + r.pf, 0) / starts : null,
+    gained: g.length ? g.reduce((a, r) => a + r.gained, 0) / g.length : null, gn: g.length };
+}
+const byDriver = rows => { const m = {}; rows.forEach(r => (m[r.driver] ||= []).push(r)); return m; };
+const color = d => TEAM[DRIVERS[d]?.main_team] || "#999";
+const teamOf = (d, rows) => { const last = rows.filter(r => r.driver === d).sort((a, b) => b.round - a.round)[0]; return last ? last.team : DRIVERS[d]?.main_team; };
+const name = d => DRIVERS[d]?.driver_name || d;
+const last = d => name(d).split(" ").slice(-1)[0];
+
+// ===================================================================
+// Routing (drill-through keeps the selected driver in the URL)
+// ===================================================================
+let state = { view: "overview", driver: "ANT" };
+function go(view, driver) {
+  if (driver) state.driver = driver;
+  state.view = view;
+  const h = view === "overview" ? "#overview" : `#${view}/${state.driver}`;
+  if (location.hash !== h) history.replaceState(null, "", h);
+  document.querySelectorAll(".view").forEach(v => v.classList.toggle("on", v.id === "v-" + view));
+  document.querySelectorAll(".navbtn").forEach(b => b.classList.toggle("on", b.dataset.view === view));
+  if (view === "overview") renderOverview(); else if (view === "analysis") renderAnalysis(); else renderRecords(true);
+  window.scrollTo({ top: 0 });
+}
+function readHash() {
+  const [v, d] = location.hash.slice(1).split("/");
+  if (d && DRIVERS[d]) state.driver = d;
+  return ["overview", "analysis", "records"].includes(v) ? v : "overview";
+}
+document.querySelectorAll(".navbtn").forEach(b => b.onclick = () => go(b.dataset.view));
+window.addEventListener("hashchange", () => go(readHash()));
+
+// ===================================================================
+// SVG helpers
+// ===================================================================
+const NS = "http://www.w3.org/2000/svg";
+function svg(w, h) { const s = document.createElementNS(NS, "svg"); s.setAttribute("viewBox", `0 0 ${w} ${h}`); s.style.width = "100%"; s.style.height = "auto"; s.style.display = "block"; return s; }
+function el(tag, attrs, parent, text) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; parent.appendChild(e); return e; }
+
+// ===================================================================
+// LEVEL 1 · OVERVIEW
+// ===================================================================
+function filteredOverview() {
+  const p = $("f-period").value, c = $("f-cond").value, t = $("f-team").value;
+  return FACT.filter(r => (p === "all" || (p === "h1" && r.round <= 10) || (p === "h2" && r.round > 10) || (p === "last5" && r.round > 15))
+    && (c === "all" || RACES[r.round].conditions === c) && (t === "all" || r.team === t));
+}
+function renderOverview() {
+  const rows = filteredOverview();
+  const nRaces = new Set(rows.map(r => r.round)).size;
+  const minStarts = Math.max(1, Math.ceil(nRaces / 2));
+  const bd = byDriver(rows);
+  const board = Object.entries(bd).map(([d, rs]) => ({ d, ...kpis(rs) })).filter(x => x.starts >= minStarts).sort((a, b) => b.pps - a.pps);
+  // first vs second half, ignoring the period filter but keeping conditions/team
+  const c = $("f-cond").value, t = $("f-team").value;
+  const base = FACT.filter(r => (c === "all" || RACES[r.round].conditions === c) && (t === "all" || r.team === t));
+  const half = d => [kpis(base.filter(r => r.driver === d && r.round <= 10)), kpis(base.filter(r => r.driver === d && r.round > 10))];
+  const field = kpis(rows);
+
+  if (!board.length) { $("kpis").innerHTML = `<div class="card empty" style="grid-column:1/-1">No drivers match these filters.</div>`; $("pickboard").innerHTML = ""; $("chart-halves").innerHTML = ""; $("focus").innerHTML = ""; return; }
+  const top = board[0];
+  const top8 = board.slice(0, 8);
+  const safest = [...top8].sort((a, b) => a.dnf - b.dnf || b.pps - a.pps)[0];
+  const risers = Object.keys(bd).map(d => { const [a, b] = half(d); return { d, a: a.pps, b: b.pps, delta: a.starts >= 2 && b.starts >= 2 ? b.pps - a.pps : null }; })
+    .filter(x => x.delta != null).sort((x, y) => y.delta - x.delta);
+  const riser = risers[0];
+  const allField = kpis(FACT);
+
+  $("kpis").innerHTML = `
+    <div class="card kpi"><div class="t">Top scorer</div><div class="v">${fmt(top.pps)}</div>
+      <div class="who" style="--tc:${color(top.d)}"><span class="dot"></span>${name(top.d)}</div><div class="s">points per start · ${top.starts} starts</div></div>
+    <div class="card kpi"><div class="t">Safest top-8 pick</div><div class="v">${pct(safest.dnf)}</div>
+      <div class="who" style="--tc:${color(safest.d)}"><span class="dot"></span>${name(safest.d)}</div><div class="s">retirement rate · ${fmt(safest.pps)} pts/start</div></div>
+    <div class="card kpi"><div class="t">Biggest riser</div><div class="v">${riser ? (riser.delta >= 0 ? "+" : "") + fmt(riser.delta, 1) : "–"}</div>
+      <div class="who" style="--tc:${riser ? color(riser.d) : "#999"}"><span class="dot"></span>${riser ? name(riser.d) : "–"}</div><div class="s">${riser ? `pts/start, ${fmt(riser.a, 1)} → ${fmt(riser.b, 1)} (H1 → H2)` : "needs both halves"}</div></div>
+    <div class="card kpi"><div class="t">Field retirement rate</div><div class="v">${pct(field.dnf)}</div>
+      <div class="who">${field.starts} starts · ${nRaces} races</div><div class="s">season average ${pct(allField.dnf)} · each retirement −20 pts</div></div>`;
+
+  // Chart: H1 vs H2 points per start, top 8 by season PPS (within conditions/team filter)
+  const seasonBoard = Object.entries(byDriver(base)).map(([d, rs]) => ({ d, ...kpis(rs) })).filter(x => x.starts >= 3).sort((a, b) => b.pps - a.pps).slice(0, 8);
+  const W = 640, H = 400, L = 36, B = 40, T = 14, bw = (W - L - 10) / seasonBoard.length;
+  const vals = seasonBoard.flatMap(x => half(x.d).map(h => h.pps || 0)); const max = Math.max(5, Math.ceil(Math.max(...vals) / 5) * 5);
+  const s = svg(W, H); const y = v => T + (H - T - B) * (1 - v / max);
+  for (let v = 0; v <= max; v += 5) { el("line", { x1: L, x2: W - 6, y1: y(v), y2: y(v), stroke: "#eeece7" }, s); el("text", { x: L - 6, y: y(v) + 4, "text-anchor": "end", "font-size": 10, fill: "#a5a3ad" }, s, v); }
+  seasonBoard.forEach((x, i) => {
+    const [a, b] = half(x.d), cx = L + i * bw + bw / 2, w = Math.min(22, bw / 3);
+    [[a.pps, "#c9cfe9", -w - 1], [b.pps, "#3d5bd9", 1]].forEach(([v, col, off]) => {
+      if (v == null) return;
+      const r = el("rect", { x: cx + off, y: y(v), width: w, height: y(0) - y(v), rx: 3, fill: col }, s);
+      el("title", {}, r, `${name(x.d)}: ${fmt(v)} pts/start`);
+    });
+    if (b.pps != null) el("text", { x: cx + 1 + w / 2, y: y(b.pps) - 5, "text-anchor": "middle", "font-size": 10, fill: "#3b3a44" }, s, fmt(b.pps, 1));
+    const g = el("g", { style: "cursor:pointer" }, s); g.onclick = () => go("analysis", x.d);
+    el("circle", { cx: cx - 26 > L ? cx - 28 : cx - 22, cy: H - B + 17, r: 4, fill: color(x.d) }, g);
+    el("text", { x: cx, y: H - B + 21, "text-anchor": "middle", "font-size": 11, fill: "#16161d", "font-weight": 600 }, g, x.d);
+  });
+  $("chart-halves").innerHTML = ""; $("chart-halves").appendChild(s);
+
+  // Pick board
+  $("pb-note").textContent = `${board.length} drivers · min ${minStarts} starts`;
+  const maxP = board[0].pps;
+  $("pickboard").innerHTML = `<thead><tr><th>#</th><th>Driver</th><th class="num">Pts / start</th><th class="num">Risk</th><th class="num">Scores</th><th class="num">Trend</th></tr></thead><tbody>` +
+    board.slice(0, 10).map((x, i) => { const [a, b] = half(x.d); const tr = a.starts >= 2 && b.starts >= 2 ? b.pps - a.pps : null;
+      return `<tr class="click" data-d="${x.d}" style="--tc:${color(x.d)}"><td class="num" style="text-align:left;color:var(--faint)">${i + 1}</td>
+      <td><span class="dot"></span> ${name(x.d)}</td>
+      <td class="num"><span class="bar" style="width:${Math.max(3, x.pps / maxP * 60)}px"></span>${fmt(x.pps)}</td>
+      <td class="num ${x.dnf >= .15 ? "neg" : ""}">${pct(x.dnf)}</td><td class="num">${pct(x.pf)}</td>
+      <td class="num ${tr == null ? "" : tr >= 0 ? "pos" : "neg"}">${tr == null ? "–" : (tr >= 0 ? "▲ " : "▼ ") + fmt(Math.abs(tr), 1)}</td></tr>`; }).join("") + "</tbody>";
+  document.querySelectorAll("#pickboard tr.click").forEach(tr => tr.onclick = () => go("analysis", tr.dataset.d));
+
+  // Focus callout = biggest riser (or top scorer)
+  const f = riser && riser.delta > 0 ? riser.d : top.d;
+  const fk = kpis(rows.filter(r => r.driver === f));
+  $("focus").innerHTML = riser && riser.delta > 0
+    ? `<div><b>Focus: ${name(f)}</b><p>Points per start rose from ${fmt(riser.a, 1)} to ${fmt(riser.b, 1)} between the first and second half — the biggest jump on the grid. Retirement risk: ${pct(fk.dnf)}.</p></div><button class="btn primary" id="focus-go">Explore ${last(f)} →</button>`
+    : `<div><b>Focus: ${name(f)}</b><p>Highest points per start for these filters (${fmt(top.pps)}).</p></div><button class="btn primary" id="focus-go">Explore ${last(f)} →</button>`;
+  $("focus-go").onclick = () => go("analysis", f);
+}
+
+// ===================================================================
+// LEVEL 2 · ANALYSIS
+// ===================================================================
+function renderAnalysis() {
+  const d = state.driver, rows = FACT.filter(r => r.driver === d).sort((a, b) => a.round - b.round), k = kpis(rows);
+  const ranked = Object.entries(byDriver(FACT)).map(([x, rs]) => ({ x, ...kpis(rs) })).sort((a, b) => b.pps - a.pps);
+  $("dlist").innerHTML = ranked.map((r, i) => `<div class="ditem ${r.x === d ? "on" : ""}" data-d="${r.x}" style="--tc:${color(r.x)}"><span class="r">${i + 1}</span><span><span class="dot"></span> ${name(r.x)}</span><span class="p">${fmt(r.pps, 1)}</span></div>`).join("");
+  document.querySelectorAll(".ditem").forEach(e => e.onclick = () => go("analysis", e.dataset.d));
+  const team = teamOf(d, FACT);
+  $("a-name").innerHTML = `<span class="dot" style="--tc:${color(d)};width:14px;height:14px"></span>${name(d)} <span class="tm" style="font-size:1rem;font-weight:400">${team} · rank ${ranked.findIndex(r => r.x === d) + 1} of ${ranked.length}</span>`;
+  $("a-chips").innerHTML = `
+    <div class="chip"><div class="t">Pts / start</div><div class="v">${fmt(k.pps)}</div><div class="s">${k.total} pts · ${k.starts} starts</div></div>
+    <div class="chip"><div class="t">Retirement rate</div><div class="v" style="color:${k.dnf >= .15 ? "var(--red)" : "inherit"}">${pct(k.dnf)}</div><div class="s">${rows.filter(r => r.dnf).length} retirements</div></div>
+    <div class="chip"><div class="t">Points-finish rate</div><div class="v">${pct(k.pf)}</div><div class="s">top-10 finishes</div></div>
+    <div class="chip"><div class="t">Positions gained</div><div class="v">${k.gained == null ? "–" : (k.gained >= 0 ? "+" : "") + fmt(k.gained, 1)}</div><div class="s">avg · n = ${k.gn} races with grid</div></div>`;
+
+  // Segments
+  const seg = (label, rs) => ({ label, ...kpis(rs) });
+  const gb = r => r.grid == null ? null : r.grid <= 3 ? "P1–3" : r.grid <= 10 ? "P4–10" : "P11–22";
+  const groups = [
+    ["Season half", [seg("First half", rows.filter(r => r.round <= 10)), seg("Second half", rows.filter(r => r.round > 10))]],
+    ["Conditions", [seg("Dry", rows.filter(r => RACES[r.round].conditions === "dry")), seg("Wet", rows.filter(r => RACES[r.round].conditions === "wet"))]],
+    ["Starting position", ["P1–3", "P4–10", "P11–22"].map(b => seg(b, rows.filter(r => gb(r) === b)))],
+  ];
+  const segMax = Math.max(1, ...groups.flatMap(g => g[1].map(s => s.pps || 0)));
+  $("a-segs").innerHTML = groups.map(([t, ss]) => `<div class="seg"><h3>${t}</h3>` + ss.map(s => `<div class="sbar" style="--tc:${color(d)}"><span class="lab">${s.label}<br><small>n = ${s.starts}</small></span><span class="tr"><i style="width:${s.starts ? (s.pps / segMax * 100) : 0}%"></i></span><span class="val">${s.starts ? fmt(s.pps, 1) : "–"}</span></div>`).join("") + `</div>`).join("");
+
+  // Plain-language read
+  const h1 = groups[0][1][0], h2 = groups[0][1][1];
+  const trend = h1.starts && h2.starts ? (h2.pps - h1.pps) : 0;
+  const best = groups[2][1].filter(s => s.starts >= 2).sort((a, b) => b.pps - a.pps)[0];
+  $("a-read").innerHTML = `<b>Read:</b> ${last(d)} averages <b>${fmt(k.pps)} points per start</b> and retired in <b>${pct(k.dnf)}</b> of races. ` +
+    (Math.abs(trend) >= 2 ? `Form is <b>${trend > 0 ? "rising" : "falling"}</b>: ${fmt(h1.pps, 1)} → ${fmt(h2.pps, 1)} points per start from the first to the second half. ` : `Form is <b>steady</b> across the season. `) +
+    (best ? `Best results come from starting <b>${best.label}</b> (${fmt(best.pps, 1)} pts/start, n = ${best.starts}). ` : "") +
+    (k.dnf >= .15 ? `<b>Risk flag:</b> a retirement rate this high makes a boosted pick a gamble.` : k.dnf === 0 ? `<b>No retirements</b> this season: a safe boost candidate.` : "");
+
+  // Form chart: finishing position by round
+  const W = 760, H = 250, L = 34, R = 10, T = 12, B = 34, n = 20, step = (W - L - R) / n;
+  const s = svg(W, H), y = p => T + (H - T - B) * (p - 1) / 21, x = r => L + (r - 0.5) * step;
+  Object.values(RACES).filter(r => r.conditions === "wet").forEach(r => el("rect", { x: x(r.round) - step / 2, y: T - 4, width: step, height: H - T - B + 8, fill: "#e6effc" }, s));
+  [1, 5, 10, 15, 20].forEach(p => { el("line", { x1: L, x2: W - R, y1: y(p), y2: y(p), stroke: p === 10 ? "#d9d6cf" : "#eeece7", "stroke-dasharray": p === 10 ? "4 4" : "" }, s); el("text", { x: L - 6, y: y(p) + 4, "text-anchor": "end", "font-size": 10, fill: "#a5a3ad" }, s, "P" + p); });
+  el("text", { x: W - R, y: y(10) - 5, "text-anchor": "end", "font-size": 10, fill: "#a5a3ad" }, s, "points line");
+  const fin = rows.filter(r => r.finish != null);
+  if (fin.length > 1) el("polyline", { points: fin.map(r => `${x(r.round)},${y(r.finish)}`).join(" "), fill: "none", stroke: color(d), "stroke-width": 2.5, "stroke-linejoin": "round", opacity: .85 }, s);
+  rows.forEach(r => {
+    if (r.finish != null) { const c = el("circle", { cx: x(r.round), cy: y(r.finish), r: 5, fill: "#fff", stroke: color(d), "stroke-width": 2.5 }, s); el("title", {}, c, `R${r.round} ${RACES[r.round].race_code}: P${r.finish} · ${r.total} pts`); }
+    else { const g = el("g", {}, s); el("path", { d: `M${x(r.round) - 5},${y(21) - 5} l10,10 m0,-10 l-10,10`, stroke: "#d4002a", "stroke-width": 2.5 }, g); el("title", {}, g, `R${r.round} ${RACES[r.round].race_code}: retired`); }
+  });
+  for (let r = 1; r <= n; r++) if (r % 2 === 1 || W > 600) el("text", { x: x(r), y: H - B + 18, "text-anchor": "middle", "font-size": 9.5, fill: rows.some(q => q.round === r) ? "#6f6d78" : "#d9d6cf" }, s, RACES[r].race_code);
+  $("chart-form").innerHTML = ""; $("chart-form").appendChild(s);
+
+  // Team-mate head-to-head (races where both started, same team)
+  const mates = {}; rows.forEach(r => FACT.filter(q => q.round === r.round && q.team === r.team && q.driver !== d).forEach(q => (mates[q.driver] ||= []).push([r, q])));
+  const mate = Object.entries(mates).sort((a, b) => b[1].length - a[1].length)[0];
+  if (mate) {
+    const [m, pairs] = mate; let w = 0, l = 0; pairs.forEach(([a, b]) => { const pa = a.finish ?? 99, pb = b.finish ?? 99; if (pa < pb) w++; else if (pb < pa) l++; });
+    const km = kpis(pairs.map(p => p[1])), kd = kpis(pairs.map(p => p[0]));
+    $("a-h2h").innerHTML = `<div class="h2h">
+      <div><div class="big" style="color:${color(d)}">${w}</div><div>${name(d)}</div><div class="note" style="margin:2px 0 0">${fmt(kd.pps, 1)} pts/start · ${pct(kd.dnf)} retired</div></div>
+      <div class="note" style="margin:0">ahead in<br>${pairs.length} shared races</div>
+      <div><div class="big">${l}</div><div>${name(m)}</div><div class="note" style="margin:2px 0 0">${fmt(km.pps, 1)} pts/start · ${pct(km.dnf)} retired</div></div></div>`;
+  } else $("a-h2h").innerHTML = `<p class="note">No shared races with a team-mate.</p>`;
+  $("a-records").onclick = () => { $("r-driver").value = d; go("records"); };
+}
+
+// ===================================================================
+// LEVEL 3 · RECORDS
+// ===================================================================
+let sortKey = "round", sortDir = 1, recRows = [];
+function renderRecords(fromNav) {
+  if (fromNav && DRIVERS[state.driver]) $("r-driver").value = state.driver;
+  const dv = $("r-driver").value, tv = $("r-team").value, st = $("r-status").value, cv = $("r-cond").value, q = $("r-search").value.trim().toLowerCase();
+  $("r-back").onclick = e => { e.preventDefault(); go("analysis", dv !== "all" ? dv : state.driver); };
+  recRows = FACT.filter(r => (dv === "all" || r.driver === dv) && (tv === "all" || r.team === tv)
+    && (st === "all" || (st === "points" ? r.total > 0 : r.status === st)) && (cv === "all" || RACES[r.round].conditions === cv)
+    && (!q || (name(r.driver) + " " + RACES[r.round].grand_prix + " " + r.code + " " + r.team).toLowerCase().includes(q)));
+  const val = (r, k) => k === "date" ? RACES[r.round].race_date : k === "driver" ? name(r.driver) : r[k] ?? (sortDir > 0 ? 999 : -999);
+  recRows.sort((a, b) => (val(a, sortKey) > val(b, sortKey) ? 1 : val(a, sortKey) < val(b, sortKey) ? -1 : 0) * sortDir || a.round - b.round || (a.finish ?? 99) - (b.finish ?? 99));
+  const k = kpis(recRows);
+  const cols = [["round", "Rd", 1], ["date", "Date", 0], ["code", "Race", 0], ["driver", "Driver", 0], ["team", "Team", 0], ["grid", "Grid", 1], ["finish", "Finish", 1], ["gained", "+/−", 1], ["race_points", "Race pts", 1], ["sprint_points", "Sprint", 1], ["total", "Total", 1]];
+  $("r-count").textContent = `${recRows.length} of ${FACT.length} rows · click a column to sort`;
+  if (!recRows.length) { $("records").innerHTML = `<tbody><tr><td class="empty">No rows match these filters.</td></tr></tbody>`; return; }
+  $("records").innerHTML = `<thead><tr>${cols.map(([k, l, n]) => `<th class="sort ${n ? "num" : ""}" data-k="${k}">${l}${sortKey === k ? (sortDir > 0 ? " ↑" : " ↓") : ""}</th>`).join("")}<th>Status</th></tr></thead><tbody>` +
+    recRows.map(r => { const race = RACES[r.round];
+      return `<tr style="--tc:${color(r.driver)}"><td class="num">${r.round}</td><td>${race.race_date}</td>
+      <td>${r.code}${race.conditions === "wet" ? ' <span class="pill wet">wet</span>' : ""}</td>
+      <td><span class="dot"></span> ${name(r.driver)}</td><td>${r.team}</td>
+      <td class="num">${r.grid ?? "–"}</td><td class="num">${r.finish == null ? "–" : r.finish === 1 ? '<span class="pill win">P1</span>' : "P" + r.finish}</td>
+      <td class="num ${r.gained > 0 ? "pos" : r.gained < 0 ? "neg" : ""}">${r.gained == null ? "–" : (r.gained > 0 ? "+" : "") + r.gained}</td>
+      <td class="num">${r.race_points}</td><td class="num">${r.sprint_points || "–"}</td><td class="num"><b>${r.total}</b></td>
+      <td>${r.dnf ? '<span class="pill dnf">Retired</span>' : '<span class="pill">Classified</span>'}</td></tr>`; }).join("") +
+    `</tbody><tfoot><tr><td colspan="7">${recRows.length} rows · ${pct(k.dnf)} retired · ${pct(k.pf)} in the points</td><td class="num">${k.gained == null ? "–" : (k.gained >= 0 ? "+" : "") + fmt(k.gained, 1)}</td>
+      <td class="num">${recRows.reduce((a, r) => a + r.race_points, 0)}</td><td class="num">${recRows.reduce((a, r) => a + r.sprint_points, 0)}</td><td class="num">${k.total}</td><td>${fmt(k.pps)} pts/start</td></tr></tfoot>`;
+  document.querySelectorAll("#records th.sort").forEach(th => th.onclick = () => { const kk = th.dataset.k; sortDir = sortKey === kk ? -sortDir : 1; sortKey = kk; renderRecords(); });
+}
+$("export").onclick = () => {
+  const head = ["round", "race_date", "race_code", "driver_code", "driver_name", "team", "grid_position", "finish_position", "positions_gained", "status", "race_points", "sprint_points", "total_points", "conditions"];
+  const esc = v => v == null ? "" : /[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : v;
+  const lines = [head.join(",")].concat(recRows.map(r => [r.round, RACES[r.round].race_date, r.code, r.driver, name(r.driver), r.team, r.grid, r.finish, r.gained, r.status, r.race_points, r.sprint_points, r.total, RACES[r.round].conditions].map(esc).join(",")));
+  const blob = new Blob([lines.join("\n")], { type: "text/csv" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+  a.download = `f1-2026-records${$("r-driver").value !== "all" ? "-" + $("r-driver").value : ""}.csv`; a.click(); URL.revokeObjectURL(a.href);
+};
+["r-driver", "r-team", "r-status", "r-cond"].forEach(id => $(id).onchange = () => { if (id === "r-driver" && $(id).value !== "all") state.driver = $(id).value; renderRecords(); });
+$("r-search").oninput = () => renderRecords();
+["f-period", "f-cond", "f-team"].forEach(id => $(id).onchange = renderOverview);
+
+// ===================================================================
+// Load
+// ===================================================================
+(async () => {
+  try {
+    const [races, drivers, results, sprints] = await Promise.all(["races", "drivers", "results", "sprint_results"].map(t => fetch(`../data/${t}.csv`).then(r => { if (!r.ok) throw new Error(t); return r.text(); }).then(parseCSV)));
+    races.forEach(r => RACES[+r.round] = r);
+    drivers.forEach(d => DRIVERS[d.driver_code] = d);
+    FACT = buildFact(results, sprints);
+    TEAMS = [...new Set(FACT.map(r => r.team))].sort();
+    $("f-team").innerHTML = `<option value="all">All teams</option>` + TEAMS.map(t => `<option>${t}</option>`).join("");
+    $("r-team").innerHTML = $("f-team").innerHTML;
+    $("r-driver").innerHTML = `<option value="all">All drivers</option>` + Object.keys(DRIVERS).filter(d => FACT.some(r => r.driver === d)).sort((a, b) => name(a).localeCompare(name(b))).map(d => `<option value="${d}">${name(d)}</option>`).join("");
+    $("loading").remove();
+    go(readHash());
+  } catch (e) {
+    $("loading").innerHTML = `Couldn't load the data tables (${e.message}). The dashboard reads <code>/data/*.csv</code> from this site.`;
+  }
+})();
+</script>
+</body>
+</html>
