@@ -6,7 +6,7 @@
   <title>Mexico GP Predictor (v1)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #f7f6f3; --panel: #ffffff; --panel2: #f2f1ed; --border: #e8e6e0;
@@ -158,6 +158,107 @@
     ul.src { padding-left: 18px; color: var(--muted); font-size: 0.88rem; }
     ul.src li { margin-bottom: 5px; }
     footer { color: var(--muted); font-size: 0.8rem; text-align: center; padding: 34px 16px 44px; border-top: 1px solid var(--border); margin-top: 48px; background: var(--panel); }
+      /* ===== Pit Wall theme: shared with the Fantasy Pit Wall dashboard ===== */
+    :root {
+      --bg: #f4f5f7; --panel: #ffffff; --panel2: #eef0f3; --border: #e5e8ed;
+      --text: #12151a; --muted: #5d6573; --faint: #8b93a1;
+      --red: #e10600; --green: #0f9d58; --gold: #f2c230;
+      --shadow: none; --hero1: #262d38; --hero2: #39424f; --ease: cubic-bezier(.2,.8,.2,1);
+    }
+    body { font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 15px; background: var(--bg); font-feature-settings: "cv11", "ss01"; }
+    body *:not(code):not(pre):not(kbd) { font-family: inherit !important; }
+    .mono, .num, .cd b, .fav span, .ctrl label span, .bar .n, .bar .v, .step .pct, .cell, .kpi b, .split span, td, .stats b { font-variant-numeric: tabular-nums; }
+    a { color: var(--text); text-decoration-color: #c5cad3; text-underline-offset: 3px; }
+    a:hover { text-decoration-color: var(--red); }
+
+    /* hero → dark instrument panel with the car */
+    header.hero { background: linear-gradient(115deg, color-mix(in srgb, var(--tc, #39424f) 28%, var(--hero1)) 0%, var(--hero1) 48%, var(--hero2) 100%); color: #fff; border-bottom: none; overflow: hidden; transition: background .6s; }
+    .tricolor, .stripe-lv, .stripe-br { display: none; }
+    .topbar { padding: 16px 0; }
+    .brand, .wm { color: #fff; }
+    .wm { font-style: normal; font-weight: 700; letter-spacing: -0.02em; font-size: 1rem; }
+    .wm em { font-style: normal; color: #ff6a63; }
+    .round { color: #c3cad5; border-color: rgba(255,255,255,.18); background: rgba(255,255,255,.06); }
+    .hero-grid { position: relative; padding: 26px 0 34px; }
+    .eyebrow { color: #ff8d86; letter-spacing: .08em; font-weight: 600; font-size: .76rem; }
+    h1 { font-weight: 700; letter-spacing: -0.04em; line-height: 1.02; font-size: clamp(2.4rem, 6.4vw, 4.4rem); }
+    h1 span { color: #ff6a63; font-style: normal; }
+    .hero .meta { color: #c3cad5; }
+    .cd { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); }
+    .cd b { font-weight: 600; letter-spacing: -.02em; }
+    .cd small { color: #aeb6c3; letter-spacing: .08em; }
+    .hero-card { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14); backdrop-filter: blur(6px); position: relative; z-index: 2; }
+    .hero-card .lbl { color: #aeb6c3; letter-spacing: .08em; font-weight: 600; }
+    .fav { border-bottom-color: rgba(255,255,255,.14); }
+    .fav b { color: #fff; font-weight: 700; letter-spacing: -.03em; }
+    .fav span { color: #ff6a63; font-weight: 600; }
+    .stats { color: #aeb6c3; }
+    .stats b { color: #fff; font-weight: 600; }
+    .pw-car { position: relative; z-index: 1; width: 100%; max-width: 470px; margin: 20px 0 -30px; pointer-events: none; }
+    .pw-car::after { content: ""; position: absolute; left: -60%; right: -60%; bottom: 7.5%; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.2) 30%, rgba(255,255,255,.2) 70%, transparent); z-index: -1; }
+    .pw-car svg { display: block; width: 100%; height: auto; }
+    .pw-car.in svg { animation: pwdrive 1.25s cubic-bezier(.16,.84,.3,1) both; }
+    .pw-car.in .spin { animation: pwspin 1.25s cubic-bezier(.16,.84,.3,1) both; }
+    @keyframes pwdrive { from { transform: translateX(230%); } to { transform: none; } }
+    @keyframes pwspin { from { transform: rotate(1260deg); } to { transform: rotate(0); } }
+    @media (max-width: 880px) { .pw-car { margin: 14px 0 -8px; } }
+
+    /* sticky section nav → light bar with red underline */
+    nav.jump { background: rgba(255,255,255,.9); border-bottom: 1px solid var(--border); }
+    nav.jump a { color: var(--muted); font-weight: 500; border-radius: 8px; }
+    nav.jump a:hover { color: var(--text); background: var(--panel2); }
+
+    /* type + cards */
+    h2 { font-weight: 700; letter-spacing: -0.03em; }
+    .sub { color: var(--muted); }
+    .card { border-radius: 16px; box-shadow: none; border-color: var(--border); }
+    .ctrl-title, th, .split b, .compare h3, .seg h3 { letter-spacing: .06em; font-weight: 600; color: var(--faint); }
+    .ctrl label { font-weight: 600; }
+    .ctrl label span { background: var(--panel2); border-radius: 6px; }
+    input[type=range] { background: var(--panel2); }
+    input[type=range]::-webkit-slider-thumb { border-color: var(--red); }
+    input[type=range]::-moz-range-thumb { border-color: var(--red); }
+    select { border-radius: 10px; }
+    .btn { border-radius: 10px; font-weight: 600; transition: transform .15s, box-shadow .15s, background .15s; }
+    .btn:hover { background: var(--red); transform: translateY(-1px); box-shadow: 0 6px 16px -8px rgba(18,21,26,.35); }
+    .btn.ghost { background: var(--panel2); color: var(--text); }
+    .btn.ghost:hover { background: var(--border); color: var(--text); box-shadow: none; }
+
+    /* podium + bars */
+    .step { border-radius: 16px; box-shadow: none; }
+    .step::before { height: 3px; }
+    .step .pos { font-style: normal; font-weight: 700; }
+    .step.p1 .pos { color: var(--red); }
+    .step .pct { font-weight: 600; letter-spacing: -.02em; }
+    .track { height: 10px; border-radius: 5px; background: var(--panel2); margin-top: 0; }
+    .fill { border-radius: 5px; }
+    .bar .v { font-weight: 600; }
+    .kpi { background: var(--panel); border-radius: 14px; }
+    .kpi b { font-weight: 600; letter-spacing: -.03em; }
+    .split > div, .hero-card .split > div { background: var(--bg); border-radius: 12px; }
+    .pill { letter-spacing: .02em; font-weight: 600; text-transform: none; }
+    .pill.new { background: #e7f6ee; color: var(--green); }
+    .light.on { background: var(--red); border-color: var(--red); box-shadow: 0 0 18px rgba(225,6,0,.45); }
+    .ring .fg { stroke: var(--red); }
+    table th { text-transform: none; font-size: .76rem; }
+
+    /* entrance motion */
+    .card, .step, .kpi { animation: pwrise .5s var(--ease) both; }
+    @keyframes pwrise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+    /* race-night weather card */
+    .wx { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin: 4px 0 14px; }
+    .wx-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: .78rem; color: var(--faint); font-weight: 600; letter-spacing: .04em; }
+    .wx-days { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .wx-day { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; }
+    .wx-day.race { border-color: var(--text); }
+    .wx-day small { display: block; color: var(--muted); font-size: .74rem; font-weight: 600; }
+    .wx-day b { display: block; font-size: 1.45rem; font-weight: 600; letter-spacing: -.03em; line-height: 1.2; font-variant-numeric: tabular-nums; }
+    .wx-day span { color: var(--muted); font-size: .78rem; font-variant-numeric: tabular-nums; }
+    .wx p { color: var(--muted); font-size: .76rem; margin: 10px 0 0; }
+    .wx p b { color: var(--text); font-weight: 600; }
+
   </style>
 </head>
 <body>
@@ -646,5 +747,93 @@ if (typeof module !== "undefined") module.exports = { buildFeatures, strengths, 
     renderHeat();
     reset();
   </script>
+<script>
+// Original illustration: a generic open-wheel race car (not any real team's design).
+const CAR_DEFS = `<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="cShine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".42"/><stop offset=".38" stop-color="#fff" stop-opacity=".04"/><stop offset=".7" stop-color="#000" stop-opacity=".1"/><stop offset="1" stop-color="#000" stop-opacity=".42"/></linearGradient>
+  <linearGradient id="cDark" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c313a"/><stop offset="1" stop-color="#0e1014"/></linearGradient>
+  <radialGradient id="cTyre" cx=".5" cy=".5" r=".5"><stop offset=".5" stop-color="#17191d"/><stop offset=".8" stop-color="#22252b"/><stop offset=".93" stop-color="#15171a"/><stop offset="1" stop-color="#08090a"/></radialGradient>
+  <radialGradient id="cRim" cx=".5" cy=".45" r=".55"><stop offset="0" stop-color="#4a505b"/><stop offset=".7" stop-color="#23272e"/><stop offset="1" stop-color="#0d0f12"/></radialGradient>
+  <radialGradient id="cShadow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#000" stop-opacity=".38"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+  <linearGradient id="cVisor" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5a6a80"/><stop offset="1" stop-color="#0c1016"/></linearGradient>
+</defs></svg>`;
+function wheel(cx, cy, R) {
+  const spokes = [0, 36, 72, 108, 144].map(a => `<rect x="${cx - R * .5}" y="${cy - 1.6}" width="${R}" height="3.2" rx="1.6" fill="#59606c" transform="rotate(${a} ${cx} ${cy})"/>`).join("");
+  return `<circle cx="${cx}" cy="${cy}" r="${R}" fill="url(#cTyre)"/>
+    <circle cx="${cx}" cy="${cy}" r="${R * .56}" fill="url(#cRim)" stroke="#07080a" stroke-width="2"/>
+    <g class="spin" style="transform-origin:${cx}px ${cy}px">${spokes}<circle cx="${cx}" cy="${cy}" r="${R * .8}" fill="none" stroke="#f2c230" stroke-width="2.6" stroke-dasharray="${R * .9} ${R * .355}" opacity=".9"/></g>
+    <circle cx="${cx}" cy="${cy}" r="${R * .17}" fill="#0c0d10" stroke="var(--tc)" stroke-width="2.4"/>
+    <path d="M${cx - R * .72},${cy - R * .62} A${R * .95},${R * .95} 0 0 1 ${cx + R * .2},${cy - R * .93}" stroke="#fff" stroke-opacity=".16" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+}
+function carSVG(cls = "") {
+  const body = "M56 152 C110 143 190 126 262 114 L322 101 C346 96 372 84 392 70 C402 62 418 57 436 58 C470 61 520 78 566 94 C606 104 646 108 678 112 L680 132 L604 160 L250 162 L234 152 L120 158 L56 156 Z";
+  return `<svg class="carsvg ${cls}" viewBox="0 0 800 206" aria-hidden="true">
+    <ellipse cx="410" cy="190" rx="372" ry="11" fill="url(#cShadow)"/>
+    <!-- rear wing -->
+    <path d="M676 60 L690 60 L694 118 L680 118 Z" fill="url(#cDark)"/>
+    <path d="M690 112 L742 108 L743 116 L691 120 Z" fill="#14171c"/>
+    <path d="M688 46 L748 38 L752 124 L706 128 Z" style="fill:var(--tc)"/>
+    <path d="M688 46 L748 38 L752 124 L706 128 Z" fill="#000" fill-opacity=".22"/>
+    <path d="M660 46 L748 36 L749 49 L661 59 Z" style="fill:var(--tc)"/>
+    <path d="M660 46 L748 36 L749 49 L661 59 Z" fill="url(#cShine)"/>
+    <path d="M664 62 L748 54 L748 59 L665 67 Z" fill="#0f1115" fill-opacity=".7"/>
+    <!-- front wing -->
+    <path d="M22 168 L158 158 L160 168 L24 178 Z" fill="url(#cDark)"/>
+    <path d="M30 158 L146 149 L148 157 L32 166 Z" style="fill:var(--tc)"/>
+    <path d="M30 158 L146 149 L148 157 L32 166 Z" fill="url(#cShine)"/>
+    <path d="M16 142 L44 139 L50 180 L20 180 Z" style="fill:var(--tc)"/>
+    <path d="M16 142 L44 139 L50 180 L20 180 Z" fill="#000" fill-opacity=".25"/>
+    <path d="M84 156 L100 154 L104 162 L88 164 Z" fill="#14171c"/>
+    <!-- suspension -->
+    <path d="M250 124 L196 140 M252 150 L196 152 M560 112 L628 132 M580 152 L628 150" stroke="#191c21" stroke-width="4.5" stroke-linecap="round"/>
+    <!-- floor -->
+    <path d="M232 164 L604 164 L598 176 L244 176 Z" fill="#0f1115"/>
+    <!-- body -->
+    <path d="${body}" style="fill:var(--tc)"/>
+    <path d="${body}" fill="url(#cShine)"/>
+    <!-- lower carbon + sidepod shaping -->
+    <path d="M246 150 C340 146 480 146 606 150 L604 164 L250 164 Z" fill="#171a1f"/>
+    <path d="M334 124 C392 108 480 110 566 126 C584 132 596 140 606 150 C500 144 400 144 334 150 Z" fill="#000" fill-opacity=".2"/>
+    <path d="M334 122 C392 106 480 108 566 124" stroke="#fff" stroke-opacity=".3" stroke-width="2" fill="none"/>
+    <path d="M330 120 L356 113 L352 142 L334 148 Z" fill="#0a0b0e"/>
+    <!-- livery lines (generic) -->
+    <path d="M120 150 C200 136 262 124 322 112" stroke="#fff" stroke-opacity=".55" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <path d="M452 66 C510 82 580 100 676 114 L677 121 C590 110 512 92 448 74 Z" fill="#0f1115" fill-opacity=".55"/>
+    <!-- cockpit, helmet, halo -->
+    <path d="M318 103 C340 95 366 84 388 73 L402 92 C380 100 350 108 324 112 Z" fill="#0a0b0e"/>
+    <ellipse cx="408" cy="68" rx="9" ry="6" fill="#0a0b0e" transform="rotate(-14 408 68)"/>
+    <circle cx="362" cy="89" r="13.5" fill="#f5f6f8"/><path d="M349 88 C352 80 364 78 372 83 L374 91 C366 93 356 93 349 92 Z" fill="url(#cVisor)"/>
+    <path d="M350 97 C356 101 368 101 375 96" stroke="var(--tc)" stroke-width="3" fill="none"/>
+    <path d="M300 112 C318 84 356 68 398 72" stroke="#111318" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M300 112 C318 84 356 68 398 72" stroke="#fff" stroke-opacity=".18" stroke-width="2" fill="none" stroke-linecap="round" transform="translate(0 -2)"/>
+    <path d="M326 90 L322 106" stroke="#111318" stroke-width="5" stroke-linecap="round"/>
+    <path d="M296 100 L312 97 L313 104 L297 106 Z" fill="#111318"/>
+    <!-- wheels -->
+    ${wheel(196, 148, 39)}${wheel(628, 144, 43)}
+  </svg>`;
+}
+
+// Pit Wall theme: the car drives into the hero in the colour of the model's favourite.
+(function () {
+  try {
+    document.body.insertAdjacentHTML("afterbegin", CAR_DEFS);
+    var grid = document.querySelector(".hero-grid"); if (!grid) return;
+    var host = document.createElement("div"); host.className = "pw-car"; host.setAttribute("aria-hidden", "true");
+    (grid.firstElementChild || grid).appendChild(host);
+    function paint() {
+      var p1 = document.querySelector(".step.p1"), col = p1 && getComputedStyle(p1).getPropertyValue("--tc").trim();
+      col = col || "#e10600";
+      if (host.dataset.col === col) return;
+      host.dataset.col = col; host.style.setProperty("--tc", col);
+      document.querySelector("header.hero").style.setProperty("--tc", col);
+      host.innerHTML = carSVG(); host.classList.remove("in"); void host.offsetWidth; host.classList.add("in");
+    }
+    setTimeout(paint, 250);
+    var pod = document.getElementById("podium");
+    if (pod && window.MutationObserver) new MutationObserver(function () { clearTimeout(host._t); host._t = setTimeout(paint, 200); }).observe(pod, { childList: true });
+  } catch (e) {}
+})();
+
+</script>
 </body>
 </html>
