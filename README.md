@@ -26,11 +26,23 @@ A probabilistic forecasting model for the final five races of the 2026 Formula 1
 |---|:-:|---|---|:-:|:-:|:-:|
 | Mexico City | v1 | Antonelli (28%) | Verstappen | 13% | 2nd | 2 / 3 |
 | São Paulo (wet) | v2 | Antonelli (43%) | Norris | 28% | 2nd | 1 / 3 |
-| Las Vegas | v3 | Verstappen (55%) | Pending | – | – | – |
+| Las Vegas | v3 | Verstappen (55%) | Verstappen | 55% | 1st | 2 / 3 |
 | Qatar | – | – | – | – | – | – |
 | Abu Dhabi | – | – | – | – | – | – |
 
 The model is judged on calibration as well as winners: events forecast at 30% should occur roughly 30% of the time. The full scorecard is on the live site.
+
+### Benchmark against the market (from Las Vegas)
+
+Forecasts are compared with Polymarket's winner market, recorded before the start and scaled to remove its margin (raw prices summed to 115.5%).
+
+| Las Vegas | Probability assigned to winner | Log score | Podium picks |
+|---|:-:|:-:|:-:|
+| **v3 (official)** | **55%** | **−0.60** | **2 / 3** |
+| v3 + practice pace (experiment) | 49% | −0.71 | 2 / 3 |
+| Polymarket (scaled) | 47% | −0.76 | 1 / 3 |
+
+Everyone missed Piastri, who finished 3rd from 17th on the grid. One race is not a meaningful sample, so the comparison continues for the remaining races.
 
 ## Methodology
 

@@ -309,6 +309,36 @@
     .exp-rules summary { cursor: pointer; font-weight: 600; color: var(--text); }
     .exp-rules ul { margin: 8px 0 0 18px; display: grid; gap: 5px; }
     .exp-rules b { color: var(--text); font-weight: 600; }
+    /* track record strip */
+    .record { padding-top: 34px; }
+    .record-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    .record-head a { font-size: .9rem; font-weight: 600; color: var(--muted); text-decoration: none; }
+    .record-head a:hover { color: var(--red); }
+    .record-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 14px; }
+    @media (max-width: 1000px) { .record-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .record-grid { grid-template-columns: 1fr; } }
+    .rec { display: flex; flex-direction: column; gap: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px 18px; text-decoration: none; color: var(--text); transition: transform .15s, box-shadow .15s, border-color .15s; animation: pwrise .5s var(--ease) both; }
+    .rec:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -14px rgba(18,21,26,.35); border-color: #c5cad3; }
+    .rec small { font-size: .76rem; font-weight: 600; color: var(--faint); letter-spacing: .04em; }
+    .rec b { font-size: 1.3rem; font-weight: 700; letter-spacing: -.03em; }
+    .rec span { font-size: .86rem; color: var(--muted); line-height: 1.45; }
+    .rec span strong { color: var(--text); font-weight: 600; }
+    .rec em { margin-top: auto; padding-top: 8px; font-style: normal; font-size: .82rem; font-weight: 600; color: var(--red); }
+    .rec.live { border-color: var(--text); }
+    .rec.live small::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--red); margin-right: 6px; vertical-align: 1px; animation: pwpulse 1.8s ease-in-out infinite; }
+    @keyframes pwpulse { 50% { opacity: .25; } }
+    .rec.dash { background: linear-gradient(115deg, #2d3440, #39424f); color: #fff; border-color: transparent; }
+    .rec.dash small { color: #aeb6c3; } .rec.dash span { color: #c3cad5; } .rec.dash em { color: #ff8d86; }
+    nav.jump a.jump-dash { color: var(--red); font-weight: 600; }
+    /* post-race */
+    .raceover { background: var(--panel); border: 1px solid var(--border); border-left: 4px solid var(--red); border-radius: 12px; padding: 12px 16px; margin: 10px 0 16px; color: var(--muted); font-size: .92rem; }
+    .raceover b { color: var(--text); font-weight: 600; }
+    .mv-title { font-size: 1.05rem; font-weight: 600; letter-spacing: -.01em; }
+    #vsmarket tr.best td { background: #f6faf7; }
+    #vsmarket th small { font-weight: 400; text-transform: none; letter-spacing: 0; }
+    .mv-notes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 22px; margin-top: 14px; font-size: .9rem; color: var(--muted); }
+    .mv-notes b { color: var(--text); font-weight: 600; }
+    @media (max-width: 760px) { .mv-notes { grid-template-columns: 1fr; } }
 
   </style>
 </head>
@@ -356,12 +386,18 @@
     <a href="#predict">Prediction</a><a href="#scorecard">Scorecard</a><a href="#review">São Paulo review</a>
     <a href="#tested">What I tested</a><a href="#drivers">Driver breakdown</a><a href="#title">Championship</a>
     <a href="#backtest">Accuracy test</a><a href="#season">Season results</a><a href="#track">Las Vegas history</a>
-    <a href="#race">Race it</a><a href="#how">How it works</a><a href="#versions">Versions</a><a href="#sources">Sources</a>
+    <a href="#race">Race it</a><a href="#how">How it works</a><a href="#versions">Versions</a><a href="#sources">Sources</a><a href="dashboard/" class="jump-dash">Fantasy dashboard ↗</a>
   </div></nav>
 
   <main class="wrap">
+    <section id="record" class="record">
+      <div class="record-head"><h2>Track record</h2><a href="#scorecard">Full scorecard →</a></div>
+      <div class="record-grid" id="recordGrid"></div>
+    </section>
+
     <section id="predict">
       <h2>The Prediction</h2>
+      <div class="raceover"><b>Race finished: Verstappen won from pole, Norris 2nd, Piastri 3rd.</b> Below is the locked pre-race prediction, which gave Verstappen 55%. <a href="#vsmarket">How it scored →</a></div>
       <p class="sub" id="predictSub">Every driver's chance to win in Las Vegas, based on all 20 races of 2026. Qualifying is on Friday night; once the grid is known, the prediction is updated with it.</p>
       <div class="layout">
         <aside class="card">
@@ -418,6 +454,25 @@
         <thead><tr><th>Race</th><th>Version</th><th>Final favourite</th><th>Winner</th><th>Model gave winner</th><th>Winner's rank</th><th>Podium picks</th></tr></thead>
         <tbody id="scorerows"></tbody>
       </table></div>
+
+      <div class="card" id="vsmarket" style="margin-top:20px">
+        <h3 class="mv-title">Las Vegas: model vs. experiment vs. market</h3>
+        <p class="note" style="margin-top:4px">All three were recorded before the 11 PM ET start. The market is Polymarket's winner market at 10:46 PM ET. Its prices added up to 115.5%, so they're scaled to 100% to compare fairly.</p>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Forecast</th><th class="num">Chance given to Verstappen (winner)</th><th class="num">Log score <small>(higher is better)</small></th><th>Predicted top 3</th><th class="num">Podium picks</th></tr></thead>
+          <tbody>
+            <tr class="best"><td><b>v3 (official)</b></td><td class="num"><b>55%</b></td><td class="num"><b>−0.60</b></td><td>Verstappen, Russell, Norris</td><td class="num"><b>2/3</b></td></tr>
+            <tr><td>v3 + practice (experiment)</td><td class="num">49%</td><td class="num">−0.71</td><td>Verstappen, Russell, Norris</td><td class="num">2/3</td></tr>
+            <tr><td>Polymarket (scaled)</td><td class="num">47%</td><td class="num">−0.76</td><td>Verstappen, Russell, Antonelli</td><td class="num">1/3</td></tr>
+          </tbody>
+        </table></div>
+        <div class="mv-notes">
+          <p><b>What went right:</b> the official model put more weight on the actual winner than both the market and the experiment, and it agreed with the market on the favourite (55% vs 54% unscaled).</p>
+          <p><b>What it missed:</b> Oscar Piastri finished 3rd from 17th on the grid. Every forecast gave him under 1%. On a slipstreaming track with a record number of overtakes, a back-of-grid start hurt less than the model assumes.</p>
+          <p><b>Experiment, race 1 of 3:</b> adding the wet FP2 order <em>lowered</em> the winner's chance (55% → 49%) and boosted Russell, who topped FP2 but finished 9th. One race proves nothing; the test continues in Qatar and Abu Dhabi.</p>
+          <p><b>Market vs. model on Antonelli:</b> the market rated him 17% (he qualified fastest); the model 6% (it sees only his grid slot, 6th). He finished 4th. Neither was clearly right.</p>
+        </div>
+      </div>
     </section>
 
     <section id="review">
@@ -834,12 +889,13 @@ if (typeof module !== "undefined") module.exports = { buildFeatures, strengths, 
       GRID.forEach(c => { S0[c] = base[c] + (gb[c] || 0); S1[c] = (base[c] * tot + PRACTICE_WEIGHT * pr[c]) / (tot + PRACTICE_WEIGHT) + (gb[c] || 0); });
       const a = simWin(S0, T, rain), b = simWin(S1, T, rain);
       const order = [...GRID].sort((x, y) => b[y] - b[x]).slice(0, 8);
-      status.textContent = `FP2 data in · ${gridKnown ? "with the official grid" : "before qualifying"}`;
+      status.textContent = "Scored · race 1 of 3: v3 did better";
       body.innerHTML = `<div class="tablewrap"><table><thead><tr><th>Driver</th><th>FP2</th><th class="num">v3 (official)</th><th class="num">v3 + practice</th><th class="num">Change</th></tr></thead><tbody>` +
         order.map(c => { const d = b[c] - a[c], k = PRACTICE_PACE.indexOf(c);
           return `<tr style="--tc:${color(c)}"><td><span class="dot"></span>${D.names[c]}</td><td>${k >= 0 ? "P" + (k + 1) : "–"}</td><td class="num">${pct(a[c])}</td><td class="num"><b>${pct(b[c])}</b></td>
             <td class="num" style="color:${Math.abs(d) < 0.005 ? "var(--muted)" : d > 0 ? "var(--green)" : "var(--red)"}">${Math.abs(d) < 0.005 ? "=" : (d > 0 ? "+" : "−") + (Math.abs(d) * 100).toFixed(1) + " pts"}</td></tr>`; }).join("") +
         `</tbody></table></div><p class="note">Both columns use the default settings, ${RAIN_DEFAULT}% rain and ${gridKnown ? "the official starting grid" : "no grid yet"}, so the only difference is practice pace.${PRACTICE_SOURCE ? " FP2 source: " + PRACTICE_SOURCE + "." : ""}</p>
+        <p class="note"><b>Result (Verstappen won):</b> v3 gave the winner 55%, v3 + practice 49%. Practice pace made this forecast worse, mainly by boosting Russell (FP2 P1, finished 9th). <a href="#vsmarket">Full comparison →</a></p>
         <p class="note"><b>A twist the rules didn't expect:</b> FP2 ran in the wet, but the race is forecast dry. I'm sticking to the rules fixed on 18 Nov rather than switching data after seeing it, so this is a tougher test: a wet practice order may say little about dry race pace. The result will be reported either way.</p>`;
     }
 
@@ -849,6 +905,7 @@ if (typeof module !== "undefined") module.exports = { buildFeatures, strengths, 
       model = simulate();
       const ranked = [...GRID].sort((a, b) => model.win[b] - model.win[a]);
       $("heroFav").textContent = D.names[ranked[0]]; $("heroPct").textContent = pct(model.win[ranked[0]]);
+      if ($("recLive")) $("recLive").innerHTML = `Favourite: <strong>${D.names[ranked[0]]} ${pct(model.win[ranked[0]])}</strong>${STARTING_GRID.length ? " · official grid in" : ""}`;
       $("podium").innerHTML = [1, 0, 2].map(k => {
         const c = ranked[k];
         return `<div class="step ${k === 0 ? "p1" : ""}" style="--tc:${color(c)}"><div class="pos">${k + 1}</div>
@@ -956,7 +1013,13 @@ if (typeof module !== "undefined") module.exports = { buildFeatures, strengths, 
       const SC = [
         { race: "Mexico City", v: "v1", fav: "Antonelli (28%)", win: "Verstappen", gave: "13%", rank: "2nd", pod: "2/3" },
         { race: "São Paulo 💧", v: "v2", fav: "Antonelli (43%)", win: "Norris", gave: "28%", rank: "2nd", pod: "1/3" },
-        { race: "Las Vegas", v: "v3", pending: true }, { race: "Qatar", v: "–", pending: true }, { race: "Abu Dhabi", v: "–", pending: true }];
+        { race: "Las Vegas", v: "v3", fav: "Verstappen (55%)", win: "Verstappen", gave: "55%", rank: "1st", pod: "2/3" }, { race: "Qatar", v: "–", pending: true }, { race: "Abu Dhabi", v: "–", pending: true }];
+      const LINK = { "Mexico City": "mexico/", "São Paulo 💧": "sao-paulo/", "Las Vegas": "#vsmarket" };
+      $("recordGrid").innerHTML = SC.slice(0, 3).map(s => s.pending
+        ? `<a class="rec live" href="#predict"><small>${s.v} · ${s.race}</small><b>Live now</b><span id="recLive">Prediction locked before the race</span><em>See the prediction ↓</em></a>`
+        : `<a class="rec" href="${LINK[s.race]}"><small>${s.v} · ${s.race.replace(" 💧", "")}${s.race.includes("💧") ? " · wet" : ""}</small><b>${s.win} won</b>
+            <span>Model gave him <strong>${s.gave}</strong> (ranked ${s.rank}) · podium picks <strong>${s.pod}</strong></span><em>${s.race === "Las Vegas" ? "Favourite won · see model vs. market →" : "Favourite was " + s.fav + " · open " + s.v + " →"}</em></a>`).join("") +
+        `<a class="rec dash" href="dashboard/"><small>Also built</small><b>Fantasy Pit Wall</b><span>3-level dashboard: who's worth picking, why, and every race result behind it.</span><em>Open the dashboard ↗</em></a>`;
       $("scorerows").innerHTML = SC.map(s => s.pending
         ? `<tr><td>${s.race}</td><td>${s.v}</td><td colspan="5" class="pending">${s.race === "Las Vegas" ? "Prediction live now — scored after the race" : "Upcoming"}</td></tr>`
         : `<tr class="score-row"><td>${s.race}</td><td>${s.v}</td><td>${s.fav}</td><td>${s.win}</td><td class="num">${s.gave}</td><td>${s.rank}</td><td class="num">${s.pod}</td></tr>`).join("");
