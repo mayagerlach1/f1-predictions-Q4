@@ -423,8 +423,8 @@ round,race_code,driver_code,team,grid_position,finish_position,status,race_point
 20,SAP,RUS,Mercedes,7,4,classified,12
 20,SAP,ANT,Mercedes,2,5,classified,10
 20,SAP,PIA,McLaren,10,6,classified,8
-20,SAP,LEC,Ferrari,14,7,classified,6
-20,SAP,LAW,Racing Bulls,3,8,classified,4
+20,SAP,LAW,Racing Bulls,3,7,classified,6
+20,SAP,LEC,Ferrari,14,8,classified,4
 20,SAP,HAM,Ferrari,20,9,classified,2
 20,SAP,HUL,Audi,4,10,classified,1
 20,SAP,LIN,Racing Bulls,12,11,classified,0
@@ -439,3 +439,25 @@ round,race_code,driver_code,team,grid_position,finish_position,status,race_point
 20,SAP,CAM,Haas,11,20,classified,0
 20,SAP,BOT,Cadillac,18,,DNF/NC,0
 20,SAP,STR,Aston Martin,17,,DNF/NC,0
+21,LVG,VER,Red Bull,1,1,classified,25
+21,LVG,NOR,McLaren,3,2,classified,18
+21,LVG,PIA,McLaren,17,3,classified,15
+21,LVG,ANT,Mercedes,6,4,classified,12
+21,LVG,GAS,Alpine,8,5,classified,10
+21,LVG,COL,Alpine,9,6,classified,8
+21,LVG,HAM,Ferrari,11,7,classified,6
+21,LVG,SAI,Williams,20,8,classified,4
+21,LVG,RUS,Mercedes,2,9,classified,2
+21,LVG,LEC,Ferrari,10,10,classified,1
+21,LVG,HUL,Audi,12,11,classified,0
+21,LVG,BOR,Audi,13,12,classified,0
+21,LVG,BEA,Haas,22,13,classified,0
+21,LVG,LAW,Racing Bulls,7,14,classified,0
+21,LVG,HAD,Red Bull,4,15,classified,0
+21,LVG,CAM,Haas,15,16,classified,0
+21,LVG,STR,Aston Martin,21,17,classified,0
+21,LVG,BOT,Cadillac,19,18,classified,0
+21,LVG,ALB,Williams,14,,DNF/NC,0
+21,LVG,ALO,Aston Martin,18,,DNF/NC,0
+21,LVG,LIN,Racing Bulls,5,,DNF/NC,0
+21,LVG,PER,Cadillac,16,,DNF/NC,0

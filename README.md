@@ -58,7 +58,7 @@ flowchart LR
     H -.-> D
 ```
 
-**1. Data.** The dataset covers every 2026 result: 440 race results, sprints, starting grids, track history and wet-race team-mate comparisons. Points are reconciled against the official championship standings, including post-race penalties. It's stored as seven normalized tables with primary and foreign keys, row-level security and documented column definitions.
+**1. Data.** The dataset covers every 2026 result: 462 race results (21 rounds), sprints, starting grids, track history and wet-race team-mate comparisons. Points are reconciled against the official championship standings, including post-race penalties. It's stored as seven normalized tables with primary and foreign keys, row-level security and documented column definitions.
 
 **2. Driver strength.** Each driver gets a weighted score from five factors:
 

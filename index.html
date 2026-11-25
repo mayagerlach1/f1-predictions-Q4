@@ -1005,7 +1005,7 @@ if (typeof module !== "undefined") module.exports = { buildFeatures, strengths, 
 
       // São Paulo review: v2's final published predicted order vs the real top 10
       const pred = ["ANT", "NOR", "RUS", "LEC", "HAM", "VER", "HAD", "LAW", "PIA", "LIN"];
-      const real = ["NOR", "VER", "HAD", "RUS", "ANT", "PIA", "LEC", "LAW", "HAM", "HUL"];
+      const real = ["NOR", "VER", "HAD", "RUS", "ANT", "PIA", "LAW", "LEC", "HAM", "HUL"]; // final classification: Leclerc 5s penalty, Lawson 7th
       $("predList").innerHTML = pred.map(c => `<li class="${real.includes(c) ? "ok" : ""}"><span class="dot" style="--tc:${color(c)}"></span>${D.names[c]}<small>${real.includes(c) ? "finished P" + (real.indexOf(c) + 1) : "outside top 10"}</small></li>`).join("");
       $("realList").innerHTML = real.map(c => `<li><span class="dot" style="--tc:${color(c)}"></span>${D.names[c]}<small>${pred.includes(c) ? "predicted P" + (pred.indexOf(c) + 1) : "not predicted"}</small></li>`).join("");
 

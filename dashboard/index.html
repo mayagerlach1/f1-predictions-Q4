@@ -215,7 +215,7 @@
       <button class="tab navbtn" data-view="analysis">Analysis</button>
       <button class="tab navbtn" data-view="records">Records</button>
     </nav>
-    <div class="meta"><span>2026 season · 20 races</span><a href="../data/">Data dictionary</a><a href="../">Race predictor</a></div>
+    <div class="meta"><span>2026 season · 21 races</span><a href="../data/">Data dictionary</a><a href="../">Race predictor</a></div>
   </div>
 </header>
 
@@ -239,7 +239,7 @@
       </div>
     </div>
     <div class="filters">
-      <label>Period <select id="f-period"><option value="all">Season (R1–20)</option><option value="h1">First half (R1–10)</option><option value="h2">Second half (R11–20)</option><option value="last5">Last 5 races</option></select></label>
+      <label>Period <select id="f-period"><option value="all">Season (R1–21)</option><option value="h1">First half (R1–10)</option><option value="h2">Second half (R11–21)</option><option value="last5">Last 5 races</option></select></label>
       <label>Conditions <select id="f-cond"><option value="all">All races</option><option value="dry">Dry</option><option value="wet">Wet</option></select></label>
       <label>Team <select id="f-team"></select></label>
     </div>
@@ -247,7 +247,7 @@
     <div class="row2">
       <div class="card">
         <h2>Points per start, first vs second half <small>top 8 this season</small></h2>
-        <div class="legend"><span><i style="background:#cfd4dc"></i>First half (R1–10)</span><span><i style="background:#12151a"></i>Second half (R11–20)</span></div>
+        <div class="legend"><span><i style="background:#cfd4dc"></i>First half (R1–10)</span><span><i style="background:#12151a"></i>Second half (R11–21)</span></div>
         <div id="chart-halves"></div>
       </div>
       <div class="card">
@@ -257,7 +257,7 @@
       </div>
     </div>
     <div class="card focus" id="focus"></div>
-    <div class="src"><span>KPIs follow the KPI contract: ratios are recalculated from sums, never averaged.</span><span>Real data, verified against official standings · 8 Mar – 8 Nov 2026 · car illustration is original</span></div>
+    <div class="src"><span>KPIs follow the KPI contract: ratios are recalculated from sums, never averaged.</span><span>Real data, verified against official standings · 8 Mar – 21 Nov 2026 · car illustration is original</span></div>
   </section>
 
   <!-- ===================== LEVEL 2 · ANALYSIS ===================== -->
@@ -301,7 +301,7 @@
         </div>
       </div>
     </div>
-    <div class="src"><span>Positions gained only uses the 12 races with a published starting grid.</span><span>Real data · 2026 season</span></div>
+    <div class="src"><span>Positions gained only uses the 13 races with a published starting grid.</span><span>Real data · 2026 season</span></div>
   </section>
 
   <!-- ===================== LEVEL 3 · RECORDS ===================== -->
@@ -356,6 +356,7 @@ function parseCSV(text) {
 const num = v => v === "" || v == null ? null : +v;
 
 let RACES = {}, DRIVERS = {}, FACT = [], TEAMS = [];
+let NROUNDS = 21; // set from races.csv on load
 
 // FACT = fact_driver_race: results left-joined to sprint_results on (round, driver_code)
 function buildFact(results, sprints) {
@@ -530,7 +531,7 @@ function driveIn(host, col) {
 // ===================================================================
 function filteredOverview() {
   const p = $("f-period").value, c = $("f-cond").value, t = $("f-team").value;
-  return FACT.filter(r => (p === "all" || (p === "h1" && r.round <= 10) || (p === "h2" && r.round > 10) || (p === "last5" && r.round > 15))
+  return FACT.filter(r => (p === "all" || (p === "h1" && r.round <= 10) || (p === "h2" && r.round > 10) || (p === "last5" && r.round > NROUNDS - 5))
     && (c === "all" || RACES[r.round].conditions === c) && (t === "all" || r.team === t));
 }
 function renderOverview() {
@@ -661,7 +662,7 @@ function renderAnalysis() {
     (k.dnf >= .15 ? `<b>Risk flag:</b> a retirement rate this high makes a boosted pick a gamble.` : k.dnf === 0 ? `<b>No retirements</b> this season: a safe boost candidate.` : "");
 
   // Form chart: finishing position by round (the line draws itself)
-  const W = 760, H = 250, L = 34, R = 10, T = 14, B = 34, n = 20, step = (W - L - R) / n;
+  const W = 760, H = 250, L = 34, R = 10, T = 14, B = 34, n = NROUNDS, step = (W - L - R) / n;
   const s = svg(W, H), y = p => T + (H - T - B) * (p - 1) / 21, x = r => L + (r - 0.5) * step;
   Object.values(RACES).filter(r => r.conditions === "wet").forEach(r => el("rect", { x: x(r.round) - step / 2, y: T - 6, width: step, height: H - T - B + 10, rx: 4, fill: "#eef3fb" }, s));
   [1, 5, 10, 15, 20].forEach(p => { el("line", { x1: L, x2: W - R, y1: y(p), y2: y(p), stroke: p === 10 ? "#c5cad3" : "#eef0f3", "stroke-dasharray": p === 10 ? "4 4" : "" }, s); el("text", { x: L - 8, y: y(p) + 4, "text-anchor": "end", "font-size": 11, fill: "#8b93a1" }, s, "P" + p); });
@@ -669,7 +670,7 @@ function renderAnalysis() {
   const fin = rows.filter(r => r.finish != null);
   if (fin.length > 1) el("polyline", { points: fin.map(r => `${x(r.round)},${y(r.finish)}`).join(" "), pathLength: 1, class: "draw", fill: "none", stroke: color(d), "stroke-width": 2.5, "stroke-linejoin": "round", "stroke-linecap": "round" }, s);
   rows.forEach(r => {
-    const delay = `animation-delay:${200 + (r.round / 20) * 1100}ms`;
+    const delay = `animation-delay:${200 + (r.round / NROUNDS) * 1100}ms`;
     if (r.finish != null) { const c = el("circle", { cx: x(r.round), cy: y(r.finish), r: 4.5, fill: "#fff", stroke: color(d), "stroke-width": 2.5, class: "fade", style: delay }, s); el("title", {}, c, `R${r.round} ${RACES[r.round].race_code}: P${r.finish} · ${r.total} pts`); }
     else { const g = el("g", { class: "fade", style: delay }, s); el("path", { d: `M${x(r.round) - 4.5},${y(21) - 4.5} l9,9 m0,-9 l-9,9`, stroke: "#d92d20", "stroke-width": 2.2, "stroke-linecap": "round" }, g); el("title", {}, g, `R${r.round} ${RACES[r.round].race_code}: retired`); }
   });
@@ -756,6 +757,7 @@ tickCountdown(); setInterval(tickCountdown, 30000);
     document.body.insertAdjacentHTML("afterbegin", CAR_DEFS);
     const [races, drivers, results, sprints] = await Promise.all(["races", "drivers", "results", "sprint_results"].map(t => fetch(`../data/${t}.csv`).then(r => { if (!r.ok) throw new Error(t); return r.text(); }).then(parseCSV)));
     races.forEach(r => RACES[+r.round] = r);
+    NROUNDS = Math.max(...races.map(r => +r.round));
     drivers.forEach(d => DRIVERS[d.driver_code] = d);
     FACT = buildFact(results, sprints);
     TEAMS = [...new Set(FACT.map(r => r.team))].sort();
